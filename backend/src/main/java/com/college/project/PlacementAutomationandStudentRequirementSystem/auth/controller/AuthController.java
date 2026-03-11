@@ -1,4 +1,30 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.auth.controller;
 
+import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.LoginRequestDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.RegisterRequestDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.RegisterResponseDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.service.impl.AuthServiceImpl;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
+
+    private final AuthServiceImpl authServiceimpl;
+
+    @PostMapping("/register")
+    public ResponseEntity<RegisterResponseDto> register(@RequestBody RegisterRequestDto registerRequestDto){
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(authServiceimpl.registerUser(registerRequestDto));
+//        return ResponseEntity.status(HttpStatus.CREATED).body("User Register Successfully");
+    }
+
 }
