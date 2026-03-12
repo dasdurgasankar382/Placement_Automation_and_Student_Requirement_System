@@ -1,0 +1,22 @@
+day-1 (10 march)
+------------
+create file and folder
+frontend setup
+
+day-2 (11 march)
+------------
+authController register user work
+costume exception with global exception
+role based access
+
+day-3 (12 march)
+------------
+authController login user work
+authentication user using email, password and role on basic format later using spring security
+added spring security
+password encrypter
+
+
+
+
+
