@@ -1,6 +1,7 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.auth.controller;
 
 import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.LoginRequestDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.LoginResponseDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.RegisterRequestDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.RegisterResponseDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.service.impl.AuthServiceImpl;
@@ -25,6 +26,13 @@ public class AuthController {
                 .status(HttpStatus.CREATED)
                 .body(authServiceimpl.registerUser(registerRequestDto));
 //        return ResponseEntity.status(HttpStatus.CREATED).body("User Register Successfully");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(authServiceimpl.loginUser(loginRequestDto));
     }
 
 }

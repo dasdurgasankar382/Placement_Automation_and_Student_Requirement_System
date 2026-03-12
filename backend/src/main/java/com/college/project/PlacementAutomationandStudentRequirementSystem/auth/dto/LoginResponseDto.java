@@ -5,7 +5,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class RegisterResponseDto {
-    private Long id;
+public class LoginResponseDto {
     private String message;
+//    private String token ;
+
 }

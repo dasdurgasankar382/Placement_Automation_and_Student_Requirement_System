@@ -4,9 +4,13 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.user.e
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 
     boolean existsByRole(String roleName);
+
+    Optional<User> findByEmail(String email);
 }

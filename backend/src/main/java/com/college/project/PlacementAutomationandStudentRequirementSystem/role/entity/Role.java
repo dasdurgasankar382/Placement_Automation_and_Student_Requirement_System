@@ -2,6 +2,7 @@ package com.college.project.PlacementAutomationandStudentRequirementSystem.role.
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -9,6 +10,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "roles")
+@Getter
+@Setter
 public class Role {
 
     @Id
@@ -26,4 +29,5 @@ public class Role {
     protected void onCreate(){
         createdAt = LocalDateTime.now();
     }
+
 }
