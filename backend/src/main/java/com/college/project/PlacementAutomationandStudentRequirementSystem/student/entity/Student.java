@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,8 +36,9 @@ public class Student {
     @Column(nullable = false)
     private String phone;
 
-    @ElementCollection
-    private List<String> skills;
+    @CollectionTable(name = "student_skills",
+    joinColumns = @JoinColumn(name = "student_id"))
+    private List<String> skills = new ArrayList<>();
 
     @Column(nullable = false)
     private String resumeUrl;

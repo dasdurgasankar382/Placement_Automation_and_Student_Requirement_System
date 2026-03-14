@@ -10,4 +10,6 @@ public interface StudentService {
     StudentProfileResponseDto updateStudentProfile(StudentProfileUpdateRequestDto studentProfileUpdateRequestDto);
 
     StudentProfileResponseDto deleteStudentProfile();
+
+    Object getProfileId(Long id);
 }

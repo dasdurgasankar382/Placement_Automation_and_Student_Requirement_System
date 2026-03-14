@@ -3,6 +3,7 @@ package com.college.project.PlacementAutomationandStudentRequirementSystem.stude
 
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -12,11 +13,13 @@ import java.util.List;
 @NoArgsConstructor
 public class StudentProfileRequestDto {
 
+    private Long user_id;
     private String name;
     private String branch;
     private Float cgpa;
     private String phone;
-    private List<String> skills;
+    private List<String> skills = new ArrayList<>();
     private String resumeUrl;
     private Integer graduationYear;
+
 }

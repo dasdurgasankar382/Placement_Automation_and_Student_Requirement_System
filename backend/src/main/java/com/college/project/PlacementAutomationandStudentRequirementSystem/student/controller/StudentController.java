@@ -20,8 +20,7 @@ public class StudentController {
     public ResponseEntity<StudentProfileResponseDto> createProfile(@RequestBody StudentProfileRequestDto studentProfileRequestDto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(
-                        studentServiceImpl.createStudentProfile(studentProfileRequestDto));
+                .body(studentServiceImpl.createStudentProfile(studentProfileRequestDto));
     }
 
     @PatchMapping("/update-profile")
@@ -36,6 +35,11 @@ public class StudentController {
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .body(studentServiceImpl.deleteStudentProfile());
+    }
+
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<?> getProfile(@PathVariable Long id){
+        return ResponseEntity.ok(studentServiceImpl.getProfileId(id));
     }
 
 }
