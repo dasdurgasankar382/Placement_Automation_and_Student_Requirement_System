@@ -1,8 +1,9 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.student.service;
 
-import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.StudentProfileRequestDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.StudentProfileResponseDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.StudentProfileUpdateRequestDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.*;
+
+
+import java.util.List;
 
 public interface StudentService {
     StudentProfileResponseDto createStudentProfile(StudentProfileRequestDto studentProfileRequestDto);
@@ -11,5 +12,9 @@ public interface StudentService {
 
     StudentProfileResponseDto deleteStudentProfile();
 
-    Object getProfileId(Long id);
+    StudentProfileDto getProfileEmail(String email);
+
+    StudentProfileAdminResponseDto getProfileById(Long id);
+
+    List<StudentProfileDto> getAllStudents();
 }

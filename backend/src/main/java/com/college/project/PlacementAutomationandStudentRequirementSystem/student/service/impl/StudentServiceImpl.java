@@ -2,9 +2,7 @@ package com.college.project.PlacementAutomationandStudentRequirementSystem.stude
 
 import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ResourceAlreadyExistsException;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ResourceNotFoundException;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.StudentProfileRequestDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.StudentProfileResponseDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.StudentProfileUpdateRequestDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.*;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.entity.Student;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.repository.StudentRepository;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.service.StudentService;
@@ -18,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +33,8 @@ public class StudentServiceImpl implements StudentService {
         // Find user through userid by DTO
         User user = userRepository.findById(studentProfileRequestDto.getUser_id())
                 .orElseThrow(()->new ResourceNotFoundException("User Not exist by id"));
+
+        //User active or not
 
         // Check student profile exists or not
         if(studentRepository.existsByUser(user)) {
@@ -83,7 +84,7 @@ public class StudentServiceImpl implements StudentService {
 
         studentRepository.save(student);
 
-        return new StudentProfileResponseDto("Updated"+student);
+        return new StudentProfileResponseDto("Updated successfully");
     }
 
     @Override
@@ -92,8 +93,32 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentProfileRequestDto getProfileId(Long id) {
-        return modelMapper.map(studentRepository.findById(id), StudentProfileRequestDto.class);
+    public StudentProfileDto getProfileEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Student student = studentRepository.findByUser(user)
+                .orElseThrow(()->new ResourceNotFoundException("Student not register"));
+
+        return modelMapper.map(student, StudentProfileDto.class);
+    }
+
+    @Override
+    public StudentProfileAdminResponseDto getProfileById(Long id) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("User not exists"));
+        StudentProfileAdminResponseDto dto =
+                modelMapper.map(student, StudentProfileAdminResponseDto.class);
+        dto.setEmail(student.getUser().getEmail());
+        return dto;
+    }
+
+    @Override
+    public List<StudentProfileDto> getAllStudents() {
+        List<Student> students = studentRepository.findAll();
+        return students.stream()
+                .map(student->modelMapper.map(student, StudentProfileDto.class))
+                .toList();
     }
 
 

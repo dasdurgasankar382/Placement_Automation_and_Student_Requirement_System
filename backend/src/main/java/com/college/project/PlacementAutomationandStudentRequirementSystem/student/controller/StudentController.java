@@ -1,21 +1,23 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.student.controller;
 
-import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.StudentProfileRequestDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.StudentProfileResponseDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.StudentProfileUpdateRequestDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.*;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.student.entity.Student;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.service.impl.StudentServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/student")
+@RequestMapping("/students")
 @RequiredArgsConstructor
 public class StudentController {
 
     private final StudentServiceImpl studentServiceImpl;
 
+    //access by student
     @PostMapping("/create-profile")
     public ResponseEntity<StudentProfileResponseDto> createProfile(@RequestBody StudentProfileRequestDto studentProfileRequestDto) {
         return ResponseEntity
@@ -23,6 +25,7 @@ public class StudentController {
                 .body(studentServiceImpl.createStudentProfile(studentProfileRequestDto));
     }
 
+    //access by student
     @PatchMapping("/update-profile")
     public ResponseEntity<StudentProfileResponseDto> updateProfile(@RequestBody StudentProfileUpdateRequestDto studentProfileUpdateRequestDto) {
         return ResponseEntity
@@ -30,6 +33,7 @@ public class StudentController {
                 .body(studentServiceImpl.updateStudentProfile(studentProfileUpdateRequestDto));
     }
 
+    //access by student
     @DeleteMapping("/delete-profile")
     public ResponseEntity<StudentProfileResponseDto> deleteProfile() {
         return ResponseEntity
@@ -37,9 +41,25 @@ public class StudentController {
                 .body(studentServiceImpl.deleteStudentProfile());
     }
 
-    @GetMapping("/profile/{id}")
-    public ResponseEntity<?> getProfile(@PathVariable Long id){
-        return ResponseEntity.ok(studentServiceImpl.getProfileId(id));
+    //access by student
+    @GetMapping("/profile/me")
+    public ResponseEntity<?> getProfile(@RequestHeader("email") String email){
+        //after SECURITY ADD here get user email from JWT
+
+        return ResponseEntity.ok(studentServiceImpl.getProfileEmail(email));
     }
 
+    //access by Recruiter and admin see one particular student
+    @GetMapping("/{id}")
+    public ResponseEntity<StudentProfileAdminResponseDto> getStudent(@PathVariable Long id){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(studentServiceImpl.getProfileById(id));
+    }
+
+    //access by ADMIN to see all students
+    @GetMapping
+    public ResponseEntity<List<StudentProfileDto>> getAllStudents(){
+        return ResponseEntity.ok(studentServiceImpl.getAllStudents());
+    }
 }
