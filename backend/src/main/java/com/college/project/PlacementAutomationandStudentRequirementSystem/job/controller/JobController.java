@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -34,11 +35,17 @@ public class JobController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(jobService.deleteJob(id));
     }
-//
-//    @GetMapping
-//    public ResponseEntity<?> getJobs(){}
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<?> getJob(){}
+
+    @GetMapping
+    public ResponseEntity<List<JobResponseDto>> getJobs(){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(jobService.getAllJobs());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<JobResponseDto> getJob(@PathVariable UUID id){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(jobService.getJobById(id));
+    }
 
 }

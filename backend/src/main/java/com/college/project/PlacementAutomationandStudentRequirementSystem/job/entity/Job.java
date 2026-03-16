@@ -5,6 +5,7 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.job.en
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -37,6 +38,7 @@ public class Job {
     private JobStatus jobStatus;
 
     @Column(nullable = false)
+    @CreationTimestamp
     private LocalDate createdAt;
 
     @ManyToOne

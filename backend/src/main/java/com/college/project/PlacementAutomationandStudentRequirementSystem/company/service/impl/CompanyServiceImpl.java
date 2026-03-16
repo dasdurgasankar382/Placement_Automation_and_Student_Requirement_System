@@ -8,6 +8,9 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.compan
 import com.college.project.PlacementAutomationandStudentRequirementSystem.company.service.CompanyService;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ResourceAlreadyExistsException;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ResourceNotFoundException;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.JobResponseDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.util.JobStatus;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.job.repository.JobRepository;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -20,6 +23,7 @@ import java.util.List;
 public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
+    private final JobRepository jobRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -29,7 +33,7 @@ public class CompanyServiceImpl implements CompanyService {
         }
         Company company = modelMapper.map(companyRequestDto, Company.class);
         companyRepository.save(company);
-        return new ApiResponse<>("Success");
+        return new ApiResponse<>("Company created successfully",null);
     }
 
     @Override
@@ -51,7 +55,12 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyJobsResponseDto getCompanyUnderJobs(Long companyId) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(()->new ResourceNotFoundException("Company not found"));
-
-        return modelMapper.map(company, CompanyJobsResponseDto.class);
+        List<JobResponseDto> jobs =
+                jobRepository.findByCompanyIdAndJobStatus(companyId, JobStatus.open);
+        CompanyJobsResponseDto dto = new CompanyJobsResponseDto();
+        dto.setCompanyId(companyId);
+        dto.setCompanyName(company.getName());
+        dto.setJobs(jobs);
+        return dto;
     }
 }
