@@ -1,0 +1,10 @@
+1. gpt discussion for new concept url-https://chatgpt.com/share/69b84676-b500-8011-823a-064a26883b5b
+
+to add
+{
+    GET /jobs → STUDENT, ADMIN
+    here i want 2 things
+    1. show apply/appiled
+    2. show this when user as student and for admin don't show
+    GET /jobs/{id} or for this which will prefer
+}

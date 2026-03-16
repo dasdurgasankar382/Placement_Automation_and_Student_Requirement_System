@@ -4,4 +4,6 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.compan
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
+
+    boolean existsByNameAndWebsite(String name, String website);
 }
