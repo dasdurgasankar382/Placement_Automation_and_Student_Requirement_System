@@ -17,13 +17,6 @@ export const loginFields = [
 
 export const registerFields = [
   {
-    label: "Name",
-    type: "text",
-    name: "name",
-    placeholder: "Enter your name",
-    required: true,
-  },
-  {
     label: "Email",
     type: "email",
     name: "email",
@@ -37,12 +30,30 @@ export const registerFields = [
     placeholder: "Create password",
     required: true,
   },
+  // here for role i want option as input with 2 fields ("STUDENT","RECRUITER")
+
+  {
+    label: "Role",
+    type: "select",
+    name: "role",
+    placeholder: "Enter your role",
+    required: true,
+    options: [
+      { value: "STUDENT", label: "Student" },
+      { value: "RECRUITER", label: "Recruiter" },
+    ],
+  },
 ];
 
+// add button type and text in header and footer config
 export const loginHeaderAndFooterConfig = {
   header: {
     title: "Sign in",
     subtitle: "Sign in below to access your account",
+  },
+  button:{
+    type: "submit",
+    text: "Log in"
   },
   footer: {
     text: "Don’t have an account yet?",
@@ -56,9 +67,48 @@ export const registerHeaderAndFooterConfig = {
     title: "Create Account",
     subtitle: "Fill details to register",
   },
+   button:{
+    type: "submit",
+    text: "Sign up"
+  },
   footer: {
     text: "Already have an account?",
     linkText: "Sign in",
     link: "/login",
   },
+};
+
+export const forgotPasswordFields = [
+  {
+    label: "Email",
+    type: "email",
+    name: "email",
+    placeholder: "Enter your email",
+    required: true,
+  },
+];
+
+export const forgotPasswordHeaderAndFooterConfig = {
+  header: {
+    title: "Reset Password",
+    subtitle: "Enter your email to receive a password reset link",
+  },
+  footer: {
+    text: "Remember your password?",
+    linkText: "Sign in",
+    link: "/login",
+  },
+};
+
+export const getRedirectPathBasedOnRole = (role) => {
+  if (role === "ADMIN") {
+    return "/admin/dashboard";
+  }
+  if (role === "STUDENT") {
+    return "/student/dashboard";
+  }
+  if (role === "RECRUITER") {
+    return "/recruiter/dashboard";
+  }
+  return "/login";
 };

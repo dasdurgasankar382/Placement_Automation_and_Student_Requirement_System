@@ -1,65 +1,107 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.security;
 
-import com.college.project.PlacementAutomationandStudentRequirementSystem.user.repository.UserRepository;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ApiError;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthFilter extends OncePerRequestFilter {
-    private final UserRepository userRepository;
 
     private final CostumeUserDetailsService userDetailsService;
     private final AuthUtil authUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("incoming requests {}", request.getPathInfo());
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-        // separate header from token
-        final String requestTokenHeader = request.getHeader("Authorization");
+        log.info("Incoming request: {}", request.getRequestURI());
 
-        // token is valid or not
-        if (requestTokenHeader == null || !requestTokenHeader.startsWith("Bearer ")) {
-            // if not -->
-            filterChain.doFilter(request, response);        // > push forward into filterChain
+        String path = request.getServletPath();
+
+        // 🔥 SKIP AUTH APIs
+        if (path.startsWith("/auth")) {
+            filterChain.doFilter(request, response);
             return;
         }
-        // split token from header and store in jwtToken
-        String jwtToken = requestTokenHeader.split("Bearer ")[1];
-        try {
-            //get username form jwt token
-            String userName = authUtil.getUserFromToken(jwtToken);
 
-            // check user is valid or not and SecurityContextHolder is empty or not
-            if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        String authHeader = request.getHeader("Authorization");
 
-                //get userdetails from db
-                CostumeUserDetails userDetails = (CostumeUserDetails) userDetailsService.loadUserByUsername(userName);
-
-                if (authUtil.isTokenValid(jwtToken, userDetails)) {
-                    // create UserNameAndPasswordAuthenticationToken
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    // fill security contextHolder with created token
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                }
-            }
-        } catch (Exception e) {
-            log.error("Exception occurred", e);
+        // ✅ If no token → continue
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
-        filterChain.doFilter(request, response);        // > push forward into filterChain
+
+        try {
+            // ✅ Extract token
+            String token = authHeader.substring(7);
+
+            // ✅ Extract data from JWT
+            String username = authUtil.getUserFromToken(token);
+            Long userId = authUtil.extractUserId(token);
+            String role = authUtil.extractRole(token);
+
+            // ✅ Set authentication only if not already set
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                // ✅ Create authorities from role
+                List<GrantedAuthority> authorities =
+                        List.of(new SimpleGrantedAuthority("ROLE_" + role));
+
+                // ✅ Store userId as principal (JWT-based)
+                UsernamePasswordAuthenticationToken auth =
+                        new UsernamePasswordAuthenticationToken(
+                                userId,   // 👈 principal
+                                null,
+                                authorities
+                        );
+
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            }
+        } catch (JwtException e) {
+            throw new BadCredentialsException("Invalid or expired token", e);
+        }
+
+        filterChain.doFilter(request, response);
+
 
     }
+
+// Costume error only for jwt filter
+//    private void sendError(HttpServletResponse response,
+//                           int status,
+//                           String message) throws IOException {
+//
+//        response.setStatus(status);
+//        response.setContentType("application/json");
+//
+//        ApiError error = new ApiError(status, message);
+//
+//        ObjectMapper mapper = new ObjectMapper();
+//        response.getWriter().write(mapper.writeValueAsString(error));
+//    }
 }

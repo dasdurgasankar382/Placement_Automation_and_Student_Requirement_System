@@ -22,6 +22,6 @@ public class CostumeUserDetailsService implements UserDetailsService {
         // Must return UserDetails object or throw UsernameNotFoundException if user not found
         return userRepository.findByEmail(username)
                 .map(CostumeUserDetails::new)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }

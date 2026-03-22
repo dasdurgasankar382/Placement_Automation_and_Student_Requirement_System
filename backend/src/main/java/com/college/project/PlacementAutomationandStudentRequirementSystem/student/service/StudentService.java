@@ -1,20 +1,23 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.student.service;
 
+import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.UpdateStatusRequestDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.*;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
 
 
 import java.util.List;
 
 public interface StudentService {
-    StudentProfileResponseDto createStudentProfile(StudentProfileRequestDto studentProfileRequestDto);
 
-    StudentProfileResponseDto updateStudentProfile(StudentProfileUpdateRequestDto studentProfileUpdateRequestDto);
+    ApiResponse<?> createStudentProfile(StudentProfileRequestDto studentProfileRequestDto);
 
-    StudentProfileResponseDto deleteStudentProfile();
+    ApiResponse<?> updateStudentProfile(StudentProfileUpdateRequestDto studentProfileUpdateRequestDto);
 
-    StudentProfileDto getProfileEmail(String email);
+    ApiResponse<?> deleteStudentProfile();
 
-    StudentProfileAdminResponseDto getProfileById(Long id);
+    ApiResponse<?> getProfileEmail();
 
-    List<StudentProfileDto> getAllStudents();
+    ApiResponse<StudentProfileAdminResponseDto> getProfileById(Long id);
+
+    ApiResponse<List<StudentProfileDto>> getAllStudents();
 }

@@ -1,18 +1,18 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.student.service.impl;
 
-import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ResourceAlreadyExistsException;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.UpdateStatusRequestDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ResourceNotFoundException;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.security.AuthUtil;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.*;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.entity.Student;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.repository.StudentRepository;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.service.StudentService;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.entity.User;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.repository.UserRepository;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,20 +25,23 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final AuthUtil authUtil;
 
     @Override
     @Transactional
-    public StudentProfileResponseDto createStudentProfile(StudentProfileRequestDto studentProfileRequestDto) {
+    public ApiResponse<?> createStudentProfile(StudentProfileRequestDto studentProfileRequestDto) {
+//        get id from token
+        Long id = authUtil.getCurrentUserId();
 
         // Find user through userid by DTO
-        User user = userRepository.findById(studentProfileRequestDto.getUser_id())
+        User user = userRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("User Not exist by id"));
 
         //User active or not
 
         // Check student profile exists or not
         if(studentRepository.existsByUser(user)) {
-                return new StudentProfileResponseDto("User profile already exist");
+                throw new ResourceNotFoundException("User profile already exist");
         }
 
         Student newStudent = modelMapper.map(studentProfileRequestDto,Student.class);
@@ -47,12 +50,12 @@ public class StudentServiceImpl implements StudentService {
         }
         newStudent.setUser(user);
         studentRepository.save(newStudent);
-        return new StudentProfileResponseDto("Successfully created");
+        return new ApiResponse<>("Successfully created",null);
     }
 
     @Override
     @Transactional
-    public StudentProfileResponseDto updateStudentProfile(StudentProfileUpdateRequestDto studentProfileUpdateRequestDto) {
+    public ApiResponse<?> updateStudentProfile(StudentProfileUpdateRequestDto studentProfileUpdateRequestDto) {
 
         User user = userRepository.findById(studentProfileUpdateRequestDto.getUserId())
                 .orElseThrow(()->new ResourceNotFoundException("User not exists"));
@@ -84,41 +87,44 @@ public class StudentServiceImpl implements StudentService {
 
         studentRepository.save(student);
 
-        return new StudentProfileResponseDto("Updated successfully");
+        return new ApiResponse<>("Updated successfully",null);
     }
 
     @Override
-    public StudentProfileResponseDto deleteStudentProfile() {
+    public ApiResponse<?> deleteStudentProfile() {
         return null;
     }
 
     @Override
-    public StudentProfileDto getProfileEmail(String email) {
-        User user = userRepository.findByEmail(email)
+    public ApiResponse<?> getProfileEmail() {
+
+        Long id = authUtil.getCurrentUserId();
+
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Student student = studentRepository.findByUser(user)
                 .orElseThrow(()->new ResourceNotFoundException("Student not register"));
 
-        return modelMapper.map(student, StudentProfileDto.class);
+        return new ApiResponse<>("Success",modelMapper.map(student, StudentProfileDto.class));
     }
 
     @Override
-    public StudentProfileAdminResponseDto getProfileById(Long id) {
+    public ApiResponse<StudentProfileAdminResponseDto> getProfileById(Long id) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("User not exists"));
         StudentProfileAdminResponseDto dto =
                 modelMapper.map(student, StudentProfileAdminResponseDto.class);
         dto.setEmail(student.getUser().getEmail());
-        return dto;
+        return new ApiResponse<StudentProfileAdminResponseDto>("Successfully fetched",dto);
     }
 
     @Override
-    public List<StudentProfileDto> getAllStudents() {
+    public ApiResponse<List<StudentProfileDto>> getAllStudents() {
         List<Student> students = studentRepository.findAll();
-        return students.stream()
+        return new ApiResponse<>("success",students.stream()
                 .map(student->modelMapper.map(student, StudentProfileDto.class))
-                .toList();
+                .toList());
     }
 
 

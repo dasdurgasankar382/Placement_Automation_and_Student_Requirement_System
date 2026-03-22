@@ -61,6 +61,16 @@ CostumeUserDetailsService
       | // Called by Spring Security during authentication process
       | // Returns CostumeUserDetails object containing user information
 
+day-10 (23 march)
+----------------
+jwt token work
+jwt token setup
+jwt token generate
+jwt token validate
+jwt token expiration
+react frontend jwt token setup
+validation
+student module work
 
 
 

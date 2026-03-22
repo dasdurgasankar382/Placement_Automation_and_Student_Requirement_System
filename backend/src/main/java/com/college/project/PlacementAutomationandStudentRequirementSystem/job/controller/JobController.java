@@ -7,6 +7,7 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.util.A
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,32 +19,37 @@ import java.util.UUID;
 public class JobController {
     private final JobServiceImpl jobService;
 
+    @PreAuthorize("hasRole('RECRUITER')")
     @PostMapping("{id}")
-    public ResponseEntity<ApiResponse<?>> createJob(@PathVariable Long id ,@RequestBody JobRequestDto jobRequestDto){
+    public ResponseEntity<ApiResponse<?>> createJob(@PathVariable Long id, @RequestBody JobRequestDto jobRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(jobService.createJob(id,jobRequestDto));
+                .body(jobService.createJob(id, jobRequestDto));
     }
 
+    @PreAuthorize("hasRole('RECRUITER')")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> updateJob(@PathVariable UUID id, @RequestBody JobRequestDto jobRequestDto){
+    public ResponseEntity<ApiResponse<?>> updateJob(@PathVariable UUID id, @RequestBody JobRequestDto jobRequestDto) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(jobService.updateJobProfile(id,jobRequestDto));
+                .body(jobService.updateJobProfile(id, jobRequestDto));
     }
 
+    @PreAuthorize("hasRole('RECRUITER')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> deleteJob(@PathVariable UUID id){
+    public ResponseEntity<ApiResponse<?>> deleteJob(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(jobService.deleteJob(id));
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
-    public ResponseEntity<List<JobResponseDto>> getAllJobs(){
+    public ResponseEntity<List<JobResponseDto>> getAllJobs() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(jobService.getAllJobs());
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
-    public ResponseEntity<JobResponseDto> getJobById(@PathVariable UUID id){
+    public ResponseEntity<JobResponseDto> getJobById(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(jobService.getJobById(id));
     }

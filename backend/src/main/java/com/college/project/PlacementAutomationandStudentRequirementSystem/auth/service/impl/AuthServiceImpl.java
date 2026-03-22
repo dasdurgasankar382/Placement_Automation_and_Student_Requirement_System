@@ -44,7 +44,8 @@ public class AuthServiceImpl implements AuthService {
             throw new ResourceAlreadyExistsException("Admin registration is not allowed");
         }
 
-        Role role = roleRepository.findByRoleName(registerRequestDto.getRole())
+        String userRole = authUtil.getCurrentUserRole();
+        Role role = roleRepository.findByRoleName(userRole)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
 
         if (userRepository.existsByEmail(registerRequestDto.getEmail())) {

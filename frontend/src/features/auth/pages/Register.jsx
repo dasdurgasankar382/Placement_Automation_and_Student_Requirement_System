@@ -9,16 +9,55 @@ import { Input } from "../../../components/ui/Input";
 import { Button } from "../../../components/ui/Button";
 import { FormFooter } from "../../../components/ui/FormFooter";
 
-import {
-  registerFields,
-  registerHeaderAndFooterConfig,
-} from "../../../config/forms/authFileds";
+import { registerFields, registerHeaderAndFooterConfig } from "../../../config/forms/authFileds";
 import { toast } from "react-toastify";
 import { registerUser } from "../services/authService";
-const Register = () => {
-  const { header, footer } = registerHeaderAndFooterConfig;
+import { useNavigate } from "react-router-dom";
 
-  const handleRegister = () => {};
+
+const Register = () => {
+  const { header, button, footer } = registerHeaderAndFooterConfig;
+  const navigate = useNavigate();
+  const [form, setForm] = React.useState({
+    email: "",
+    password: "",
+    role: "STUDENT", // default role
+  });
+  const [loading, setLoading] = React.useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prevForm) => ({
+      ...prevForm,
+      [name]: value
+    }));
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    if (loading) return; // prevent multiple clicks
+    setLoading(true);
+    try {
+      console.log("Registering user with data:", form);
+      const res = await registerUser(form);
+      toast.success("Registration successful! Please log in.");
+
+      if(res.data.success){
+        navigate("/login");
+      }
+    } catch (err){
+      console.error(err);
+      toast.error("Registration failed. Please try again.");
+      if (err.response.status === 409) {
+        toast.error("Email already exists.");
+      }else if(err.response.status === 401){
+        toast.error("Unauthorized");
+      }
+    } finally {
+      setLoading(false);
+    }
+
+  };
 
   return (
     <Form onSubmit={handleRegister}>
@@ -28,11 +67,13 @@ const Register = () => {
           <Input 
           label={field.label}
           key={field.name}
-          {...field} />
+          {...field} 
+          value={form[field.name] || ""}
+          onChange={handleChange}/>
           
         ))}
 
-        <Button type="submit" text={"Sign up"} />
+        <Button type={button.type} text={button.text} />
         <FormFooter
           linkPath={footer.link}
           text={footer.text}

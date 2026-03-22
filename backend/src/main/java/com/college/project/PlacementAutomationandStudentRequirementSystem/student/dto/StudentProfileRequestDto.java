@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class StudentProfileRequestDto {
 
-    private Long user_id;
     private String name;
     private String branch;
     private Float cgpa;
