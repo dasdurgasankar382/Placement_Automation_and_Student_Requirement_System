@@ -2,7 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const api = axios.create({
-  baseURL: "http://localhost:8080/placement-automation/api",
+  baseURL: "https://placement-automation-and-student.onrender.com/placement-automation/api",
 });
 
 // attatch token automatically
