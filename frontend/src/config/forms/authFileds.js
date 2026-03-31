@@ -51,7 +51,7 @@ export const loginHeaderAndFooterConfig = {
     title: "Sign in",
     subtitle: "Sign in below to access your account",
   },
-  button:{
+  button: {
     type: "submit",
     text: "Log in"
   },
@@ -67,7 +67,7 @@ export const registerHeaderAndFooterConfig = {
     title: "Create Account",
     subtitle: "Fill details to register",
   },
-   button:{
+  button: {
     type: "submit",
     text: "Sign up"
   },
@@ -99,6 +99,33 @@ export const forgotPasswordHeaderAndFooterConfig = {
     link: "/login",
   },
 };
+export const verifyCodeFields = [
+  {
+    label: "Verification Code",
+    type: "password",
+    name: "code",
+    placeholder: "Enter verification code",
+    required: true,
+  },
+];
+
+export const resetPasswordFields = [
+  {
+    label: "New Password",
+    type: "password",
+    name: "newPassword",
+    placeholder: "Enter new password",
+    required: true,
+  },
+  {
+    label: "Confirm Password",
+    type: "password",
+    name: "confirmPassword",
+    placeholder: "Confirm new password",
+    required: true,
+  },
+];
+
 
 export const getRedirectPathBasedOnRole = (role) => {
   if (role === "ADMIN") {

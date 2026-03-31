@@ -1,0 +1,74 @@
+# 🌟 Placement Automation & Student Requirement System - Project Overview 🌟
+
+This document provides a **deep architectural overview** and **workflow explanation** of the frontend application. It has been formatted with highlights to easily navigate the core modules and system flows.
+
+---
+
+## 🚀 1. Technology Stack
+The frontend is built using a modern, highly performant stack:
+- **Core Framework:** React 19 + Vite (Fast compilation and modern React features)
+- **Routing:** React Router DOM v7 (Declarative routing)
+- **Styling:** Tailwind CSS v4 + `clsx` + `tailwind-merge` (Utility-first, responsive, and maintainable styles)
+- **API Communication:** Axios (Configured with global interceptors)
+- **Icons & UI:** `lucide-react`, `react-toastify` (For feedback and visual aesthetics)
+
+---
+
+## 🛤️ 2. Core Application Flow
+The application follows a strictly defined, **Role-Based Access Control (RBAC)** navigation flow:
+
+### 🔄 The Entry Point (`AppRoutes.jsx`)
+1. **Initial Load:** The user lands on `/`. The `RootRedirect` component determines their state.
+2. **Authentication Check:** If there is no valid `localStorage` token, the user is redirected to `/login`.
+3. **Role-Based Redirection:** If the user is logged in, their role (embedded in the token) redirects them to the appropriate dashboard (`/student/dashboard`, `/company/dashboard`, or `/admin/dashboard`).
+
+### 🛡️ Secure Routing Guard
+The `ProtectedRoute` wrapper is used for all internal pages. It checks two things:
+1. Is the user authenticated? (Is there a token?)
+2. Does their role match the `allowedRoles` array for that route?
+*If either fails, the user is kicked back to login or an unauthorized page.*
+
+---
+
+## 📦 3. System Modules & Their Use Cases
+
+The architecture uses a **Feature-Based Folder Structure**. Instead of grouping by file type (e.g., all pages together), files are grouped by the **feature they belong to**. This makes the project significantly easier to scale and maintain.
+
+### 🔐 A. Authentication Module (`src/features/auth`)
+**Use Case:** Handles user entry and identity verification.
+- **`Login.jsx`**: Validates credentials against the backend and stores the JWT token.
+- **`Register.jsx`**: Captures initial user data for signups.
+- **`ForgotPassword.jsx`**: Manages step-by-step password recovery (Email verification -> Code input -> New password).
+
+### 🎓 B. Student Module (`src/features/student`)
+**Use Case:** The primary workspace for job seekers.
+- **`Dashboard.jsx`**: A bird's-eye view of active applications and matching jobs.
+- **`Profile.jsx`**: Where students update their resumes, skillsets, and academic details.
+- **`Jobs.jsx`**: A searchable feed of open placements.
+- **`Applications.jsx`**: Tracks the status of applied jobs (e.g., Pending, Interview, Accepted).
+- **`StudentLayout.jsx`**: Provides a persistent sidebar and header across all student views.
+
+### 🏢 C. Recruiter/Company Module (`src/features/recruiter`)
+**Use Case:** Tools for employers to source and manage talent.
+- **`Dashboard.jsx`**: Metrics for the employer (total posted jobs, total applicants, etc.).
+- **`CompanyProfile.jsx`**: Organization branding and details.
+- **`CreateJob.jsx`**: Form for publishing new placement opportunities to students.
+- **`JobsList.jsx`**: Management table for editing or closing active job postings.
+- **`Applicants.jsx`**: Pipeline for reviewing student resumes and accepting/rejecting candidates.
+
+### 🌐 D. Core Services (`src/services`)
+**Use Case:** Centralized logic for backend communication.
+- **`api.js`**: A globally configured Axios instance. 
+  - **Request Interceptor**: Automatically attaches the `Bearer Token` to every outgoing request.
+  - **Response Interceptor**: Listens for `401 Unauthorized` responses. If a session expires, it automatically clears storage and forces the user back to the login page with a toast notification.
+
+### 🧩 E. Shared UI Components (`src/components`)
+**Use Case:** A unified design system.
+- Reusable elements like `<Button />`, Inputs, Layouts, and Modals live here to ensure visual consistency across Auth, Student, and Recruiter modules without code duplication.
+
+---
+
+## 💡 4. Why This Architecture? (Best Practices Highlight)
+- **Scalability:** By keeping modules modular (`auth`, `student`, `recruiter`), taking down or upgrading one piece does not break the whole system.
+- **Security:** Global API interceptors guarantee that secure requests are never accidentally sent without headers, and expired tokens are immediately purged.
+- **Developer Experience:** Tailwind CSS combined with standard React component patterns allow for very rapid UI iteration while keeping the codebase "dry" (Don't Repeat Yourself).

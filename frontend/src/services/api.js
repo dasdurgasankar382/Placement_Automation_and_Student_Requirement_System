@@ -2,7 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const api = axios.create({
-  baseURL: "https://placement-automation-and-student.onrender.com/placement-automation/api",
+  baseURL: "http://localhost:8080/placement-automation/api",
 });
 
 // attatch token automatically
@@ -25,10 +25,7 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    const url = error.config?.url || "";
-    const isAuthRoute = url.includes("/auth/login") || url.includes("/auth/register");
-
-    if (error.response?.status === 401 && !isAuthRoute) {
+    if (error.response && error.response.status === 401) {
       localStorage.removeItem("token");
       toast.error("Session expired. Please log in again.");
       setTimeout(() => {
