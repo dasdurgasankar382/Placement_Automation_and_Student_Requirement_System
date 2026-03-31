@@ -22,6 +22,12 @@ public class AuthController {
 
     private final AuthServiceImpl authServiceimpl;
 
+    // Keep Backend Alive (Free, 5 min) Add a /health endpoint in Spring Boot:
+   @RequestMapping(value = "/health", method = {RequestMethod.GET, RequestMethod.HEAD})
+public ResponseEntity<String> health() {
+    return ResponseEntity.ok("UP");
+}
+
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<?>> register(@RequestBody @Valid RegisterRequestDto registerRequestDto){
         return ResponseEntity

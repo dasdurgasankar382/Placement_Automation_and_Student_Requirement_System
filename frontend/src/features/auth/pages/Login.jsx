@@ -59,7 +59,7 @@ export default function LoginPage() {
       }
 
     } catch (err) {
-      setLoading(false);
+      
       console.log(err);
       if (!err.response) {
         // 🔥 Backend not reachable
