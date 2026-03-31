@@ -1,12 +1,60 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { dashboardStatsConfig, mockApplications } from "../../../config/student/studentConfig";
 import StatCard from "../components/dashboard/StatCard";
 import RecentApplications from "../components/dashboard/RecentApplications";
 import ProfileStrength from "../components/dashboard/ProfileStrength";
+import { getTotalApplications, getInterviewsScheduled, getOffersReceived } from "../services/studentService";
 
 const Dashboard = () => {
+  const [totalApplications, setTotalApplications] = useState(0);
+  const [interviewsScheduled, setInterviewsScheduled] = useState(0);
+  const [offersReceived, setOffersReceived] = useState(0);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const { data } = await getTotalApplications();
+        if (data?.data !== undefined) setTotalApplications(data.data);
+      } catch (err) {
+        console.error("Error fetching total applications:", err);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const { data } = await getInterviewsScheduled();
+        if (data?.data !== undefined) setInterviewsScheduled(data.data);
+      } catch (err) {
+        console.error("Error fetching interviews scheduled:", err);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const { data } = await getOffersReceived();
+        if (data?.data !== undefined) setOffersReceived(data.data);
+      } catch (err) {
+        console.error("Error fetching offers received:", err);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  const getDynamicValue = (id) => {
+    if (id === "total_apps") return totalApplications;
+    if (id === "interviews") return interviewsScheduled;
+    if (id === "offers") return offersReceived;
+    return 0;
+  };
+
   return (
     <div className="space-y-8">
       
@@ -27,7 +75,7 @@ const Dashboard = () => {
       {/* Structured Stats Grid mapping over config using micro-component */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {dashboardStatsConfig.map((stat) => (
-          <StatCard key={stat.id} {...stat} />
+          <StatCard key={stat.id} {...stat} value={getDynamicValue(stat.id)} />
         ))}
       </div>
 

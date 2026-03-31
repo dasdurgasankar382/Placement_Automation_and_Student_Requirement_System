@@ -3,17 +3,25 @@ import LoginPage from "../features/auth/pages/Login";
 import RegisterPage from "../features/auth/pages/Register";
 import RootRedirect from "../components/common/RootRedirect";
 import ProtectedRoute from "../components/common/ProtectedRoute";
-
-import StudentLayout from "../features/student/layouts/StudentLayout";
-import Dashboard from "../features/student/pages/Dashboard";
-import Profile from "../features/student/pages/Profile";
-import Jobs from "../features/student/pages/Jobs";
-import Applications from "../features/student/pages/Applications";
 import ForgotPassword from "../features/auth/pages/ForgotPassword";
 
-// dummy pages
-const AdminDashboard = () => <h1>Admin Dashboard</h1>;
-const CompanyDashboard = () => <h1>Company Dashboard</h1>;
+// Student
+import StudentLayout from "../features/student/layouts/StudentLayout";
+import StudentDashboard from "../features/student/pages/Dashboard";
+import StudentProfile from "../features/student/pages/Profile";
+import StudentJobs from "../features/student/pages/Jobs";
+import StudentApplications from "../features/student/pages/Applications";
+
+// Recruiter
+import RecruiterLayout from "../features/recruiter/layouts/RecruiterLayout";
+const RecruiterDashboard = () => <h1>Recruiter Dashboard</h1>;
+
+// Admin
+import AdminLayout from "../features/admin/layouts/AdminLayout";
+import AdminDashboard from "../features/admin/pages/Dashboard";
+import AdminUsers from "../features/admin/pages/Users";
+import AdminJobs from "../features/admin/pages/Jobs";
+import AdminCompanies from "../features/admin/pages/Companies";
 
 function AppRoutes() {
   return (
@@ -24,15 +32,21 @@ function AppRoutes() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
 
-      {/* Protected */}
+      {/* Admin Routes */}
       <Route
-        path="/admin/dashboard"
+        path="/admin"
         element={
           <ProtectedRoute allowedRoles={["ADMIN"]}>
-            <AdminDashboard />
+            <AdminLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<AdminDashboard />} />
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="users" element={<AdminUsers />} />
+        <Route path="jobs" element={<AdminJobs />} />
+        <Route path="companies" element={<AdminCompanies />} />
+      </Route>
 
       {/* Student Routes */}
       <Route
@@ -43,21 +57,26 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Dashboard />} />
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="profile" element={<Profile />} />
-        <Route path="jobs" element={<Jobs />} />
-        <Route path="applications" element={<Applications />} />
+        <Route index element={<StudentDashboard />} />
+        <Route path="dashboard" element={<StudentDashboard />} />
+        <Route path="profile" element={<StudentProfile />} />
+        <Route path="jobs" element={<StudentJobs />} />
+        <Route path="applications" element={<StudentApplications />} />
       </Route>
 
+      {/* Recruiter Routes */}
       <Route
-        path="/company/dashboard"
+        path="/recruiter"
         element={
-          <ProtectedRoute allowedRoles={["COMPANY"]}>
-            <CompanyDashboard />
+          <ProtectedRoute allowedRoles={["RECRUITER"]}>
+            <RecruiterLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<RecruiterDashboard />} />
+        <Route path="dashboard" element={<RecruiterDashboard />} />
+      </Route>
+
     </Routes>
   );
 }

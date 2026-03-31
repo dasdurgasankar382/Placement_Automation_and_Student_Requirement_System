@@ -22,32 +22,53 @@ public class ApplicationController {
 
     private final ApplicationServiceImpl applicationService;
 
-@PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasRole('STUDENT')")
     @PostMapping    //STUDENT
     public ResponseEntity<ApiResponse<?>> applyJobApplication(@RequestBody ApplicationRequestDto applicationRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(applicationService.createApplication(applicationRequestDto));
     }
 
-@PreAuthorize("hasRole('RECRUITER')")
+    @PreAuthorize("hasRole('RECRUITER')")
     @PutMapping("/{id}/status") //RECRUITER
     public ResponseEntity<ApiResponse<?>> updateStatus(@PathVariable UUID id, @RequestBody UpdateStatusRequestDto updateStatusRequestDto) {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(applicationService.updateApplicationStatus(id, updateStatusRequestDto));
     }
 
-@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping     //ADMIN
     public ResponseEntity<ApiResponse<List<ApplicationSummaryDto>>> getAllApplications() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(applicationService.getAllApplications());
     }
-@PreAuthorize("hasRole('STUDENT')")
-        @DeleteMapping("/{id}")
-        public ResponseEntity<ApiResponse<?>> withdrawApplication(@PathVariable UUID id){
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(applicationService.widhdrawApplication(id));
-        }
 
+    @PreAuthorize("hasRole('STUDENT')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<?>> withdrawApplication(@PathVariable UUID id) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(applicationService.widhdrawApplication(id));
+    }
+
+    @PreAuthorize("hasRole('STUDENT')")
+    @GetMapping("/total-applications")
+    public ResponseEntity<ApiResponse<Integer>> getTotalApplications(){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(applicationService.getTotalApplications());
+    }
+
+    @PreAuthorize("hasRole('STUDENT')")
+    @GetMapping("/interviews-scheduled")
+    public ResponseEntity<ApiResponse<Integer>> getInterviewsScheduled(){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(applicationService.getTotalInterviewsScheduled());
+    }
+
+    @PreAuthorize("hasRole('STUDENT')")
+    @GetMapping("/offers-received")
+    public ResponseEntity<ApiResponse<Integer>> getOffersReceived(){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(applicationService.getTotalOffersReceived());
+    }
 
 }

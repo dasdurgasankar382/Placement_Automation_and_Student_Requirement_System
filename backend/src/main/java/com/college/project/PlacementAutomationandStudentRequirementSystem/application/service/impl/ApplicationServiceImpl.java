@@ -11,6 +11,7 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.except
 import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ResourceNotFoundException;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.Job;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.repository.JobRepository;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.security.AuthUtil;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.entity.User;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.repository.UserRepository;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
@@ -31,6 +32,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final JobRepository jobRepository;
+    private final AuthUtil authUtil;
 
     //copy from gpt
     private static final Map<ApplicationStatus, List<ApplicationStatus>> allowedTransitions = Map.of(
@@ -65,15 +67,15 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public ApiResponse<?> updateApplicationStatus(UUID id, UpdateStatusRequestDto updateStatusRequestDto) {
         Application application = applicationRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("Application not exists"));
-        validateStatusTransition(application,updateStatusRequestDto.getApplicationStatus());
-        
+                .orElseThrow(() -> new ResourceNotFoundException("Application not exists"));
+        validateStatusTransition(application, updateStatusRequestDto.getApplicationStatus());
+
         application.setStatus(updateStatusRequestDto.getApplicationStatus());
-        
+
         applicationRepository.save(application);
-       
-        return new ApiResponse<>("Updated successfully",Map.of("status",application.getStatus(),
-                "allowedStatus",getAllowedStatus(application.getStatus())));
+
+        return new ApiResponse<>("Updated successfully", Map.of("status", application.getStatus(),
+                "allowedStatus", getAllowedStatus(application.getStatus())));
     }
 
     @Override
@@ -97,18 +99,45 @@ public class ApplicationServiceImpl implements ApplicationService {
         return new ApiResponse<>("Application fetch successfully", dtoList);
     }
 
+    @Override
+    public ApiResponse<Integer> getTotalApplications() {
+        Long currentUserId = authUtil.getCurrentUserId();
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
+        int totalApplications = applicationRepository.countByStudent(currentUser);
+        return new ApiResponse<>("Total applications fetched successfully", totalApplications);
+    }
 
+    @Override
+    public ApiResponse<Integer> getTotalInterviewsScheduled() {
+        Long currentUserId = authUtil.getCurrentUserId();
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
+        int interviewsScheduled = applicationRepository.countByStudentAndStatus(currentUser, ApplicationStatus.SHORTLISTED);
+        return new ApiResponse<>("Interviews scheduled fetched successfully", interviewsScheduled);
+    }
+
+    @Override
+    public ApiResponse<Integer> getTotalOffersReceived() {
+        Long currentUserId = authUtil.getCurrentUserId();
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
+        int offersReceived = applicationRepository.countByStudentAndStatus(currentUser, ApplicationStatus.SELECTED);
+        return new ApiResponse<>("Offers received fetched successfully", offersReceived);
+    }
 
 
     //  HELPER METHODS
-
     private List<ApplicationStatus> getAllowedStatus(ApplicationStatus status) {
-        return allowedTransitions.getOrDefault(status,List.of());
-
+        return allowedTransitions.getOrDefault(status, List.of());
 //        if (role == Role.Student)
     }
 
     // 🔥 validation method copy from gpt
+
     private void validateStatusTransition(Application app, ApplicationStatus newStatus) {
 
         ApplicationStatus current = app.getStatus();
@@ -119,8 +148,4 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new ResourceAlreadyExistsException("Invalid status transition");
         }
     }
-
-
-
-
 }

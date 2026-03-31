@@ -16,4 +16,10 @@ public interface ApplicationService {
     ApiResponse<?> updateApplicationStatus(UUID id, UpdateStatusRequestDto updateStatusRequestDto);
 
     ApiResponse<?> widhdrawApplication(UUID id);
+
+    ApiResponse<Integer> getTotalApplications();
+
+    ApiResponse<Integer> getTotalInterviewsScheduled();
+
+    ApiResponse<Integer> getTotalOffersReceived();
 }

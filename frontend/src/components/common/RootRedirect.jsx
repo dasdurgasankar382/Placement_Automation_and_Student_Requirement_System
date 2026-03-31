@@ -14,8 +14,8 @@ function RootRedirect() {
     return <Navigate to="/admin/dashboard" />;
   } else if (user?.role === "STUDENT") {
     return <Navigate to="/student/dashboard" />;
-  } else if (user?.role === "COMPANY") {
-    return <Navigate to="/company/dashboard" />;
+  } else if (user?.role === "RECRUITER") {
+    return <Navigate to="/recruiter/dashboard" />;
   }
 
   return <Navigate to="/login" />;
