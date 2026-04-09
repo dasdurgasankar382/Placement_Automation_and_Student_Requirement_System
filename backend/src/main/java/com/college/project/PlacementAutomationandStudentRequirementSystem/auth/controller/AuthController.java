@@ -19,6 +19,12 @@ public class AuthController {
 
     private final AuthServiceImpl authServiceimpl;
 
+// Keep Backend Alive (Free tier - Render sleeps)
+@RequestMapping(value = "/health", method = {RequestMethod.GET, RequestMethod.HEAD})
+public ResponseEntity<String> health() {
+    return ResponseEntity.ok("UP");
+}
+
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<?>> register(@RequestBody @Valid RegisterRequestDto registerRequestDto){
         return ResponseEntity
