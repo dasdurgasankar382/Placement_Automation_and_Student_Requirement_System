@@ -1,11 +1,11 @@
 export function FormFooter({ text, linkText, linkPath }) {
 
   return (
-    <p className="text-center text-sm text-gray-500 mt-4">
+    <p className="text-center text-sm text-gray-500 mt-4 dark:text-gray-400">
       {text}{" "}
       <a
         href={linkPath}
-        className="font-semibold text-gray-600 hover:underline focus:text-gray-800 focus:outline-none"
+        className="font-semibold text-gray-600 hover:underline focus:text-gray-800 focus:outline-none dark:text-gray-300"
       >
         {linkText}
       </a>
