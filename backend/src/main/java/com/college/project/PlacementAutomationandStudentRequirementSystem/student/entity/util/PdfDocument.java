@@ -23,7 +23,8 @@ public class PdfDocument {
     private UUID id;
     @Column(nullable = false)
     private String name;
-    @Column(columnDefinition = "LONGBLOB",nullable = false)
+    @Lob
+    @Column(nullable = false)
     private byte[] data;
 
     @CreationTimestamp
