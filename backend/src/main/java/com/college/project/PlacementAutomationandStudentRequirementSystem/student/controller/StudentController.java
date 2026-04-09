@@ -5,13 +5,16 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.studen
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.entity.Student;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.service.impl.StudentServiceImpl;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/students")
@@ -22,8 +25,8 @@ public class StudentController {
 
     @PreAuthorize("hasRole('STUDENT')")
     //access by student
-    @PostMapping("/create-profile")
-    public ResponseEntity<ApiResponse<?>> createProfile(@RequestBody StudentProfileRequestDto studentProfileRequestDto) {
+    @PostMapping(value = "/create-profile" ,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<?>> createProfile(@Valid @ModelAttribute StudentProfileRequestDto studentProfileRequestDto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(studentServiceImpl.createStudentProfile(studentProfileRequestDto));
@@ -59,7 +62,7 @@ public class StudentController {
     @PreAuthorize("hasAnyRole('RECRUITER', 'ADMIN')")
     //access by Recruiter and admin see one particular student
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<StudentProfileAdminResponseDto>> getStudent(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<StudentProfileAdminResponseDto>> getStudent(@PathVariable UUID id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(studentServiceImpl.getProfileById(id));

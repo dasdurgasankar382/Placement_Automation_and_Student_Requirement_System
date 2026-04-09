@@ -1,7 +1,8 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.application.controller;
 
-import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.ApplicationRequestDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.ApplicationSummaryDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.MyApplicationDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.StudentDashboardDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.UpdateStatusRequestDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.application.service.impl.ApplicationServiceImpl;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
@@ -22,53 +23,43 @@ public class ApplicationController {
 
     private final ApplicationServiceImpl applicationService;
 
-    @PreAuthorize("hasRole('STUDENT')")
-    @PostMapping    //STUDENT
-    public ResponseEntity<ApiResponse<?>> applyJobApplication(@RequestBody ApplicationRequestDto applicationRequestDto) {
+@PreAuthorize("hasRole('STUDENT')")
+    @PostMapping("/{jobId}")    //STUDENT
+    public ResponseEntity<ApiResponse<?>> applyJobApplication(@PathVariable UUID jobId) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(applicationService.createApplication(applicationRequestDto));
+                .body(applicationService.createApplication(jobId));
     }
 
-    @PreAuthorize("hasRole('RECRUITER')")
+@PreAuthorize("hasRole('RECRUITER')")
     @PutMapping("/{id}/status") //RECRUITER
     public ResponseEntity<ApiResponse<?>> updateStatus(@PathVariable UUID id, @RequestBody UpdateStatusRequestDto updateStatusRequestDto) {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(applicationService.updateApplicationStatus(id, updateStatusRequestDto));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN')")
     @GetMapping     //ADMIN
     public ResponseEntity<ApiResponse<List<ApplicationSummaryDto>>> getAllApplications() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(applicationService.getAllApplications());
     }
+@PreAuthorize("hasRole('STUDENT')")
+        @DeleteMapping("/{id}")
+        public ResponseEntity<ApiResponse<?>> withdrawApplication(@PathVariable UUID id){
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(applicationService.widhdrawApplication(id));
+        }
 
     @PreAuthorize("hasRole('STUDENT')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> withdrawApplication(@PathVariable UUID id) {
+    @GetMapping("/student-dashboard")
+    public ResponseEntity<ApiResponse<StudentDashboardDto>> getTotalApplications() {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(applicationService.widhdrawApplication(id));
+                .body(applicationService.getStudentDashboard());
     }
-
     @PreAuthorize("hasRole('STUDENT')")
-    @GetMapping("/total-applications")
-    public ResponseEntity<ApiResponse<Integer>> getTotalApplications(){
+    @GetMapping("/my-applications")
+    public ResponseEntity<ApiResponse<List<MyApplicationDto>>> getMyApplications() {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(applicationService.getTotalApplications());
+                .body(applicationService.getMyApplications());
     }
-
-    @PreAuthorize("hasRole('STUDENT')")
-    @GetMapping("/interviews-scheduled")
-    public ResponseEntity<ApiResponse<Integer>> getInterviewsScheduled(){
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(applicationService.getTotalInterviewsScheduled());
-    }
-
-    @PreAuthorize("hasRole('STUDENT')")
-    @GetMapping("/offers-received")
-    public ResponseEntity<ApiResponse<Integer>> getOffersReceived(){
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(applicationService.getTotalOffersReceived());
-    }
-
 }

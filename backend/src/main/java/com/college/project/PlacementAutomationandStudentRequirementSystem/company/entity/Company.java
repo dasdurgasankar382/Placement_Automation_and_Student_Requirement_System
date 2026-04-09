@@ -1,6 +1,7 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.company.entity;
 
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.Job;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @AllArgsConstructor
@@ -19,8 +21,8 @@ import java.util.List;
 public class Company {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false)
     private String name;
@@ -37,6 +39,10 @@ public class Company {
     @Column(nullable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @OneToOne
+    @JoinColumn(name = "user_id",nullable = false)
+    private User user;
 
     @OneToMany(mappedBy = "company", orphanRemoval = true)
     //orphanRemoval true because when company removed also all jobs wll be

@@ -1,24 +1,37 @@
 export function Button({
+  children,
   text,
   type = "submit",
   disabled,
-  // onClick,
-  // variant = "primary",
-  // loading = false,
-  // className = "",
+  onClick,
+  variant = "default",
+  className = "",
+  ...props
 }) {
+  let baseStyle = "flex justify-center items-center transition-all focus:outline-none ";
+  
+  if (variant === "primary") {
+    baseStyle += "px-5 py-2.5 rounded-xl font-medium bg-blue-600 text-white hover:bg-blue-700 shadow-md ";
+  } else if (variant === "ghost") {
+    baseStyle += "px-5 py-2.5 rounded-xl font-medium bg-transparent text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 ";
+  } else {
+    // Fallback exactly to the old login-style fallback explicitly
+    baseStyle += "w-full my-6 rounded-md bg-black px-3 py-4 text-white hover:bg-gray-800 font-normal ";
+  }
+  
+  if (disabled) {
+    baseStyle += "opacity-50 cursor-not-allowed ";
+  }
+
   return (
-    <div className="my-6">
-      <button
-        type={type}
-        className={`w-full rounded-md bg-black px-3 py-4 text-white focus:bg-gray-600 focus:outline-none
-          ${
-          disabled ? "bg-gray-400 cursor-progress " : "bg-black cursor-pointer"
-        }`}
-        disabled={disabled}
-      >
-        {text}
-      </button>
-    </div>
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={`${baseStyle} ${className}`}
+      {...props}
+    >
+      {text || children}
+    </button>
   );
 }

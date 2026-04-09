@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 @Component
 public class AuthUtil {
@@ -30,13 +31,8 @@ public class AuthUtil {
     public String generateAccessToken(CostumeUserDetails costumeUserDetails) {
         return Jwts.builder()
                 .subject(costumeUserDetails.getUsername())
-//                .claim("userId",costumeUserDetails.getUserId().toString())  // for single key-value pair
-                .claims(
-                        Map.of(
-                                "userId",costumeUserDetails.getUserId(),
-                                "role",costumeUserDetails.getRole()
-                        )
-                )
+                .claim("userId", costumeUserDetails.getUserId())
+                .claim("role", costumeUserDetails.getRole())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtTokenDuration))
                 .signWith(getSecretKey())
@@ -68,14 +64,14 @@ public class AuthUtil {
     }
 
     // Extract user ID from the current authentication (Used for Module service)
-    public Long getCurrentUserId() {
+    public UUID getCurrentUserId() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal() == null) {
             throw new RuntimeException("User not authenticated");
         }
 
         Object principal = authentication.getPrincipal();
-        if (!(principal instanceof Long userId)) {
+        if (!(principal instanceof UUID userId)) {
             throw new RuntimeException("Invalid user authentication");
         }
 
@@ -106,8 +102,9 @@ public class AuthUtil {
                 .getPayload();
     }
 
-    public Long extractUserId(String token) {
-        return extractAllClaims(token).get("userId", Long.class);
+    public UUID extractUserId(String token) {
+        String userIdStr = extractAllClaims(token).get("userId", String.class);
+        return userIdStr != null ? UUID.fromString(userIdStr) : null;
     }
 
     public String extractRole(String token) {

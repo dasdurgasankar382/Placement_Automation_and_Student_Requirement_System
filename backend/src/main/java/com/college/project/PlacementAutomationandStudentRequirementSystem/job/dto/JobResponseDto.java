@@ -2,6 +2,7 @@ package com.college.project.PlacementAutomationandStudentRequirementSystem.job.d
 
 import com.college.project.PlacementAutomationandStudentRequirementSystem.company.dto.CompanyResponseDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.company.entity.Company;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.util.JobStatus;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -20,5 +21,6 @@ public class JobResponseDto {
     private List<String> skills;
     private String description;
     private LocalDate deadline;
+    private JobStatus jobStatus;
 
 }

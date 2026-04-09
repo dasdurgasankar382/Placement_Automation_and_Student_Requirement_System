@@ -7,6 +7,7 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.compan
 import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface CompanyService {;
 
@@ -14,7 +15,7 @@ public interface CompanyService {;
 
     ApiResponse<?> addCompany(CompanyRequestDto companyRequestDto);
 
-    CompanyResponseDto getCompanyById(Long id);
+    CompanyResponseDto getCompanyById(UUID id);
 
-    CompanyJobsResponseDto getCompanyUnderJobs(Long companyId);
+    CompanyJobsResponseDto getCompanyUnderJobs(UUID companyId);
 }

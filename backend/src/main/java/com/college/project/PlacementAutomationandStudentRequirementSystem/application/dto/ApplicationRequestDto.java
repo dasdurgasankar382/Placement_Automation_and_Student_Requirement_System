@@ -11,5 +11,5 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ApplicationRequestDto {
     private UUID jobId;
-    private Long studentId;
+    private UUID studentId;
 }

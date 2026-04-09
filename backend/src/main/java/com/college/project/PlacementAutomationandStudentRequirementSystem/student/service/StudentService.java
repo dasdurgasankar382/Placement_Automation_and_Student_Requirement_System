@@ -6,6 +6,7 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.util.A
 
 
 import java.util.List;
+import java.util.UUID;
 
 public interface StudentService {
 
@@ -17,7 +18,7 @@ public interface StudentService {
 
     ApiResponse<?> getProfileEmail();
 
-    ApiResponse<StudentProfileAdminResponseDto> getProfileById(Long id);
+    ApiResponse<StudentProfileAdminResponseDto> getProfileById(UUID id);
 
     ApiResponse<List<StudentProfileDto>> getAllStudents();
 }

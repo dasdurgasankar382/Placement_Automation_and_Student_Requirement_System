@@ -1,7 +1,8 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.application.service;
 
-import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.ApplicationRequestDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.ApplicationSummaryDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.MyApplicationDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.StudentDashboardDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.UpdateStatusRequestDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
 
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ApplicationService {
-    ApiResponse<?> createApplication(ApplicationRequestDto applicationRequestDto);
+    ApiResponse<?> createApplication(UUID jobId);
 
     ApiResponse<List<ApplicationSummaryDto>> getAllApplications();
 
@@ -17,9 +18,7 @@ public interface ApplicationService {
 
     ApiResponse<?> widhdrawApplication(UUID id);
 
-    ApiResponse<Integer> getTotalApplications();
+    ApiResponse<StudentDashboardDto> getStudentDashboard();
 
-    ApiResponse<Integer> getTotalInterviewsScheduled();
-
-    ApiResponse<Integer> getTotalOffersReceived();
+    ApiResponse<List<MyApplicationDto>> getMyApplications();
 }

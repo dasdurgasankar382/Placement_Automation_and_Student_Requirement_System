@@ -1,9 +1,6 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.auth.service.impl;
 
-import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.ForgotPasswordRequestDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.LoginRequestDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.LoginResponseDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.RegisterRequestDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.*;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.service.AuthService;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.InvalidCredentialsException;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ResourceAlreadyExistsException;
@@ -67,6 +64,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ApiResponse<LoginResponseDto> loginUser(LoginRequestDto loginRequestDto) {
 
+       if( !userRepository.existsByEmail(loginRequestDto.getEmail())){
+           throw new ResourceNotFoundException("email not registered");
+       }
+
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(
@@ -103,4 +104,15 @@ public class AuthServiceImpl implements AuthService {
 
         return null;
     }
+//    public String setRole(RoleRepodto dto){
+//Role role = roleRepository.findByRoleName(dto.getRole())
+//        .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
+//User user = new User();
+//user.setEmail(dto.getEmail());
+//user.setRole(role);
+//user.setPassword(passwordEncoder.encode(dto.getPassword()));
+//        userRepository.save(user);
+//
+//        return "role set";
+//    }
 }

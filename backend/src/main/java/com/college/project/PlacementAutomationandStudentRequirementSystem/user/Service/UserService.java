@@ -4,11 +4,12 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.user.d
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.dto.UserResponseDtoById;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface UserService {
     List<UserResponseDtoById> getAllUsers();
 
-    UserResponseDto getUserById(Long id);
+    UserResponseDto getUserById(UUID id);
 
-    String disableUser(Long id);
+    String disableUser(UUID id);
 }

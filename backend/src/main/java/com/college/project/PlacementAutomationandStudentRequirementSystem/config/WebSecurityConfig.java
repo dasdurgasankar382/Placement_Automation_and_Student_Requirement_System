@@ -34,7 +34,7 @@ public class WebSecurityConfig {
                 // Configure endpoint authorization
                 .authorizeHttpRequests(auth -> auth
                         // Public auth endpoints (login, register)
-                        .requestMatchers("/auth/**", "/error" ).permitAll()
+                        .requestMatchers("/auth/**","/admin/**").permitAll()
                         .requestMatchers("/student/**").hasAllRoles("STUDENT")
                         .requestMatchers("/company/**").hasAllRoles("RECRUITER", "STUDENT", "ADMIN")
                         .requestMatchers("/users/**").hasAllRoles("ADMIN")

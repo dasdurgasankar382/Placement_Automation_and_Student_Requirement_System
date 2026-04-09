@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/companies")
@@ -36,14 +37,14 @@ private final CompanyServiceImpl companyService;
 
 @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}") //ALL
-    public ResponseEntity<CompanyResponseDto> getCompany(@PathVariable Long id){
+    public ResponseEntity<CompanyResponseDto> getCompany(@PathVariable UUID id){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(companyService.getCompanyById(id));
     }
 
 @PreAuthorize("isAuthenticated()")
     @GetMapping("/{companyId}/jobs") //ALL
-    public ResponseEntity<CompanyJobsResponseDto> getCompanyJobs(@PathVariable Long companyId){
+    public ResponseEntity<CompanyJobsResponseDto> getCompanyJobs(@PathVariable UUID companyId){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(companyService.getCompanyUnderJobs(companyId));
     }

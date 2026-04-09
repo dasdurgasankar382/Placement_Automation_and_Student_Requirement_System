@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Trash2 } from "lucide-react";
+import { Trash2, Eye } from "lucide-react";
 import { toast } from "react-toastify";
 import { getAllJobsForAdmin, deleteJobForAdmin } from "../services/adminService";
 import DataTable from "../../../components/ui/DataTable";
+import { useNavigate } from "react-router-dom";
 
 const Jobs = () => {
+  const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -65,15 +67,24 @@ const Jobs = () => {
     { 
       header: "Actions", 
       headerClassName: "text-right",
-      cellClassName: "text-right",
+      cellClassName: "text-right space-x-3",
       render: (row) => (
-        <button 
-          onClick={() => handleDelete(row.id)}
-          className="text-slate-400 hover:text-red-500 transition-colors"
-          title="Delete Job"
-        >
-          <Trash2 className="h-5 w-5" />
-        </button>
+        <>
+          <button 
+            onClick={() => navigate(`/admin/jobs/${row.id}`)}
+            className="text-slate-400 hover:text-blue-500 transition-colors"
+            title="View Details"
+          >
+            <Eye className="h-5 w-5" />
+          </button>
+          <button 
+            onClick={() => handleDelete(row.id)}
+            className="text-slate-400 hover:text-red-500 transition-colors"
+            title="Delete Job"
+          >
+            <Trash2 className="h-5 w-5" />
+          </button>
+        </>
       )
     }
   ];

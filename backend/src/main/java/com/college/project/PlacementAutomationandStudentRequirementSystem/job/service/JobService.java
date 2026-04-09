@@ -9,13 +9,15 @@ import java.util.UUID;
 
 public interface JobService {
     //temp id
-    ApiResponse<?> createJob(Long id, JobRequestDto jobRequestDto);
+    ApiResponse<?> createJob(JobRequestDto jobRequestDto);
 
     ApiResponse<?> updateJobProfile(UUID id, JobRequestDto jobRequestDto);
 
-    ApiResponse<?> deleteJob(UUID id);
+    ApiResponse<?> changeJobStatus(UUID id);
 
     List<JobResponseDto> getAllJobs();
 
     JobResponseDto getJobById(UUID id);
+
+    ApiResponse<List<JobResponseDto>> getAllJobsByCompany();
 }

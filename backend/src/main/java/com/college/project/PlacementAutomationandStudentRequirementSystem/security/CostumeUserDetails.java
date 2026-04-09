@@ -10,14 +10,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class CostumeUserDetails implements UserDetails {
 
     private final User user;
 
-    public Long getUserId() {
-        return user.getId() != null ? user.getId() : null;
+    public UUID getUserId() {
+        return user.getId();
     }
 
     public String getRole() {

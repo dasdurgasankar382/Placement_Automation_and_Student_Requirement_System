@@ -1,1 +1,26 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-bg-dark: #1a202c;
+  --color-bg-light: #f8fafc;
+  --color-bg-light-component: #ffffff;
+  --color-bg-dark-component: #1e293b;
+  --color-bg-light-primary-text: #0f172a;
+  --color-bg-light-secondary-text: #64748b;
+  --color-bg-dark-primary-text: #f8fafc;
+  --color-bg-dark-secondary-text: #94a3b8;
+  --color-brand-purple: #6366f1;
+  --color-brand-purple-hover: #4f46e5;
+  --color-brand-highlight: #ec4899;
+}
+
+@layer base {
+  body {
+    @apply bg-bg-light text-bg-light-primary-text transition-colors duration-300;
+  }
+  .dark body {
+    @apply bg-bg-dark text-bg-dark-primary-text;
+  }
+}

@@ -1,8 +1,6 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.application.service.impl;
 
-import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.ApplicationRequestDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.ApplicationSummaryDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.UpdateStatusRequestDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.*;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.application.entity.Application;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.application.entity.util.ApplicationStatus;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.application.repository.ApplicationRepository;
@@ -18,6 +16,7 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.util.A
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,13 +41,14 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     @Transactional
-    public ApiResponse<?> createApplication(ApplicationRequestDto applicationRequestDto) {
+    public ApiResponse<?> createApplication(UUID jobId) {
 
-        // 1. get logged-in user{STUDENT}  (get student from dto for now)
-        User student = userRepository.findById(applicationRequestDto.getStudentId())
+        // 1. get logged-in user{STUDENT}
+        UUID currentUserId = authUtil.getCurrentUserId();
+        User student = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not exists"));
         // 2. get job
-        Job job = jobRepository.findById(applicationRequestDto.getJobId())
+        Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new ResourceNotFoundException("Job not exists"));
         // 3. duplicate apply
         boolean exists = applicationRepository.existsByStudentAndJob(student, job);
@@ -84,6 +84,30 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    public ApiResponse<StudentDashboardDto> getStudentDashboard() {
+
+        UUID currentUserId = authUtil.getCurrentUserId();
+
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not exist"));
+
+        StudentDashboardDto dashboard = applicationRepository.getDashboardStats(currentUser);
+
+        return new ApiResponse<>("Dashboard fetched", dashboard);
+    }
+
+    @Override
+    public ApiResponse<List<MyApplicationDto>> getMyApplications() {
+        UUID currentUserId = authUtil.getCurrentUserId();
+        if (currentUserId == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        List<MyApplicationDto> dtoList = applicationRepository.findByUserId(currentUserId);
+
+        return new ApiResponse<>("Applications fetched successfully", dtoList);
+    }
+
+    @Override
     public ApiResponse<List<ApplicationSummaryDto>> getAllApplications() {
         List<Application> applications = applicationRepository.findAll();
         List<ApplicationSummaryDto> dtoList = applications.stream()
@@ -99,45 +123,16 @@ public class ApplicationServiceImpl implements ApplicationService {
         return new ApiResponse<>("Application fetch successfully", dtoList);
     }
 
-    @Override
-    public ApiResponse<Integer> getTotalApplications() {
-        Long currentUserId = authUtil.getCurrentUserId();
-        User currentUser = userRepository.findById(currentUserId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
-        int totalApplications = applicationRepository.countByStudent(currentUser);
-        return new ApiResponse<>("Total applications fetched successfully", totalApplications);
-    }
-
-    @Override
-    public ApiResponse<Integer> getTotalInterviewsScheduled() {
-        Long currentUserId = authUtil.getCurrentUserId();
-        User currentUser = userRepository.findById(currentUserId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
-        int interviewsScheduled = applicationRepository.countByStudentAndStatus(currentUser, ApplicationStatus.SHORTLISTED);
-        return new ApiResponse<>("Interviews scheduled fetched successfully", interviewsScheduled);
-    }
-
-    @Override
-    public ApiResponse<Integer> getTotalOffersReceived() {
-        Long currentUserId = authUtil.getCurrentUserId();
-        User currentUser = userRepository.findById(currentUserId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
-        int offersReceived = applicationRepository.countByStudentAndStatus(currentUser, ApplicationStatus.SELECTED);
-        return new ApiResponse<>("Offers received fetched successfully", offersReceived);
-    }
-
 
     //  HELPER METHODS
+
     private List<ApplicationStatus> getAllowedStatus(ApplicationStatus status) {
         return allowedTransitions.getOrDefault(status, List.of());
+
 //        if (role == Role.Student)
     }
 
     // 🔥 validation method copy from gpt
-
     private void validateStatusTransition(Application app, ApplicationStatus newStatus) {
 
         ApplicationStatus current = app.getStatus();
@@ -148,4 +143,6 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new ResourceAlreadyExistsException("Invalid status transition");
         }
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.student.entity;
 
+import com.college.project.PlacementAutomationandStudentRequirementSystem.student.entity.util.PdfDocument;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -21,8 +23,8 @@ import java.util.List;
 public class Student {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false)
     private String name;
@@ -40,8 +42,9 @@ public class Student {
     joinColumns = @JoinColumn(name = "student_id"))
     private List<String> skills = new ArrayList<>();
 
-    @Column(nullable = false)
-    private String resumeUrl;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "resume_id", nullable = false, referencedColumnName = "id")
+    private PdfDocument resume;
 
     @Column(nullable = false)
     private Integer graduationYear;

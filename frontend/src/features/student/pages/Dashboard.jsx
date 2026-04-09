@@ -5,7 +5,7 @@ import { dashboardStatsConfig, mockApplications } from "../../../config/student/
 import StatCard from "../components/dashboard/StatCard";
 import RecentApplications from "../components/dashboard/RecentApplications";
 import ProfileStrength from "../components/dashboard/ProfileStrength";
-import { getTotalApplications, getInterviewsScheduled, getOffersReceived } from "../services/studentService";
+import { getStudentDashboardStats } from "../services/studentService";
 
 const Dashboard = () => {
   const [totalApplications, setTotalApplications] = useState(0);
@@ -15,34 +15,15 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const { data } = await getTotalApplications();
-        if (data?.data !== undefined) setTotalApplications(data.data);
+        const { data } = await getStudentDashboardStats();
+        // The backend should return an object containing the three stats
+        if (data?.data) {
+          setTotalApplications(data.data.totalApplications || data.data.totalApps || 0);
+          setInterviewsScheduled(data.data.interviewsScheduled || data.data.interviews || 0);
+          setOffersReceived(data.data.offersReceived || data.data.offers || 0);
+        }
       } catch (err) {
-        console.error("Error fetching total applications:", err);
-      }
-    };
-    fetchStats();
-  }, []);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const { data } = await getInterviewsScheduled();
-        if (data?.data !== undefined) setInterviewsScheduled(data.data);
-      } catch (err) {
-        console.error("Error fetching interviews scheduled:", err);
-      }
-    };
-    fetchStats();
-  }, []);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const { data } = await getOffersReceived();
-        if (data?.data !== undefined) setOffersReceived(data.data);
-      } catch (err) {
-        console.error("Error fetching offers received:", err);
+        console.error("Error fetching dashboard stats:", err);
       }
     };
     fetchStats();

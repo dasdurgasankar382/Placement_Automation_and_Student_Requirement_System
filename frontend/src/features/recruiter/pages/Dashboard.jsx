@@ -1,58 +1,102 @@
 import React from "react";
-import { ArrowRight, Briefcase } from "lucide-react";
-import { Link } from "react-router-dom";
-import { dashboardStatsConfig, mockJobs } from "../../../config/recruiter/recruiterConfig";
-import StatCard from "../../../components/ui/StatCard";
-import JobCard from "../../../components/ui/JobCard";
+import HeroBanner from "../../../components/ui/HeroBanner";
+import CircularStatCard from "../../../components/ui/CircularStatCard";
+import DataTable from "../../../components/ui/DataTable";
+import CalendarWidget from "../../../components/ui/CalendarWidget";
+import ActionListWidget from "../../../components/ui/ActionListWidget";
+
+const mockTableData = [
+  { id: 1, name: "John Doe", profession: "UI Designer", status: "Tech interview", color: "blue-500" },
+  { id: 2, name: "Ella Clintion", profession: "Content designer", status: "Task", color: "red-400" },
+  { id: 3, name: "Mike Tyler", profession: "Node.js Developer", status: "Resume review", color: "emerald-400" },
+  { id: 4, name: "Marie Arch", profession: "Node.js Developer", status: "Task", color: "red-400" },
+  { id: 5, name: "Sandra Huffman", profession: "UX Designer", status: "Final interview", color: "yellow-400" },
+];
+
+const mockApplicantsData = [
+  { name: "Lewis S. Cunningham", subtitle: "Applied for iOS Developer", avatarUrl: "" },
+  { name: "Danny Nelson", subtitle: "Applied for Node.js Developer", avatarUrl: "" },
+  { name: "Jennifer Patterson", subtitle: "Applied for Marketing Manager", avatarUrl: "" },
+  { name: "Timothy Watson", subtitle: "Applied for iOS Developer", avatarUrl: "" },
+  { name: "Kimberly Rutledge", subtitle: "Applied for Junior UX Designer", avatarUrl: "" },
+];
 
 const Dashboard = () => {
+  const tableColumns = [
+    { header: "Full name", accessor: "name", cellClassName: "font-semibold text-slate-800 dark:text-slate-100" },
+    { header: "Profession", accessor: "profession" },
+    { 
+      header: "Status", 
+      render: (row) => (
+        <div className="flex items-center gap-2">
+          <span className={`h-2 w-2 rounded-full bg-${row.color}`}></span>
+          <span className="font-medium text-slate-700 dark:text-slate-300">{row.status}</span>
+        </div>
+      )
+    },
+    {
+      header: "",
+      render: () => <button className="text-slate-400 hover:text-brand-purple">⋮</button>,
+      cellClassName: "text-right"
+    }
+  ];
+
   return (
-    <div className="space-y-8">
+    <div className="max-w-[1400px] mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Recruiter Overview</h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-1">Manage your job postings and applicants globally.</p>
-        </div>
-        <Link 
-          to="/recruiter/jobs/create" 
-          className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-emerald-500/30 flex items-center gap-2 transition-all hover:pr-4"
-        >
-          Post a Job <ArrowRight className="h-4 w-4" />
-        </Link>
-      </div>
+      {/* 1. Hero Banner */}
+      <HeroBanner 
+        title="Hello Katie!" 
+        subtitle="You have 16 new applications. It is a lot of work for today! So let's start 🥳."
+        buttonText="review it!"
+        buttonLink="/recruiter/applicants"
+        illustration={
+          <svg className="w-80 h-80 opacity-90" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* Simple abstract illustration mimicking the reference graphic */}
+            <circle cx="200" cy="150" r="100" fill="white" fillOpacity="0.1"/>
+            <rect x="180" y="100" width="120" height="80" rx="8" fill="white" fillOpacity="0.8"/>
+            <path d="M190 120h40M190 140h80M190 160h60" stroke="#6366f1" strokeWidth="4" strokeLinecap="round"/>
+          </svg>
+        }
+      />
 
-      {/* Structured Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {dashboardStatsConfig.map((stat) => (
-          <StatCard key={stat.id} {...stat} />
-        ))}
-      </div>
+      <div className="flex flex-col xl:flex-row gap-8">
+        {/* Left Column (Stats & Table) */}
+        <div className="flex-1 space-y-8">
+          
+          {/* Stats Title Block */}
+          <div className="flex justify-between items-center">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">You need to hire</h3>
+            <a href="#" className="font-semibold text-slate-500 hover:text-brand-purple text-sm underline underline-offset-4 decoration-2">see all</a>
+          </div>
 
-      {/* Recent Jobs Section */}
-      <div className="mt-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Briefcase className="h-5 w-5 text-emerald-500" /> Recent Job Postings
-          </h2>
-          <Link to="/recruiter/jobs" className="text-emerald-600 hover:text-emerald-700 text-sm font-medium">
-            View All Jobs &rarr;
-          </Link>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <CircularStatCard count={3} title="Content Designers" subtitle="(5 candidates)" percentage={75} strokeColor="text-blue-500" />
+            <CircularStatCard count={9} title="Node.js Developers" subtitle="(12 candidates)" percentage={25} strokeColor="text-red-400" />
+            <CircularStatCard count={1} title="Senior UI Designer" subtitle="(0 candidates)" percentage={0} strokeColor="text-slate-200" />
+            <div className="md:hidden lg:block">
+              <CircularStatCard count={2} title="Marketing Managers" subtitle="(10 candidates)" percentage={45} strokeColor="text-brand-purple" />
+            </div>
+          </div>
+
+          <DataTable 
+            title="Recruitment progress" 
+            actionLabel="See all" 
+            columns={tableColumns} 
+            data={mockTableData} 
+          />
         </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {mockJobs.map(job => (
-            <JobCard 
-              key={job.id} 
-              job={job} 
-              actionText="View Applicants" 
-              onAction={() => alert(`Viewing applicants for ${job.title}`)} 
-            />
-          ))}
+
+        {/* Right Column (Calendar & Applicants) */}
+        <div className="xl:w-[400px] flex flex-col gap-8">
+          <CalendarWidget />
+          <ActionListWidget 
+            title="New Applicants" 
+            actionLinkText="see all" 
+            items={mockApplicantsData} 
+          />
         </div>
       </div>
-
     </div>
   );
 };

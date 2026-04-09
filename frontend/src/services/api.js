@@ -25,15 +25,17 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem("token");
-      toast.error("Session expired. Please log in again.");
+    const url = error.config?.url || "";
+    const isAuthRoute =
+      url.includes("/auth/login") || url.includes("/auth/register");
+
+    if (error.response?.status === 401 && !isAuthRoute) {
       setTimeout(() => {
         window.location.href = "/login";
       }, 1500);
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

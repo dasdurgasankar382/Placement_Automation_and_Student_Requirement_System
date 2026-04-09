@@ -1,9 +1,11 @@
+import React from "react";
 import { Routes, Route } from "react-router-dom";
 import LoginPage from "../features/auth/pages/Login";
 import RegisterPage from "../features/auth/pages/Register";
 import RootRedirect from "../components/common/RootRedirect";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import ForgotPassword from "../features/auth/pages/ForgotPassword";
+import JobDetails from "../components/common/JobDetails";
 
 // Student
 import StudentLayout from "../features/student/layouts/StudentLayout";
@@ -14,8 +16,12 @@ import StudentApplications from "../features/student/pages/Applications";
 
 // Recruiter
 import RecruiterLayout from "../features/recruiter/layouts/RecruiterLayout";
-const RecruiterDashboard = () => <h1>Recruiter Dashboard</h1>;
-
+import RecruiterDashboard from "../features/recruiter/pages/Dashboard";
+import RecruiterCompanyProfile from "../features/recruiter/pages/CompanyProfile";
+import RecruiterJobsList from "../features/recruiter/pages/JobsList";
+import RecruiterCreateJob from "../features/recruiter/pages/CreateJob";
+import RecruiterEditJob from "../features/recruiter/pages/EditJob";
+import RecruiterApplicants from "../features/recruiter/pages/Applicants";
 // Admin
 import AdminLayout from "../features/admin/layouts/AdminLayout";
 import AdminDashboard from "../features/admin/pages/Dashboard";
@@ -45,6 +51,7 @@ function AppRoutes() {
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="users" element={<AdminUsers />} />
         <Route path="jobs" element={<AdminJobs />} />
+        <Route path="jobs/:id" element={<JobDetails role="ADMIN" />} />
         <Route path="companies" element={<AdminCompanies />} />
       </Route>
 
@@ -61,6 +68,7 @@ function AppRoutes() {
         <Route path="dashboard" element={<StudentDashboard />} />
         <Route path="profile" element={<StudentProfile />} />
         <Route path="jobs" element={<StudentJobs />} />
+        <Route path="jobs/:id" element={<JobDetails role="STUDENT" />} />
         <Route path="applications" element={<StudentApplications />} />
       </Route>
 
@@ -75,6 +83,11 @@ function AppRoutes() {
       >
         <Route index element={<RecruiterDashboard />} />
         <Route path="dashboard" element={<RecruiterDashboard />} />
+        <Route path="company" element={<RecruiterCompanyProfile />} />
+        <Route path="jobs" element={<RecruiterJobsList />} />
+        <Route path="jobs/create" element={<RecruiterCreateJob />} />
+        <Route path="jobs/edit/:id" element={<RecruiterEditJob />} />
+        <Route path="applicants" element={<RecruiterApplicants />} />
       </Route>
 
     </Routes>

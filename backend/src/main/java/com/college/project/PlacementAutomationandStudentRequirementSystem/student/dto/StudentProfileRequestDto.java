@@ -1,7 +1,9 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto;
 
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +15,19 @@ import java.util.List;
 @NoArgsConstructor
 public class StudentProfileRequestDto {
 
+    @NotNull
     private String name;
+    @NotNull
     private String branch;
+    @NotNull
     private Float cgpa;
+    @NotNull
     private String phone;
+    @NotNull
     private List<String> skills = new ArrayList<>();
-    private String resumeUrl;
+    @NotNull
+    private MultipartFile resumeFile;
+    @NotNull
     private Integer graduationYear;
 
 }

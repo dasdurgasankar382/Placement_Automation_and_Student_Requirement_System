@@ -26,6 +26,10 @@ export const updateJob = (id, data) => {
   return api.put(`/jobs/${id}`, data);
 };
 
+export const closeJob = (id) => {
+  return api.put(`/jobs/close-job/${id}`);
+};
+
 export const deleteJob = (id) => {
   return api.delete(`/jobs/${id}`);
 };
@@ -39,8 +43,12 @@ export const getJobById = (id) => {
 };
 
 export const getRecruiterJobs = () => {
-  return api.get("/recruiter/jobs");
+  return api.get("/jobs/company-jobs");
 };
+
+// ==========================================
+// PENDING / LATER IMPLEMENTATION APIs
+// ==========================================
 
 // Applications
 export const getJobApplications = (jobId) => {

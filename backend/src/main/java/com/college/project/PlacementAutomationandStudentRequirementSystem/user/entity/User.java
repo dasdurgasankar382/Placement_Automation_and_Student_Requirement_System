@@ -1,5 +1,6 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.user.entity;
 
+import com.college.project.PlacementAutomationandStudentRequirementSystem.company.entity.Company;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.role.entity.Role;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.entity.Student;
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -19,8 +21,8 @@ import java.time.LocalDateTime;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -45,4 +47,8 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Student student;
+
+    @OneToOne(mappedBy = "user", orphanRemoval = true)
+    private Company company;
+
 }

@@ -4,6 +4,7 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.job.dt
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -12,7 +13,7 @@ import java.util.List;
 @Setter
 public class CompanyJobsResponseDto {
 
-    private Long companyId;
+    private UUID companyId;
     private String companyName;
     private List<JobResponseDto> jobs; //comes from job dto
 

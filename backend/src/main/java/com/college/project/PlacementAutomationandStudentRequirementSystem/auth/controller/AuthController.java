@@ -1,9 +1,6 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.auth.controller;
 
-import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.ForgotPasswordRequestDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.LoginRequestDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.LoginResponseDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.RegisterRequestDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.*;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.service.impl.AuthServiceImpl;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
 import jakarta.validation.Valid;
@@ -21,12 +18,6 @@ import java.util.List;
 public class AuthController {
 
     private final AuthServiceImpl authServiceimpl;
-
-    // Keep Backend Alive (Free, 5 min) Add a /health endpoint in Spring Boot:
-   @RequestMapping(value = "/health", method = {RequestMethod.GET, RequestMethod.HEAD})
-public ResponseEntity<String> health() {
-    return ResponseEntity.ok("UP");
-}
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<?>> register(@RequestBody @Valid RegisterRequestDto registerRequestDto){
@@ -51,5 +42,10 @@ public ResponseEntity<String> health() {
     public ResponseEntity<ApiResponse<?>> forgotPassword(@RequestBody @Valid ForgotPasswordRequestDto forgotPasswordRequestDto){
         return ResponseEntity.status(HttpStatus.OK).body(authServiceimpl.forgotPassword(forgotPasswordRequestDto));
     }
+
+//    @PostMapping("/set-role")
+//    public ResponseEntity<String> setRole(@RequestBody RoleRepodto roleRepodto){
+//        return ResponseEntity.status(HttpStatus.OK).body(authServiceimpl.setRole(roleRepodto));
+//    }
 
 }

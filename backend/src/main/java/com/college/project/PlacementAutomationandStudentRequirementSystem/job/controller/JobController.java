@@ -20,10 +20,10 @@ public class JobController {
     private final JobServiceImpl jobService;
 
     @PreAuthorize("hasRole('RECRUITER')")
-    @PostMapping("{id}")
-    public ResponseEntity<ApiResponse<?>> createJob(@PathVariable Long id, @RequestBody JobRequestDto jobRequestDto) {
+    @PostMapping
+    public ResponseEntity<ApiResponse<?>> createJob(@RequestBody JobRequestDto jobRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(jobService.createJob(id, jobRequestDto));
+                .body(jobService.createJob(jobRequestDto));
     }
 
     @PreAuthorize("hasRole('RECRUITER')")
@@ -34,10 +34,10 @@ public class JobController {
     }
 
     @PreAuthorize("hasRole('RECRUITER')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> deleteJob(@PathVariable UUID id) {
+    @PutMapping("/close-job/{id}")
+    public ResponseEntity<ApiResponse<?>> changeJobStatus(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(jobService.deleteJob(id));
+                .body(jobService.changeJobStatus(id));
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -45,6 +45,13 @@ public class JobController {
     public ResponseEntity<List<JobResponseDto>> getAllJobs() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(jobService.getAllJobs());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/company-jobs")
+    public ResponseEntity<ApiResponse<List<JobResponseDto>>> getAllJobsByCompany() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(jobService.getAllJobsByCompany());
     }
 
     @PreAuthorize("isAuthenticated()")

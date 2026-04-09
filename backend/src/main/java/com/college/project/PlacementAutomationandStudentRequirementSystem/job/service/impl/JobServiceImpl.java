@@ -10,6 +10,9 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.job.en
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.util.JobStatus;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.repository.JobRepository;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.service.JobService;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.security.AuthUtil;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.user.entity.User;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.user.repository.UserRepository;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -24,20 +27,30 @@ public class JobServiceImpl implements JobService {
 
     private final JobRepository jobRepository;
     private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
+    private final AuthUtil authUtil;
 
     @Override
-    public ApiResponse<?> createJob(Long id, JobRequestDto jobRequestDto) {
+    public ApiResponse<?> createJob(JobRequestDto jobRequestDto) {
+
+        // get recruiter id from token and fetch company id
+        UUID id = authUtil.getCurrentUserId();
+
+        System.out.println(id);
+        // get recruiter
+        User recruiter = userRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Recruiter not found"));
+        // get company
+        Company company =recruiter.getCompany();
+        if(company == null) {
+            throw  new ResourceNotFoundException("Company not found");
+        }
         //check if same job exists or not
         if (jobRepository.existsByRoleAndDeadline(jobRequestDto.getRole(),jobRequestDto.getDeadline())){
             throw  new ResourceAlreadyExistsException("Same job already registered for the role "+
                     jobRequestDto.getRole()+" with the same deadline "+jobRequestDto.getDeadline());
         }
-
-        // get company
-        Company company =companyRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("Company not found"));
-
 
         Job job = modelMapper.map(jobRequestDto, Job.class);
         job.setJobStatus(JobStatus.open); // mark as job open user can apply
@@ -56,7 +69,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public ApiResponse<?> deleteJob(UUID id) {
+    public ApiResponse<?> changeJobStatus(UUID id) {
         Job job = jobRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Job not found"));
         if(job.getJobStatus()==JobStatus.closed){
@@ -71,6 +84,18 @@ public class JobServiceImpl implements JobService {
     public List<JobResponseDto> getAllJobs() {
         List<Job> jobs = jobRepository.findAllByJobStatus(JobStatus.open);
         return jobs.stream().map(job->modelMapper.map(job, JobResponseDto.class)).toList();
+    }
+
+    @Override
+    public ApiResponse<List<JobResponseDto>> getAllJobsByCompany() {
+        // show list of jobs under a company
+        UUID userId = authUtil.getCurrentUserId();   // get user id
+        User user = userRepository.findById(userId)
+                .orElseThrow(()->new ResourceNotFoundException("User not found"));
+        // get company id
+        UUID companyId = user.getCompany().getId();
+        List<JobResponseDto> responseDtoList = jobRepository.findAllByCompanyId(companyId);
+        return new ApiResponse<>("Jobs fetched successfully", responseDtoList);
     }
 
     @Override

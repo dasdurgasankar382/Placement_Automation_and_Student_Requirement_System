@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto getUserById(Long id) {
+    public UserResponseDto getUserById(UUID id) {
         User user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User not found " + id));
 
         UserResponseDto dto = modelMapper.map(user, UserResponseDto.class);
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String disableUser(Long id) {
+    public String disableUser(UUID id) {
         User user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User not found"));
         System.out.println(user.isActive());
         if(!user.isActive()){
