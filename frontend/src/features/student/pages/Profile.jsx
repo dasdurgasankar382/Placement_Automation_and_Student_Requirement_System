@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import ProfileAvatar from "../components/profile/ProfileAvatar";
 import ProfileForm from "../components/profile/ProfileForm";
 import { getStudentProfile, createStudentProfile, downloadResume } from "../services/studentService";
