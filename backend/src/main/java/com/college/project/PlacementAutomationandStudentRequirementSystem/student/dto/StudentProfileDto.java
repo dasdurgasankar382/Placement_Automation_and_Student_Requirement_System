@@ -16,6 +16,6 @@ public class StudentProfileDto {
     private Float cgpa;
     private String phone;
     private List<String> skills = new ArrayList<>();
-    private String resumeUrl;
+    private String fileName;
     private Integer graduationYear;
 }

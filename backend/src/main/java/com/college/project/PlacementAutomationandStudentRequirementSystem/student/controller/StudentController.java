@@ -59,6 +59,13 @@ public class StudentController {
         return ResponseEntity.ok(studentServiceImpl.getProfileEmail());
     }
 
+    @PreAuthorize("hasRole('STUDENT')")
+    //access by student
+    @GetMapping("/profile/me/resume")
+    public ResponseEntity<ApiResponse<?>> getResume() {
+        return ResponseEntity.ok(studentServiceImpl.getResume());
+    }
+
     @PreAuthorize("hasAnyRole('RECRUITER', 'ADMIN')")
     //access by Recruiter and admin see one particular student
     @GetMapping("/{id}")

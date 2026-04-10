@@ -13,7 +13,6 @@ import java.util.UUID;
 @Getter
 @Setter
 public class StudentProfileUpdateRequestDto {
-    private UUID userId;
     private String name;
     private String branch;
     private Float cgpa;

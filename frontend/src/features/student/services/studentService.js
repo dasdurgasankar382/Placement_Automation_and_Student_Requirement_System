@@ -1,15 +1,19 @@
 import api from "../../../services/api";
 
 export const getStudentProfile = () => {
-  return api.get("/students/me");
+  return api.get("/students/profile/me");
 };
 
 export const createStudentProfile = (data) => {
-  return api.post("/students/profile", data);
+  return api.post("/students/create-profile", data, {
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  });
 };
 
-export const updateStudentProfile = (data) => {
-  return api.put("/students/profile", data);
+export const downloadResume = () => {
+  return api.get("/students/profile/me/resume");
 };
 
 export const getStudentById = (id) => {

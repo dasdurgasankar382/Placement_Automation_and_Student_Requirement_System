@@ -27,6 +27,9 @@ public class PdfDocument {
     @Column(nullable = false)
     private byte[] data;
 
+    @Column(nullable = false)
+    private String fileType;
+
     @CreationTimestamp
     private LocalDateTime uploadAt;
 

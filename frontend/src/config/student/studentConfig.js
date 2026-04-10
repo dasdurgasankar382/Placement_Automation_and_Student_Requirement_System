@@ -20,11 +20,10 @@ export const studentNavigationLinks = [
 
 export const profileFieldsConfig = [
   { name: "name", label: "Full Name", type: "text", icon: User },
-  { name: "email", label: "Email Address", type: "email", icon: Mail },
+  { name: "branch", label: "Branch / Major", type: "text", icon: Award },
+  { name: "cgpa", label: "CGPA", type: "number", step: "0.01", icon: Award },
+  { name: "graduationYear", label: "Graduation Year", type: "number", icon: BookOpen },
   { name: "phone", label: "Phone Number", type: "text", icon: Phone },
-  { name: "university", label: "University", type: "text", icon: BookOpen },
-  { name: "major", label: "Major / Degree", type: "text", icon: Award },
-  { name: "gpa", label: "GPA", type: "text", icon: Award },
 ];
 
 export const mockJobs = [

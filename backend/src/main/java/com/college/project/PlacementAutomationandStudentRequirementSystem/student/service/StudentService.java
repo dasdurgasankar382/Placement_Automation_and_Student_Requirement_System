@@ -18,6 +18,8 @@ public interface StudentService {
 
     ApiResponse<?> getProfileEmail();
 
+    ApiResponse<?> getResume();
+
     ApiResponse<StudentProfileAdminResponseDto> getProfileById(UUID id);
 
     ApiResponse<List<StudentProfileDto>> getAllStudents();

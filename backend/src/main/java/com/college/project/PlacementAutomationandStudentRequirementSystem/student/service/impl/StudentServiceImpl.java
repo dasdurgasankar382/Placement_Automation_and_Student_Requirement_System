@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,16 +30,20 @@ public class StudentServiceImpl implements StudentService {
     private final ModelMapper modelMapper;
     private final AuthUtil authUtil;
 
+    // Centralized method to get user
+    private User returnUser() {
+        // get id from token
+        UUID id = authUtil.getCurrentUserId();
+        // Find user through userid by DTO
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User Not exist by id"));
+    }
+
     @Override
     @Transactional
     public ApiResponse<?> createStudentProfile(StudentProfileRequestDto studentProfileRequestDto) {
-//        get id from token
-        UUID id = authUtil.getCurrentUserId();
-        // Find user through userid by DTO
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User Not exist by id"));
-        //User active or not
 
+        User user = returnUser();
         // Check student profile exists or not
         if (studentRepository.existsByUser(user)) {
             throw new ResourceNotFoundException("User profile already exist");
@@ -49,7 +54,7 @@ public class StudentServiceImpl implements StudentService {
             newStudent.setSkills(new ArrayList<>());
         }
         // add resume
-        if(studentProfileRequestDto.getResumeFile() == null){
+        if (studentProfileRequestDto.getResumeFile() == null) {
             throw new ResourceNotFoundException("Resume file not found");
         }
         // else add file
@@ -57,6 +62,7 @@ public class StudentServiceImpl implements StudentService {
         newPdf.setName(studentProfileRequestDto.getResumeFile().getOriginalFilename());
         try {
             newPdf.setData(studentProfileRequestDto.getResumeFile().getBytes());
+            newPdf.setFileType(studentProfileRequestDto.getResumeFile().getContentType());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -71,10 +77,7 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     public ApiResponse<?> updateStudentProfile(StudentProfileUpdateRequestDto studentProfileUpdateRequestDto) {
 
-        User user = userRepository.findById(studentProfileUpdateRequestDto.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not exists"));
-
-        Student student = studentRepository.findByUser(user)
+        Student student = studentRepository.findByUser(returnUser())
                 .orElseThrow(() -> new ResourceNotFoundException("Student profile not exists"));
 
         if (studentProfileUpdateRequestDto.getName() != null) {
@@ -121,15 +124,28 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public ApiResponse<?> getProfileEmail() {
 
-        UUID id = authUtil.getCurrentUserId();
-
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        Student student = studentRepository.findByUser(user)
+        Student student = studentRepository.findByUser(returnUser())
                 .orElseThrow(() -> new ResourceNotFoundException("Student not register"));
+        StudentProfileDto dto = modelMapper.map(student, StudentProfileDto.class);
 
-        return new ApiResponse<>("Success", modelMapper.map(student, StudentProfileDto.class));
+        PdfDocument pdf = student.getResume();
+        dto.setFileName(pdf.getName());
+
+        return new ApiResponse<>("Success", dto);
+    }
+
+    @Override
+    public ApiResponse<?> getResume() {
+
+        Student student = studentRepository.findByUser(returnUser())
+                .orElseThrow(() -> new ResourceNotFoundException("Student not register"));
+        PdfDocument pdf = student.getResume();
+        String base64 = Base64.getEncoder().encodeToString(pdf.getData());
+        ResumeResponseDto resumeResponseDto = new ResumeResponseDto(
+                pdf.getName(), pdf.getFileType(), base64
+        );
+
+        return new ApiResponse<>("Resume fetched successfully", resumeResponseDto);
     }
 
     @Override
