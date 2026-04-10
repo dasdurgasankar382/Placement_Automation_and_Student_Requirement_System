@@ -8,7 +8,7 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [resumeFile, setResumeFile] = useState(null);
-  
+
   const [profile, setProfile] = useState({
     name: "",
     branch: "",
@@ -27,15 +27,19 @@ const Profile = () => {
     try {
       setLoading(true);
       const response = await getStudentProfile();
-      if (response.data) {
+      if (response.data?.data) {
+        const profileData = response.data.data;
+
+        console.log(profileData);
+
         setProfile({
-          name: response.data.name || "",
-          branch: response.data.branch || "",
-          cgpa: response.data.cgpa || "",
-          phone: response.data.phone || "",
-          graduationYear: response.data.graduationYear || "",
-          skills: response.data.skills ? response.data.skills.join(", ") : "",
-          fileName: response.data.fileName || "",
+          name: profileData.name || "",
+          branch: profileData.branch || "",
+          cgpa: profileData.cgpa || "",
+          phone: profileData.phone || "",
+          graduationYear: profileData.graduationYear || "",
+          skills: profileData.skills ? profileData.skills.join(", ") : "",
+          fileName: profileData.fileName || "",
         });
       }
     } catch (error) {
@@ -79,7 +83,7 @@ const Profile = () => {
       link.download = fileName;
       link.click();
       window.URL.revokeObjectURL(link.href);
-      
+
     } catch (error) {
       console.error("Failed to download resume:", error);
       toast.error("Failed to download resume");
@@ -88,35 +92,36 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
-    
+
     try {
       const formData = new FormData();
+
       formData.append("name", profile.name);
       formData.append("branch", profile.branch);
       formData.append("cgpa", profile.cgpa);
       formData.append("phone", profile.phone);
       formData.append("graduationYear", profile.graduationYear);
-      
-      const skillsArray = profile.skills.split(",").map(s => s.trim()).filter(s => s !== "");
-      skillsArray.forEach(skill => formData.append("skills", skill));
+
+      const skillsArray = profile.skills
+        .split(",")
+        .map((s) => s.trim())
+        .filter((s) => s !== "");
+
+      skillsArray.forEach((skill) => formData.append("skills", skill));
 
       if (resumeFile) {
         formData.append("resumeFile", resumeFile);
       } else if (!profile.fileName) {
         toast.error("Please upload a resume");
         return;
-      } else {
-        // If the backend requires a file even for updates, user will have to upload again.
-        // Let's create an empty file just in case it throws @NotNull exception otherwise
-        const emptyFile = new File([""], profile.fileName, { type: "application/octet-stream" });
-        formData.append("resumeFile", emptyFile);
       }
 
       await createStudentProfile(formData);
+
       setIsEditing(false);
-      setResumeFile(null); // Reset the file after saving
+      setResumeFile(null);
       toast.success("Profile saved successfully");
-      fetchProfile(); // reload data
+      fetchProfile();
     } catch (error) {
       console.error("Failed to save profile:", error);
       toast.error(error.response?.data?.message || "Failed to save profile");
@@ -130,7 +135,7 @@ const Profile = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      
+
       {/* Page Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -138,7 +143,7 @@ const Profile = () => {
           <p className="text-slate-500 dark:text-slate-400 mt-1">Manage your personal and academic information.</p>
         </div>
         {!isEditing && (
-          <button 
+          <button
             onClick={() => setIsEditing(true)}
             className="bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 border border-slate-200 dark:border-slate-700 px-5 py-2.5 rounded-xl font-medium shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
           >
@@ -155,19 +160,19 @@ const Profile = () => {
           </div>
         ) : (
           <div className="flex flex-col sm:flex-row gap-8 items-start">
-            
-            <ProfileAvatar 
-              initials={getInitials(profile.name)} 
-              isEditing={isEditing} 
-              onChangePhoto={() => alert("Change photo feature")} 
+
+            <ProfileAvatar
+              initials={getInitials(profile.name)}
+              isEditing={isEditing}
+              onChangePhoto={() => alert("Change photo feature")}
             />
 
-            <ProfileForm 
-              profile={profile} 
-              isEditing={isEditing} 
-              handleChange={handleChange} 
-              setIsEditing={setIsEditing} 
-              handleSubmit={handleSubmit} 
+            <ProfileForm
+              profile={profile}
+              isEditing={isEditing}
+              handleChange={handleChange}
+              setIsEditing={setIsEditing}
+              handleSubmit={handleSubmit}
               handleFileChange={handleFileChange}
               handleDownloadResume={handleDownloadResume}
             />

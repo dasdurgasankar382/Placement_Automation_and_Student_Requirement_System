@@ -85,10 +85,15 @@ const JobCard = ({ job, onApply, actionText, onAction, onEdit, onClose }) => {
           )}
           {onApply && (
             <button 
-              onClick={onApply}
-              className="px-5 py-2.5 bg-slate-900 dark:bg-blue-600 text-white dark:text-white rounded-xl font-medium text-sm hover:bg-slate-800 dark:hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/20 active:scale-95 transition-all"
+              onClick={job?.applied || job?.isApplied ? undefined : onApply}
+              disabled={job?.applied || job?.isApplied}
+              className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${
+                job?.applied || job?.isApplied
+                  ? "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed border border-slate-200 dark:border-slate-700 shadow-none"
+                  : "bg-slate-900 dark:bg-blue-600 text-white dark:text-white hover:bg-slate-800 dark:hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/20 active:scale-95"
+              }`}
             >
-              Apply Now
+              {job?.applied || job?.isApplied ? "Applied" : "Apply Now"}
             </button>
           )}
         </div>

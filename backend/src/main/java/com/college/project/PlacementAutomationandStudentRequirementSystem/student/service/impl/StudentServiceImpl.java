@@ -16,10 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -123,12 +120,14 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ApiResponse<?> getProfileEmail() {
-
-        Student student = studentRepository.findByUser(returnUser())
-                .orElseThrow(() -> new ResourceNotFoundException("Student not register"));
+        System.out.println(returnUser());
+        Optional<Student> student = studentRepository.findByUser(returnUser());
+        if(student.isEmpty()){
+            return new ApiResponse<>("Profile not exists", null);
+        }
         StudentProfileDto dto = modelMapper.map(student, StudentProfileDto.class);
 
-        PdfDocument pdf = student.getResume();
+        PdfDocument pdf = student.get().getResume();
         dto.setFileName(pdf.getName());
 
         return new ApiResponse<>("Success", dto);

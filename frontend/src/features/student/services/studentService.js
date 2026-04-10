@@ -5,11 +5,7 @@ export const getStudentProfile = () => {
 };
 
 export const createStudentProfile = (data) => {
-  return api.post("/students/create-profile", data, {
-    headers: {
-      "Content-Type": "multipart/form-data"
-    }
-  });
+  return api.post("/students/create-profile", data);
 };
 
 export const downloadResume = () => {
