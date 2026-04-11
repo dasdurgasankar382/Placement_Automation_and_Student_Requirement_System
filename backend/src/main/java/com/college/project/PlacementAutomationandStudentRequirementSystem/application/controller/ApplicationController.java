@@ -1,9 +1,7 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.application.controller;
 
-import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.ApplicationSummaryDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.MyApplicationDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.StudentDashboardDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.UpdateStatusRequestDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.*;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.ApplicantDTO;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.application.service.impl.ApplicationServiceImpl;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +33,13 @@ public class ApplicationController {
     public ResponseEntity<ApiResponse<?>> updateStatus(@PathVariable UUID id, @RequestBody UpdateStatusRequestDto updateStatusRequestDto) {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(applicationService.updateApplicationStatus(id, updateStatusRequestDto));
+    }
+    //recruiter can see all applicants for specific posted job
+    @PreAuthorize("hasRole('RECRUITER')")
+    @GetMapping("/applicants/{jobId}")     //RECRUITER
+    public ResponseEntity<ApiResponse<List<ApplicantDTO>>> getAllApplicantsForJob(@PathVariable UUID jobId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(applicationService.getAllApplicantsForJob(jobId));
     }
 
 @PreAuthorize("hasRole('ADMIN')")

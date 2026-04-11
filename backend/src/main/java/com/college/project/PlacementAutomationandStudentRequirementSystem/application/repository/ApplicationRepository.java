@@ -1,5 +1,7 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.application.repository;
 
+
+import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.ApplicantDTO;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.MyApplicationDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.StudentDashboardDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.application.entity.Application;
@@ -16,6 +18,16 @@ import java.util.UUID;
 
 public interface ApplicationRepository extends JpaRepository<Application, UUID> {
     Optional<Application> findByJobId(UUID jobId);
+    @Query("""
+       SELECT a
+       FROM Application a
+       JOIN FETCH a.student u
+       JOIN FETCH u.student s
+       JOIN FETCH a.job j
+       LEFT JOIN FETCH s.resume r
+       WHERE j.id = :jobId
+""")
+    List<Application> findAllByJobId(@Param("jobId") UUID jobId);
 
     boolean existsByStudentAndJob(User student, Job job);
 

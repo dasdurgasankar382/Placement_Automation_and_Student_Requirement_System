@@ -1,5 +1,6 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.application.service;
 
+import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.ApplicantDTO;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.ApplicationSummaryDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.MyApplicationDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.application.dto.StudentDashboardDto;
@@ -21,4 +22,6 @@ public interface ApplicationService {
     ApiResponse<StudentDashboardDto> getStudentDashboard();
 
     ApiResponse<List<MyApplicationDto>> getMyApplications();
+
+    ApiResponse<List<ApplicantDTO>> getAllApplicantsForJob(UUID jobId);
 }

@@ -49,7 +49,7 @@ const Dashboard = () => {
         title="Hello Katie!" 
         subtitle="You have 16 new applications. It is a lot of work for today! So let's start 🥳."
         buttonText="review it!"
-        buttonLink="/recruiter/applicants"
+        buttonLink="/recruiter/jobs"
         illustration={
           <svg className="w-80 h-80 opacity-90" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
             {/* Simple abstract illustration mimicking the reference graphic */}

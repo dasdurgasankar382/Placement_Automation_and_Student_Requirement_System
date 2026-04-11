@@ -46,13 +46,31 @@ export const getRecruiterJobs = () => {
   return api.get("/jobs/company-jobs");
 };
 
-// ==========================================
-// PENDING / LATER IMPLEMENTATION APIs
-// ==========================================
-
 // Applications
-export const getJobApplications = (jobId) => {
-  return api.get(`/jobs/${jobId}/applications`);
+export const getJobApplicants = (jobId) => {
+  return api.get(`/applications/applicants/${jobId}`);
+};
+
+export const mapApplicantData = (applicant = {}) => {
+  return {
+    id: applicant.applicationId,
+    applicationId: applicant.applicationId,
+    studentId: applicant.studentId,
+    jobId: applicant.jobId,
+    jobTitle: applicant.jobTitle || "Untitled Job",
+    companyName: applicant.companyName || "",
+    studentName: applicant.studentName || "Unknown Student",
+    email: applicant.email || "No email provided",
+    resumeName: applicant.resumeName || "",
+    skills: Array.isArray(applicant.skills) ? applicant.skills : [],
+    applicationStatus: applicant.applicationStatus || "PENDING",
+    appliedAt: applicant.appliedAt || null,
+  };
+};
+
+export const getJobApplications = async (jobId) => {
+  const response = await getJobApplicants(jobId);
+  return (response.data?.data || response.data || []).map(mapApplicantData);
 };
 
 export const updateApplicationStatus = (id, status) => {

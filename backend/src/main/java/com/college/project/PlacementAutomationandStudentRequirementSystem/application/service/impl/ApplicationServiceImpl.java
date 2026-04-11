@@ -123,6 +123,33 @@ public class ApplicationServiceImpl implements ApplicationService {
         return new ApiResponse<>("Application fetch successfully", dtoList);
     }
 
+    @Override
+    public ApiResponse<List<ApplicantDTO>> getAllApplicantsForJob(UUID jobId) {
+        UUID recruiterId = authUtil.getCurrentUserId();
+        
+        // Get the recruiter's company
+        User recruiter = userRepository.findById(recruiterId)
+                .orElseThrow(() -> new ResourceNotFoundException("Recruiter not found"));
+        
+        // Get all applications for the specific job
+        List<Application> applications = applicationRepository.findAllByJobId(jobId);
+        List<ApplicantDTO> dtos = applications.stream().map(a -> {
+            ApplicantDTO dto = new ApplicantDTO();
+            dto.setApplicationId(a.getId());
+            dto.setStudentId(a.getStudent().getId());
+            dto.setJobId(a.getJob().getId());
+            dto.setRole(a.getJob().getRole());
+            dto.setStudentName(a.getStudent().getStudent() != null ? a.getStudent().getStudent().getName() : null);
+            dto.setEmail(a.getStudent().getEmail());
+            dto.setResumeName(a.getStudent().getStudent() != null && a.getStudent().getStudent().getResume() != null ? a.getStudent().getStudent().getResume().getName() : null);
+            dto.setSkills(a.getStudent().getStudent() != null ? a.getStudent().getStudent().getSkills() : null);
+            dto.setApplicationStatus(a.getStatus().name());
+            dto.setAppliedAt(a.getCreatedAt());
+            return dto;
+        }).toList();
+
+        return new ApiResponse<>("Company applications fetched successfully", dtos);
+    }
 
     //  HELPER METHODS
 

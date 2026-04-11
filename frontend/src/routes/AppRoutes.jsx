@@ -87,6 +87,7 @@ function AppRoutes() {
         <Route path="jobs" element={<RecruiterJobsList />} />
         <Route path="jobs/create" element={<RecruiterCreateJob />} />
         <Route path="jobs/edit/:id" element={<RecruiterEditJob />} />
+        <Route path="jobs/:jobId/applicants" element={<RecruiterApplicants />} />
         <Route path="applicants" element={<RecruiterApplicants />} />
       </Route>
 
