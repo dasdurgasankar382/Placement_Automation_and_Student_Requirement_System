@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import ProfileAvatar from "../components/profile/ProfileAvatar";
 import ProfileForm from "../components/profile/ProfileForm";
-import { getStudentProfile, createStudentProfile, downloadResume } from "../services/studentService";
+import { createStudentProfile, downloadResume, fetchStudentProfileData } from "../services/studentService";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -26,22 +26,8 @@ const Profile = () => {
   const fetchProfile = async () => {
     try {
       setLoading(true);
-      const response = await getStudentProfile();
-      if (response.data?.data) {
-        const profileData = response.data.data;
-
-        console.log(profileData);
-
-        setProfile({
-          name: profileData.name || "",
-          branch: profileData.branch || "",
-          cgpa: profileData.cgpa || "",
-          phone: profileData.phone || "",
-          graduationYear: profileData.graduationYear || "",
-          skills: profileData.skills ? profileData.skills.join(", ") : "",
-          fileName: profileData.fileName || "",
-        });
-      }
+      const profileData = await fetchStudentProfileData();
+      setProfile(profileData);
     } catch (error) {
       console.error("Failed to fetch profile:", error);
       // We don't necessarily show toast here as it might be a new profile, but we can log.

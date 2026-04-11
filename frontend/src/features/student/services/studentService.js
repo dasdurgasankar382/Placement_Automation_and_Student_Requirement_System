@@ -4,6 +4,23 @@ export const getStudentProfile = () => {
   return api.get("/students/profile/me");
 };
 
+export const mapStudentProfileData = (profileData = {}) => {
+  return {
+    name: profileData.name || "",
+    branch: profileData.branch || "",
+    cgpa: profileData.cgpa || "",
+    phone: profileData.phone || "",
+    graduationYear: profileData.graduationYear || "",
+    skills: Array.isArray(profileData.skills) ? profileData.skills.join(", ") : "",
+    fileName: profileData.fileName || "",
+  };
+};
+
+export const fetchStudentProfileData = async () => {
+  const response = await getStudentProfile();
+  return mapStudentProfileData(response.data?.data);
+};
+
 export const createStudentProfile = (data) => {
   return api.post("/students/create-profile", data);
 };
