@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, User, Download, FileText } from "lucide-react";
+import { ArrowLeft, User, Download, FileText, Loader, LoaderPinwheel } from "lucide-react";
 import { toast } from "react-toastify";
 import { getStudentById, getResume } from "../services/recruiterService";
 import { Form } from "../../../components/ui/Form";
@@ -57,8 +57,11 @@ const Student = () => {
     { label: "Email Address", val: student.email },
     { label: "Course", val: student.course },
     { label: "Branch", val: student.branch },
+    { label: "Phone", val: student.phone },
     { label: "CGPA", val: student.cgpa || student.percentage },
-    { label: "Passout Year", val: student.passoutYear },
+    { label: "Graduation Year", val: student.graduationYear },
+    { label: "Skills", val: student.skills?.join(", ") },
+
   ];
 
   return (
@@ -98,16 +101,19 @@ const Student = () => {
           <div className="flex items-center gap-3">
             <FileText className="text-emerald-500" />
             <span className="text-sm font-bold dark:text-white truncate max-w-[180px]">
-              {student.resumeName || "Resume.pdf"}
+              {student.resumeName}
             </span>
           </div>
-          <button
+          {student.resumeName ? (
+            <button
             type="button"
             onClick={download}
             className="flex items-center gap-2 px-6 py-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 font-bold"
           >
             <Download size={18} /> Download
           </button>
+          ) : <Loader size={18} className="animate-spin" />}  
+        
         </div>
       </Form>
     </div>

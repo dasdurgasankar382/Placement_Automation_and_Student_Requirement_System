@@ -153,6 +153,7 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not exists"));
         StudentProfileAdminResponseDto dto =
                 modelMapper.map(student, StudentProfileAdminResponseDto.class);
+        dto.setResumeName(student.getResume().getName());
         dto.setEmail(student.getUser().getEmail());
         return new ApiResponse<>("Successfully fetched", dto);
     }

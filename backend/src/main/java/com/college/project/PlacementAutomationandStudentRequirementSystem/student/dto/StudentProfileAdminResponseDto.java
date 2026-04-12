@@ -17,6 +17,6 @@ public class StudentProfileAdminResponseDto {
     private String phone;
     private String email;
     private List<String> skills = new ArrayList<>();
-    private String resumeUrl;
+    private String resumeName;
     private Integer graduationYear;
 }
