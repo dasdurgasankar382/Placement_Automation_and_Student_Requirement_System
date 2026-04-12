@@ -83,13 +83,15 @@ const JobsList = () => {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {jobs.map(job => (
+            console.log(job),
             <JobCard 
               key={job.id} 
               job={job} 
               onEdit={() => navigate(`/recruiter/jobs/edit/${job.id}`)}
               onClose={() => handleCloseJob(job.id)}
-              actionText={`View Applicants (${job.applicantsCount})`}
+              actionText={`View Applicants `}
               onAction={() => navigate(`/recruiter/jobs/${job.id}/applicants`)} 
+              isClosed = {job.status !== "open"}
             />
           ))}
         </div>

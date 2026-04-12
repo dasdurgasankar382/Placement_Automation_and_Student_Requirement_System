@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, User, Download, FileText, Loader, LoaderPinwheel } from "lucide-react";
+import {
+  ArrowLeft,
+  User,
+  Download,
+  FileText,
+  Loader,
+  LoaderPinwheel,
+} from "lucide-react";
 import { toast } from "react-toastify";
 import { getStudentById, getResume } from "../services/recruiterService";
 import { Form } from "../../../components/ui/Form";
@@ -53,7 +60,7 @@ const Student = () => {
     return <div className="p-10 text-center">Student not found</div>;
   console.log(student);
   const info = [
-    { label: "Full Name", val: student.name},
+    { label: "Full Name", val: student.name },
     { label: "Email Address", val: student.email },
     { label: "Course", val: student.course },
     { label: "Branch", val: student.branch },
@@ -61,14 +68,13 @@ const Student = () => {
     { label: "CGPA", val: student.cgpa || student.percentage },
     { label: "Graduation Year", val: student.graduationYear },
     { label: "Skills", val: student.skills?.join(", ") },
-
   ];
 
   return (
     <div className="max-w-3xl mx-auto ">
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors "
+        className="flex items-center gap-2 text-slate-500 hover:text-slate-600 cursor-pointer transition-colors "
       >
         <ArrowLeft size={18} /> Back
       </button>
@@ -101,19 +107,16 @@ const Student = () => {
           <div className="flex items-center gap-3">
             <FileText className="text-emerald-500" />
             <span className="text-sm font-bold dark:text-white truncate max-w-[180px]">
-              {student.resumeName}
+              {"Download Resume"}
             </span>
           </div>
-          {student.resumeName ? (
-            <button
+          <button
             type="button"
             onClick={download}
             className="flex items-center gap-2 px-6 py-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 font-bold"
           >
             <Download size={18} /> Download
           </button>
-          ) : <Loader size={18} className="animate-spin" />}  
-        
         </div>
       </Form>
     </div>
