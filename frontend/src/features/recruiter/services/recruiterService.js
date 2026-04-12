@@ -63,7 +63,7 @@ export const mapApplicantData = (applicant = {}) => {
     email: applicant.email || "No email provided",
     resumeName: applicant.resumeName || "",
     skills: Array.isArray(applicant.skills) ? applicant.skills : [],
-    applicationStatus: applicant.applicationStatus || "PENDING",
+    applicationStatus: applicant.applicationStatus || "APPLIED",
     appliedAt: applicant.appliedAt || null,
   };
 };
@@ -74,5 +74,17 @@ export const getJobApplications = async (jobId) => {
 };
 
 export const updateApplicationStatus = (id, status) => {
-  return api.put(`/applications/${id}/status`, { status });
+  return api.put(`/applications/${id}/status`, {
+    status,
+    applicationStatus: status,
+  });
 };
+
+export const getResume = (studentId) => {
+  return api.get(`/applications/applicant/${studentId}/resume`);
+};
+
+// Students
+export const getStudentById = (id) => {
+  return api.get(`/students/${id}`);
+}

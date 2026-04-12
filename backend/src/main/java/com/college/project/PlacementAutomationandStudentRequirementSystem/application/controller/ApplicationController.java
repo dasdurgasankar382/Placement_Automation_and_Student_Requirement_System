@@ -41,6 +41,12 @@ public class ApplicationController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(applicationService.getAllApplicantsForJob(jobId));
     }
+    @PreAuthorize("hasRole('RECRUITER')")
+    @GetMapping("/applicant/{studentId}/resume")     //RECRUITER
+    public ResponseEntity<ApiResponse<?>> getApplicantResume(@PathVariable UUID studentId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(applicationService.getApplicantResume(studentId));
+    }
 
 @PreAuthorize("hasRole('ADMIN')")
     @GetMapping     //ADMIN

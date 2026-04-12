@@ -20,7 +20,8 @@ public class ApplicantDTO {
     private UUID applicationId; // for update status
     private UUID studentId;
     private UUID jobId;
-    private String role;
+    private String jobRole;
+    private String companyName;
 
     private String studentName;
     private String email;

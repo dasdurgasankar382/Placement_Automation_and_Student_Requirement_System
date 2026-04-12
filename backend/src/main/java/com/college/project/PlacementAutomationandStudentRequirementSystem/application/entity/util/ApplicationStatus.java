@@ -2,6 +2,7 @@ package com.college.project.PlacementAutomationandStudentRequirementSystem.appli
 
 public enum ApplicationStatus {
     APPLIED,
+    REVIEWED,
     SHORTLISTED,
     SELECTED,
     WITHDRAWN, REJECTED

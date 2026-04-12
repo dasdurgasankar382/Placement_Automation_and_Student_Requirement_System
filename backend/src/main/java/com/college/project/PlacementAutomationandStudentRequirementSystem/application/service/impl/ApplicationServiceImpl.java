@@ -10,6 +10,10 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.except
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.Job;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.repository.JobRepository;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.security.AuthUtil;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.ResumeResponseDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.student.entity.Student;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.student.entity.util.PdfDocument;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.student.repository.StudentRepository;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.entity.User;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.repository.UserRepository;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
@@ -19,6 +23,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -29,13 +34,15 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     private final ApplicationRepository applicationRepository;
     private final UserRepository userRepository;
+    private final StudentRepository studentRepository;
     private final ModelMapper modelMapper;
     private final JobRepository jobRepository;
     private final AuthUtil authUtil;
 
     //copy from gpt
     private static final Map<ApplicationStatus, List<ApplicationStatus>> allowedTransitions = Map.of(
-            ApplicationStatus.APPLIED, List.of(ApplicationStatus.WITHDRAWN, ApplicationStatus.SHORTLISTED, ApplicationStatus.REJECTED),
+            ApplicationStatus.APPLIED, List.of(ApplicationStatus.WITHDRAWN, ApplicationStatus.REVIEWED, ApplicationStatus.SHORTLISTED, ApplicationStatus.REJECTED),
+            ApplicationStatus.REVIEWED, List.of(ApplicationStatus.WITHDRAWN, ApplicationStatus.SHORTLISTED, ApplicationStatus.REJECTED),
             ApplicationStatus.SHORTLISTED, List.of(ApplicationStatus.WITHDRAWN, ApplicationStatus.SELECTED, ApplicationStatus.REJECTED)
     );
 
@@ -134,11 +141,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         // Get all applications for the specific job
         List<Application> applications = applicationRepository.findAllByJobId(jobId);
         List<ApplicantDTO> dtos = applications.stream().map(a -> {
+            System.out.println(a.getJob().getRole());
             ApplicantDTO dto = new ApplicantDTO();
             dto.setApplicationId(a.getId());
-            dto.setStudentId(a.getStudent().getId());
+            dto.setStudentId(a.getStudent().getStudent().getId());
             dto.setJobId(a.getJob().getId());
-            dto.setRole(a.getJob().getRole());
+            dto.setJobRole(a.getJob().getRole());
+            dto.setCompanyName(a.getJob().getCompany().getName());
             dto.setStudentName(a.getStudent().getStudent() != null ? a.getStudent().getStudent().getName() : null);
             dto.setEmail(a.getStudent().getEmail());
             dto.setResumeName(a.getStudent().getStudent() != null && a.getStudent().getStudent().getResume() != null ? a.getStudent().getStudent().getResume().getName() : null);
@@ -149,6 +158,20 @@ public class ApplicationServiceImpl implements ApplicationService {
         }).toList();
 
         return new ApiResponse<>("Company applications fetched successfully", dtos);
+    }
+
+    @Override
+    public ApiResponse<?> getApplicantResume(UUID studentId) {
+
+        Student student = studentRepository.findById(studentId).orElseThrow(()->
+            new ResourceNotFoundException("Resume exist "));
+        PdfDocument pdf = student.getResume();
+        String base64 = Base64.getEncoder().encodeToString(pdf.getData());
+        ResumeResponseDto resumeResponseDto = new ResumeResponseDto(
+                pdf.getName(), pdf.getFileType(), base64
+        );
+
+        return new ApiResponse<>("Resume fetched successfully", resumeResponseDto);
     }
 
     //  HELPER METHODS

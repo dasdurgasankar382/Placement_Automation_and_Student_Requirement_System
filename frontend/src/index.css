@@ -16,6 +16,17 @@
   --color-brand-highlight: #ec4899;
 }
 
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px var(--color-bg-light-component) inset !important;
+  -webkit-text-fill-color: var(--color-bg-light-primary-text) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px var(--color-bg-dark-component) inset !important;
+  -webkit-text-fill-color: var(--color-bg-dark-primary-text) !important;
+}
+
 @layer base {
   body {
     @apply bg-bg-light text-bg-light-primary-text transition-colors duration-300;

@@ -24,4 +24,6 @@ public interface ApplicationService {
     ApiResponse<List<MyApplicationDto>> getMyApplications();
 
     ApiResponse<List<ApplicantDTO>> getAllApplicantsForJob(UUID jobId);
+
+    ApiResponse<?> getApplicantResume(UUID studentId);
 }

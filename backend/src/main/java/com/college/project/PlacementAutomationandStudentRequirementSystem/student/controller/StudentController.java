@@ -59,7 +59,7 @@ public class StudentController {
         return ResponseEntity.ok(studentServiceImpl.getProfileEmail());
     }
 
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasRole('STUDENT', 'RECRUITER)")
     //access by student
     @GetMapping("/profile/me/resume")
     public ResponseEntity<ApiResponse<?>> getResume() {

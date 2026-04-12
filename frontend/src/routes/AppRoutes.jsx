@@ -28,6 +28,7 @@ import AdminDashboard from "../features/admin/pages/Dashboard";
 import AdminUsers from "../features/admin/pages/Users";
 import AdminJobs from "../features/admin/pages/Jobs";
 import AdminCompanies from "../features/admin/pages/Companies";
+import Student from "../features/recruiter/pages/Student";
 
 function AppRoutes() {
   return (
@@ -89,6 +90,8 @@ function AppRoutes() {
         <Route path="jobs/edit/:id" element={<RecruiterEditJob />} />
         <Route path="jobs/:jobId/applicants" element={<RecruiterApplicants />} />
         <Route path="applicants" element={<RecruiterApplicants />} />
+        <Route path="applicants/:applicationId" element={<RecruiterApplicants />} />
+        <Route path="student/:id" element={<Student />} />
       </Route>
 
     </Routes>
