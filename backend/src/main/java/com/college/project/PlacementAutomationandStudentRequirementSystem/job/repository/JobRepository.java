@@ -4,8 +4,11 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.compan
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.JobResponseDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.Job;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.util.JobStatus;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.JobsForStudentsDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.student.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,4 +25,21 @@ public interface JobRepository extends JpaRepository<Job, UUID> {
             "j.id, j.role, j.salary, j.skills, j.description, j.deadline ,j.jobStatus) " +
             "FROM Job j WHERE j.company.id = :companyId")
     List<JobResponseDto> findAllByCompanyId(UUID companyId);
+
+    @Query("""
+            SELECT new com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.JobsForStudentsDto(
+                new com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.JobResponseDto(
+                    j.id, j.role, j.salary, j.skills, j.description, j.deadline, j.jobStatus
+                ),
+                c.name,
+                COALESCE(a.status, com.college.project.PlacementAutomationandStudentRequirementSystem.application.entity.util.ApplicationStatus.NOT_APPLIED)
+            )
+            FROM Job j
+            JOIN j.company c
+            LEFT JOIN Application a 
+                ON a.job = j AND a.student.id = :studentId
+            WHERE j.jobStatus = 'OPEN'
+            AND j.deadline > CURRENT_DATE
+            """)
+    List<JobsForStudentsDto> findJobsForStudent(@Param("studentId") UUID studentId);
 }

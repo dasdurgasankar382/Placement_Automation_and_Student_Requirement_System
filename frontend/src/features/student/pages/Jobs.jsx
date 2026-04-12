@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import JobSearchBar from "../components/jobs/JobSearchBar";
 import JobList from "../components/jobs/JobList";
 import { toast } from "react-toastify";
-import api from "../../../services/api";
+import { jobsForStudent } from "../services/studentService";
 import { useNavigate } from "react-router-dom";
 
 const Jobs = () => {
@@ -12,47 +12,38 @@ const Jobs = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const { data } = await api.get("/jobs");
-        
-        let jobsArray = [];
-        if (Array.isArray(data)) {
-          jobsArray = data;
-        } else if (data?.data && Array.isArray(data.data)) {
-          jobsArray = data.data;
-        }
-        
-        // Map backend payload to frontend expected fields
-        const mappedJobs = jobsArray.map(job => ({
-          id: job.id,
-          title: job.role,
-          salary: `₹${job.salary?.toLocaleString()}`,
-          deadline: job.deadline,
-          tags: job.skills || [],
-          description: job.description,
-        }));
-        
-        setJobs(mappedJobs);
-      } catch (err) {
-        console.error("Failed to fetch jobs:", err);
-        toast.error("Failed to load jobs from server.");
-      } finally {
-        setLoading(false);
-      }
-    };
+    jobsForStudent()
+      .then((res) => {
+        const data = res.data?.data || res.data || [];
+        console.log("Student Jobs API Response:", data);
+        setJobs(
+          data.map((item, index) => {
+            // Handle both flat and nested (item.job) structures
+            const job = item.job || item;
+            const id = job.id || job.jobId || item.jobId || item.id || `job-${index}`;
+            const title = job.role || job.jobTitle || job.title || item.jobTitle || "Untitled Role";
+            const company = job.comapnyName || job.companyName || item.companyName || job.company || item.company || "Unknown Company";
+            const rawSalary = job.salary || job.package || job.stipend || item.salary;
 
-    fetchJobs();
+            return {
+              ...item,
+              id,
+              title,
+              company,
+              salary: rawSalary ? `₹${rawSalary.toLocaleString()}` : "Not Disclosed",
+              tags: job.skills || job.tags || item.skills || [],
+              isApplied: item.status === "APPLIED" || !!item.appliedAt || job.isApplied,
+            };
+          }),
+        );
+      })
+    .catch(() => toast.error("Failed to load jobs"))
+    .finally(() => setLoading(false));
   }, []);
 
-  const filteredJobs = jobs.filter(job => 
-    (job.title?.toLowerCase() || "").includes(searchTerm.toLowerCase()) || 
-    (job.company?.toLowerCase() || "").includes(searchTerm.toLowerCase())
+  const filteredJobs = jobs.filter(j => 
+    [j.title, j.company].some(val => (val || "").toLowerCase().includes(searchTerm.toLowerCase()))
   );
-
-  const handleApply = (job) => {
-    navigate(`/student/jobs/${job.id}`);
-  };
 
   return (
     <div className="space-y-8">
@@ -68,7 +59,7 @@ const Jobs = () => {
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
         </div>
       ) : (
-        <JobList jobs={filteredJobs} onApply={handleApply} />
+        <JobList jobs={filteredJobs} onApply={(job) => navigate(`/student/jobs/${job.id}`)} />
       )}
     </div>
   );

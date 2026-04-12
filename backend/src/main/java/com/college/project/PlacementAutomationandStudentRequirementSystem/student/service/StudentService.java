@@ -23,4 +23,6 @@ public interface StudentService {
     ApiResponse<StudentProfileAdminResponseDto> getProfileById(UUID id);
 
     ApiResponse<List<StudentProfileDto>> getAllStudents();
+
+    ApiResponse<List<JobsForStudentsDto>> getJobsForStudent();
 }

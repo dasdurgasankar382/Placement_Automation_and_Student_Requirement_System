@@ -59,7 +59,7 @@ public class StudentController {
         return ResponseEntity.ok(studentServiceImpl.getProfileEmail());
     }
 
-    @PreAuthorize("hasRole('STUDENT', 'RECRUITER)")
+    @PreAuthorize("hasRole('STUDENT'")
     //access by student
     @GetMapping("/profile/me/resume")
     public ResponseEntity<ApiResponse<?>> getResume() {
@@ -73,6 +73,13 @@ public class StudentController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(studentServiceImpl.getProfileById(id));
+    }
+
+    @PreAuthorize("hasRole('STUDENT')")     //access by student
+    @GetMapping("/jobs/for-student")
+    public ResponseEntity<ApiResponse<List<JobsForStudentsDto>>> getJobsForStudent(){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(studentServiceImpl.getJobsForStudent());
     }
 
     @PreAuthorize("hasRole('ADMIN')")

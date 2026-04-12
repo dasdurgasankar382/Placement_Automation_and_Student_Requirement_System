@@ -79,7 +79,7 @@ const JobDetails = ({ role }) => {
               <Building2 className="h-8 w-8" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{job.role}</h1>
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{job.role || job.title}</h1>
               <p className="text-lg text-slate-500 dark:text-slate-400 font-medium mt-1">Company Details TBA</p>
             </div>
           </div>
@@ -95,7 +95,7 @@ const JobDetails = ({ role }) => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-8 border-b border-slate-100 dark:border-slate-700">
           <div className="space-y-1">
             <span className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm font-medium"><MapPin className="h-4 w-4"/> Location</span>
-            <p className="font-semibold text-slate-900 dark:text-white">TBA / Remote</p>
+            <p className="font-semibold text-slate-900 dark:text-white">{job.location}</p>
           </div>
           <div className="space-y-1">
             <span className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm font-medium"><DollarSign className="h-4 w-4"/> Salary</span>

@@ -1,6 +1,8 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.student.service.impl;
 
 import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ResourceNotFoundException;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.Job;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.job.repository.JobRepository;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.security.AuthUtil;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.*;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.entity.Student;
@@ -26,6 +28,7 @@ public class StudentServiceImpl implements StudentService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final AuthUtil authUtil;
+    private final JobRepository jobRepository;
 
     // Centralized method to get user
     private User returnUser() {
@@ -156,6 +159,15 @@ public class StudentServiceImpl implements StudentService {
         dto.setResumeName(student.getResume().getName());
         dto.setEmail(student.getUser().getEmail());
         return new ApiResponse<>("Successfully fetched", dto);
+    }
+
+    @Override
+    public ApiResponse<List<JobsForStudentsDto>> getJobsForStudent() {
+        Student student = studentRepository.findByUser(returnUser())
+                .orElseThrow(() -> new ResourceNotFoundException("Student Don't have profile"));
+
+        List<JobsForStudentsDto> jobList = jobRepository.findJobsForStudent(student.getId());
+        return new ApiResponse<>("Job fetched successfully", jobList);
     }
 
     @Override
