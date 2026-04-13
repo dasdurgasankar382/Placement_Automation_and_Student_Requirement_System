@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Building2, MapPin, Globe } from "lucide-react";
 import { Input } from "../../../components/ui/Input";
 import { Textarea } from "../../../components/ui/Textarea";
 import { Button } from "../../../components/ui/Button";
-import { createCompany } from "../services/recruiterService";
+import { createCompany, fetchCompanyProfileData } from "../services/recruiterService";
 import { toast } from "react-toastify";
 
 const CompanyProfile = () => {
@@ -14,6 +14,24 @@ const CompanyProfile = () => {
     website: "",
     description: ""
   });
+
+  useEffect(() =>{
+    fetchCompanyProfile();
+  }, []);
+
+  const fetchCompanyProfile = async () => {
+    try{
+      setLoading(true);
+      const profileData = await fetchCompanyProfileData();
+      setFormData(profileData);
+    } catch (error) {
+      console.error("Error fetching company profile:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

@@ -15,7 +15,7 @@ public interface CompanyService {;
 
     ApiResponse<?> addCompany(CompanyRequestDto companyRequestDto);
 
-    CompanyResponseDto getCompanyById(UUID id);
+    CompanyResponseDto getCompanyById();
 
     CompanyJobsResponseDto getCompanyUnderJobs(UUID companyId);
 }

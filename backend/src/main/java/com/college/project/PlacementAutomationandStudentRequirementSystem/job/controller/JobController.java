@@ -47,7 +47,7 @@ public class JobController {
                 .body(jobService.getAllJobs());
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")  //recruiter
     @GetMapping("/company-jobs")
     public ResponseEntity<ApiResponse<List<JobResponseDto>>> getAllJobsByCompany() {
         return ResponseEntity.status(HttpStatus.OK)

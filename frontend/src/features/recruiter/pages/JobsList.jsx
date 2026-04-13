@@ -9,7 +9,6 @@ const JobsList = () => {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     fetchJobs();
   }, []);
@@ -34,8 +33,9 @@ const JobsList = () => {
       
       setJobs(mappedJobs);
     } catch (err) {
-      console.error("Failed to fetch company jobs:", err);
-      toast.error("Failed to load your jobs from server.");
+      console.error(err.response.data?.message || "Failed to fetch company jobs:");
+      toast.error(err.response.data?.message || "Failed to fetch company jobs:");
+      navigate("/recruiter/company");
     } finally {
       setLoading(false);
     }

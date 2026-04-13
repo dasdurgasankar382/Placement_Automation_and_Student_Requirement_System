@@ -31,21 +31,32 @@ public class JobServiceImpl implements JobService {
     private final CompanyRepository companyRepository;
     private final AuthUtil authUtil;
 
+    private User getRecruiter(){
+        UUID id = authUtil.getCurrentUserId();
+        return userRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Recruiter not found"));
+    }
+
+    private boolean haveCompany(){
+        User recruiter = getRecruiter();
+        return recruiter.getCompany() == null; // it return true if company exists else false
+    }
+
+    private Job getJob(UUID id){
+        return jobRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Job not exists"));
+    }
+
     @Override
     public ApiResponse<?> createJob(JobRequestDto jobRequestDto) {
-
-        // get recruiter id from token and fetch company id
-        UUID id = authUtil.getCurrentUserId();
-
-        System.out.println(id);
+        // check recruiter have company
+        if(haveCompany()){
+            throw new ResourceNotFoundException("Company not found to provide job");
+        }
         // get recruiter
-        User recruiter = userRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("Recruiter not found"));
+        User recruiter = getRecruiter();
         // get company
         Company company =recruiter.getCompany();
-        if(company == null) {
-            throw  new ResourceNotFoundException("Company not found");
-        }
         //check if same job exists or not
         if (jobRepository.existsByRoleAndDeadline(jobRequestDto.getRole(),jobRequestDto.getDeadline())){
             throw  new ResourceAlreadyExistsException("Same job already registered for the role "+
@@ -61,8 +72,11 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public ApiResponse<?> updateJobProfile(UUID id, JobRequestDto jobRequestDto) {
-        Job job = jobRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("Job not exists"));
+        // check recruiter have company
+        if(haveCompany()){
+            throw new ResourceNotFoundException("Company not found to update job");
+        }
+        Job job = getJob(id);
         modelMapper.map(jobRequestDto, job);
         jobRepository.save(job);
         return new ApiResponse<>("Job Updated Successfully",null);
@@ -70,8 +84,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public ApiResponse<?> changeJobStatus(UUID id) {
-        Job job = jobRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("Job not found"));
+        Job job = getJob(id);
         if(job.getJobStatus()==JobStatus.closed){
             throw new ResourceAlreadyExistsException("Already job closed for this id" + id);
         }
@@ -88,12 +101,15 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public ApiResponse<List<JobResponseDto>> getAllJobsByCompany() {
+        // check recruiter have company
+        if(haveCompany()){
+            throw new ResourceNotFoundException("Company not found to get jobs");
+        }
         // show list of jobs under a company
         UUID userId = authUtil.getCurrentUserId();   // get user id
-        User user = userRepository.findById(userId)
-                .orElseThrow(()->new ResourceNotFoundException("User not found"));
+        User recruiter = getRecruiter();
         // get company id
-        UUID companyId = user.getCompany().getId();
+        UUID companyId = recruiter.getCompany().getId();
         List<JobResponseDto> responseDtoList = jobRepository.findAllByCompanyId(companyId);
         return new ApiResponse<>("Jobs fetched successfully", responseDtoList);
     }

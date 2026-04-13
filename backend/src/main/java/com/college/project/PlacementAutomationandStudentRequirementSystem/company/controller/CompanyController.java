@@ -35,11 +35,11 @@ private final CompanyServiceImpl companyService;
                 .body(companyService.getAllCompanies());
     }
 
-@PreAuthorize("isAuthenticated()")
-    @GetMapping("/{id}") //ALL
-    public ResponseEntity<CompanyResponseDto> getCompany(@PathVariable UUID id){
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/company-profile") //ALL
+    public ResponseEntity<CompanyResponseDto> getCompany(){
         return ResponseEntity.status(HttpStatus.OK)
-                .body(companyService.getCompanyById(id));
+                .body(companyService.getCompanyById());
     }
 
 @PreAuthorize("isAuthenticated()")

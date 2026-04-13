@@ -5,6 +5,10 @@ export const createCompany = (data) => {
   return api.post("/companies", data);
 };
 
+export const getCompanyProfile = () => {
+  return api.get("/companies/company-profile");
+};
+
 export const getAllCompanies = () => {
   return api.get("/companies");
 };
@@ -16,6 +20,23 @@ export const getCompanyById = (id) => {
 export const getCompanyJobs = (companyId) => {
   return api.get(`/companies/${companyId}/jobs`);
 };
+
+export const mapCompanyProfileData = (profileData = {}) => {
+  const company = profileData?.data ?? profileData;
+
+  return {
+    name: company?.name || "",
+    location: company?.location || "",
+    website: company?.website || "",
+    description: company?.description || "",
+  };
+};
+
+export const fetchCompanyProfileData = async () => {
+  const response = await getCompanyProfile();
+  return mapCompanyProfileData(response.data?.data || response.data);
+};
+
 
 // Jobs
 export const createJob = (data) => {

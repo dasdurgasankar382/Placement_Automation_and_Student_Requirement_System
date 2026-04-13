@@ -27,19 +27,19 @@ public interface JobRepository extends JpaRepository<Job, UUID> {
     List<JobResponseDto> findAllByCompanyId(UUID companyId);
 
     @Query("""
-            SELECT new com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.JobsForStudentsDto(
-                new com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.JobResponseDto(
-                    j.id, j.role, j.salary, j.skills, j.description, j.deadline, j.jobStatus
-                ),
-                c.name,
-                COALESCE(a.status, com.college.project.PlacementAutomationandStudentRequirementSystem.application.entity.util.ApplicationStatus.NOT_APPLIED)
-            )
-            FROM Job j
-            JOIN j.company c
-            LEFT JOIN Application a 
-                ON a.job = j AND a.student.id = :studentId
-            WHERE j.jobStatus = 'OPEN'
-            AND j.deadline > CURRENT_DATE
-            """)
-    List<JobsForStudentsDto> findJobsForStudent(@Param("studentId") UUID studentId);
+SELECT DISTINCT new com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.JobsForStudentsDto(
+    new com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.JobResponseDto(
+        j.id, j.role, j.salary, j.skills, j.description, j.deadline, j.jobStatus
+    ),
+    c.name,
+    COALESCE(a.status, 'NOT_APPLIED')
+)
+FROM Job j
+JOIN j.company c
+LEFT JOIN Application a
+    ON a.job.id = j.id AND a.student.id = :studentId
+WHERE j.jobStatus = 'open'
+AND j.deadline >= CURRENT_DATE
+""")
+    List<JobsForStudentsDto> findJobsForStudent(UUID studentId);
 }

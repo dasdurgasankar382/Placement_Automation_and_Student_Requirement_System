@@ -122,6 +122,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public ApiResponse<?> getProfileEmail() {
         System.out.println(returnUser());
         Optional<Student> student = studentRepository.findByUser(returnUser());
@@ -137,6 +138,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public ApiResponse<?> getResume() {
 
         Student student = studentRepository.findByUser(returnUser())
@@ -162,6 +164,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public ApiResponse<List<JobsForStudentsDto>> getJobsForStudent() {
         Student student = studentRepository.findByUser(returnUser())
                 .orElseThrow(() -> new ResourceNotFoundException("Student Don't have profile"));

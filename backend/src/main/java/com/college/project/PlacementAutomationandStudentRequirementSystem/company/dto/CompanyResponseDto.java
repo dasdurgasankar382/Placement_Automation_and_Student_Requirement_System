@@ -2,13 +2,15 @@ package com.college.project.PlacementAutomationandStudentRequirementSystem.compa
 
 import lombok.*;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class CompanyResponseDto {
-    private Long id;
+    private UUID id;
     private String name;
     private String location;
     private String website;

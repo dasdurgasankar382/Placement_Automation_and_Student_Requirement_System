@@ -58,8 +58,12 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public CompanyResponseDto getCompanyById(UUID id) {
-        Company company = companyRepository.findById(id)
+    public CompanyResponseDto getCompanyById() {
+        UUID recruiterId = authUtil.getCurrentUserId();
+        User user = userRepository.findById(recruiterId).orElseThrow(
+                ()->new ResourceNotFoundException("User not exists")
+        );
+        Company company = companyRepository.findByUser(user)
                 .orElseThrow(()->new ResourceNotFoundException("Company not found"));
         return modelMapper.map(company, CompanyResponseDto.class);
     }
