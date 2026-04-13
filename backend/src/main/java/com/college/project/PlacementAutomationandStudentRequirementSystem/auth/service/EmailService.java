@@ -6,7 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.io.UnsupportedEncodingException;
 
 @Service
 @RequiredArgsConstructor
@@ -24,12 +27,13 @@ public class EmailService {
     }
 
     // ✅ HTML Email (for reset password)
+    @Async
     public void sendEmailWithHtml(String to, String subject, String resetLink) {
         MimeMessage message = mailSender.createMimeMessage();
 
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
+            helper.setFrom("placement.system.app@gmail.com", "Placement Portal");
             helper.setTo(to);
             helper.setSubject(subject);
 
@@ -49,6 +53,8 @@ public class EmailService {
 
         } catch (MessagingException e) {
             throw new RuntimeException("Error sending email", e);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
 
         mailSender.send(message);

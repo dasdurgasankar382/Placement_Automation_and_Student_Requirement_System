@@ -47,11 +47,12 @@ const Register = () => {
       }
     } catch (err){
       console.error(err);
-      toast.error("Registration failed. Please try again.");
       if (err.response.status === 409) {
         toast.error("Email already exists.");
       }else if(err.response.status === 401){
         toast.error("Unauthorized");
+      }else{
+        toast.error(err.response.data?.message || "Registration failed");
       }
     } finally {
       setLoading(false);

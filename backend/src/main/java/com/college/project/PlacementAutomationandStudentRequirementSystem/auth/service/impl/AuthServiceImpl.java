@@ -15,6 +15,7 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.user.e
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.repository.UserRepository;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.repository.util.PasswordResetTokenRepository;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -39,6 +41,9 @@ public class AuthServiceImpl implements AuthService {
     private final AuthUtil authUtil; // to generate access token
     private final EmailService emailService; // to send email
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+    
+    @Value("${FRONTEND_URL}")
+    private String frontendUrl;
 
     @Override
     public ApiResponse<?> registerUser(RegisterRequestDto registerRequestDto) {
@@ -105,54 +110,52 @@ public class AuthServiceImpl implements AuthService {
 
         // generate validation code
         String validationCode = authUtil.generateToken();
-        System.out.println("Validation code for forgot password"+ validationCode);
 
         // save validation code in database
         PasswordResetToken passwordResetToken = new PasswordResetToken();
         passwordResetToken.setToken(validationCode);
         passwordResetToken.setUser(user);
         passwordResetToken.setExpiryDate(LocalDateTime.now().plusMinutes(10));
-        userRepository.save(user);
+        passwordResetTokenRepository.save(passwordResetToken);
 
         // send validation code to user email
-        String requestLink = "http://localhost:8080/auth/reset-password?token=" + validationCode;
-        emailService.sendEmail(forgotPasswordRequestDto.getEmail(),"Reset Password", requestLink);
+        String requestLink = frontendUrl+"/reset-password?token=" + validationCode;
+        emailService.sendEmailWithHtml(forgotPasswordRequestDto.getEmail(),"Reset Password", requestLink);
 
         return new ApiResponse<>("If this email exists, a reset link has been sent.",null);
     }
 
     @Override
-    public ApiResponse<?> resetPassword(ResetPasswordRequestDto resetPasswordRequestDto) {
+    @Transactional
+    public ApiResponse<?> resetPassword(ResetPasswordRequestDto dto) {
 
-        PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(resetPasswordRequestDto.getToken())
-                .orElseThrow(() -> new ResourceNotFoundException("Token not found"));
-        // token already used then throw exception
+        PasswordResetToken resetToken = passwordResetTokenRepository
+                .findFirstByToken(dto.getToken())
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid token"));
+
+        // ✅ check already used
         if (resetToken.isUsed()) {
             throw new InvalidCredentialsException("Token already used");
         }
-        // if time expired throw exception
-        if(resetToken.getExpiryDate().isBefore(LocalDateTime.now())){
-            throw new InvalidCredentialsException("Token already Expired");
-        }
 
+        // ✅ check expiry
+        if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new InvalidCredentialsException("Token expired");
+        }
         User user = resetToken.getUser();
-        user.setPassword(resetPasswordRequestDto.getNewPassword());
+
+        // ✅ encode password (VERY IMPORTANT)
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         userRepository.save(user);
 
+        // ✅ mark token as used
         resetToken.setUsed(true);
+        passwordResetTokenRepository.save(resetToken);
 
-        return new ApiResponse<>("Password reset successFully",null);
+        // ✅ optional: delete all tokens of this user (clean DB)
+        passwordResetTokenRepository.deleteByUser(user);
+
+        return new ApiResponse<>("Password reset successfully", null);
     }
 
-    //    public String setRole(RoleRepodto dto){
-//Role role = roleRepository.findByRoleName(dto.getRole())
-//        .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
-//User user = new User();
-//user.setEmail(dto.getEmail());
-//user.setRole(role);
-//user.setPassword(passwordEncoder.encode(dto.getPassword()));
-//        userRepository.save(user);
-//
-//        return "role set";
-//    }
 }

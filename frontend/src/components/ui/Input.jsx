@@ -24,7 +24,7 @@ export function Input({
           value={value || ""}
           onChange={onChange}
           required={required}
-          className="peer mt-1 w-full appearance-none border-b-2 border-gray-300 bg-transparent px-0 py-1 text-gray-900 focus:border-gray-500 focus:outline-none"
+          className="peer mt-1 w-full appearance-none border-b-2 border-gray-300 bg-transparent px-0 py-1 dark:bg-bg-dark-component dark:text-gray-100 focus:border-gray-500 focus:outline-none"
         >
           <option value="" disabled hidden>
             {placeholder || `Select ${label}`}

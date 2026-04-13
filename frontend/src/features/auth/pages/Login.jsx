@@ -69,7 +69,7 @@ export default function LoginPage() {
       } else if (err.response.status === 404) {
         toast.error(err.response.data.message);
       } else {
-        toast.error("Something went wrong");
+        toast.error(err.response.data.message || "Login failed");
       }
     } finally {
       setLoading(false); // 🔥 always re-enable

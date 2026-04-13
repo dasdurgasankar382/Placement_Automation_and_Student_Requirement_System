@@ -51,8 +51,7 @@ export default function ResetPassword() {
       toast.success(response?.data?.message);
       setForm({ newPassword: "", confirmPassword: "" });
     } catch (err) {
-      console.error(err);
-      toast.error("Failed to reset password");
+      toast.error(err.response.data?.message || "Failed to reset password");
     } finally {
       setForm({ newPassword: "", confirmPassword: "" });
       setLoading(false);

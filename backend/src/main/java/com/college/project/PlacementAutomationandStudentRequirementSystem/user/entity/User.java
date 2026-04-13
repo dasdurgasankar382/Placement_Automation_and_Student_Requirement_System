@@ -52,7 +52,4 @@ public class User {
     @OneToOne(mappedBy = "user", orphanRemoval = true)
     private Company company;
 
-    @OneToOne(mappedBy = "user", orphanRemoval = true)
-    private PasswordResetToken passwordResetToken;
-
 }
