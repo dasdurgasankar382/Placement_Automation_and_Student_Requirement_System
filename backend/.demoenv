@@ -1,14 +1,16 @@
 JWT_SECRET_KEY=1g!HG##hf*njh@&^U!he21q2w3a1Q!s@312WQ35nbj563@31hnj&@h1=3j4jk234jk2b2jb2I@qwfc25U4y2f4@g#3v4#v234423ceqwU?@^&#
 JWT_TOKEN_DURATION=300000
 
-DB_URL=jdbc:mysql://localhost:3306/placement_automation
-DB_USERNAME=root
-DB_PASSWORD=tiger
+{always use postgresql for not mysql}
+DB_URL=jdbc:postgresql://localhost:5432/placement_automation
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
 
 ALLOWED_ORIGINS=http://localhost:5173
 
 CONTEXT-PATH=/placement-automation/api
 
-PGHOST=
-PGUSER=
-PGPASSWORD=
+
+PGHOST=your_deployed_host
+PGUSER=your_deployed_username
+PGPASSWORD=your_deployed_password

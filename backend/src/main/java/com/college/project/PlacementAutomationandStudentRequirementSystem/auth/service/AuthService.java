@@ -1,9 +1,6 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.auth.service;
 
-import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.ForgotPasswordRequestDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.LoginRequestDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.LoginResponseDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.RegisterRequestDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.auth.dto.*;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
 import jakarta.validation.Valid;
 
@@ -19,4 +16,6 @@ public interface AuthService {
     List<?> getRoles();
 
     ApiResponse<?> forgotPassword(@Valid ForgotPasswordRequestDto forgotPasswordRequestDto);
+
+    ApiResponse<?> resetPassword(@Valid ResetPasswordRequestDto resetPasswordRequestDto);
 }

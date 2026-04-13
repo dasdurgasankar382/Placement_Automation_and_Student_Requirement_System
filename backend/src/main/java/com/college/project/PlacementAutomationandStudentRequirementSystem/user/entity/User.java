@@ -3,6 +3,7 @@ package com.college.project.PlacementAutomationandStudentRequirementSystem.user.
 import com.college.project.PlacementAutomationandStudentRequirementSystem.company.entity.Company;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.role.entity.Role;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.entity.Student;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.user.entity.util.PasswordResetToken;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -50,5 +51,8 @@ public class User {
 
     @OneToOne(mappedBy = "user", orphanRemoval = true)
     private Company company;
+
+    @OneToOne(mappedBy = "user", orphanRemoval = true)
+    private PasswordResetToken passwordResetToken;
 
 }

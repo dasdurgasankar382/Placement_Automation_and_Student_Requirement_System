@@ -112,7 +112,7 @@ public class AuthUtil {
     }
 
     // Used for create new validation code
-    public String generateValidationCode() {
-        return String.format("%06d", new Random().nextInt(1000000));
+    public String generateToken() {
+        return UUID.randomUUID().toString();
     }
 }

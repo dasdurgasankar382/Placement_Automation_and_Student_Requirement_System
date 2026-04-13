@@ -99,15 +99,28 @@ export const forgotPasswordHeaderAndFooterConfig = {
     link: "/login",
   },
 };
-export const verifyCodeFields = [
-  {
-    label: "Verification Code",
-    type: "password",
-    name: "code",
-    placeholder: "Enter verification code",
-    required: true,
+// export const verifyCodeFields = [
+//   {
+//     label: "Verification Code",
+//     type: "password",
+//     name: "code",
+//     placeholder: "Enter verification code",
+//     required: true,
+//   },
+// ];
+
+export const resetPasswordHeaderAndFooterConfig = {
+  header: {
+    title: "Set New Password",
+    subtitle: "Create a new password for your account",
   },
-];
+  footer: {
+    text: "Remember your password?",
+    linkText: "Sign in",
+    link: "/login",
+  },
+};
+
 
 export const resetPasswordFields = [
   {

@@ -5,18 +5,20 @@ import { Input } from "../../../components/ui/Input";
 import { Button } from "../../../components/ui/Button";
 import { FormFooter } from "../../../components/ui/FormFooter";
 import {
-  forgotPasswordFields,
-  forgotPasswordHeaderAndFooterConfig,
+  resetPasswordFields,
+  resetPasswordHeaderAndFooterConfig,
 } from "../../../config/forms/authFileds";
 import { toast } from "react-toastify";
-import { forgotPassword } from "../services/authService";
+import { resetPassword } from "../services/authService";
 
-export default function ForgotPassword() {
-  const { header, footer } = forgotPasswordHeaderAndFooterConfig;
+export default function ResetPassword() {
+  const { header, footer } = resetPasswordHeaderAndFooterConfig;
   const [form, setForm] = useState({
-    email: "",
+    newPassword: "",
+    confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
+  const token = new URLSearchParams(location.search).get("token");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,29 +31,30 @@ export default function ForgotPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
-    
-    // Quick validation
-    if (!form.email) {
-      toast.error("Please enter your email");
-      return;
-    }
+      // Quick validation
+      if (!form.newPassword || !form.confirmPassword) {
+        toast.error("Please fill in all fields");
+        return;
+      }
+      if (form.newPassword !== form.confirmPassword) {
+        toast.error("Passwords do not match");
+        return;
+      }
+
 
     setLoading(true);
 
-    try {
-      // Placeholder for actual API call, e.g., await forgotPasswordService(form.email)
-      console.log("Forgot password submitted for:", form.email);
-      
-      // pass email in body as { email: form.email }
-      const response = await forgotPassword({ email: form.email });
+    try {      
+      // pass token and new password in body as { token: form.token, newPassword: form.newPassword }
+      const response = await resetPassword({ token: token, newPassword: form.newPassword });
       
       toast.success(response?.data?.message);
-      setForm({ email: "" });
+      setForm({ newPassword: "", confirmPassword: "" });
     } catch (err) {
       console.error(err);
-      toast.error("Failed to send reset link");
+      toast.error("Failed to reset password");
     } finally {
-      setForm({ email: "" });
+      setForm({ newPassword: "", confirmPassword: "" });
       setLoading(false);
     }
   };
@@ -60,7 +63,7 @@ export default function ForgotPassword() {
     <Form onSubmit={handleSubmit}>
       <FormHeader headerText={header.title} pText={header.subtitle} />
       <div className="mt-5">
-        {forgotPasswordFields.map((field) => (
+        {resetPasswordFields.map((field) => (
           <Input
             label={field.label}
             key={field.name}
@@ -69,7 +72,7 @@ export default function ForgotPassword() {
             onChange={handleChange}
           />
         ))}
-        <Button type="submit" text={loading ? "Sending..." : "Send Reset Link"} />
+        <Button type="submit" text={loading ? "Resetting..." : "Reset Password"} />
         <FormFooter
           linkPath={footer.link}
           text={footer.text}

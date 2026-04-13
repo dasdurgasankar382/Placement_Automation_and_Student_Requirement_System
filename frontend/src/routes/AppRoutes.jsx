@@ -1,10 +1,14 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import RootRedirect from "../components/common/RootRedirect";
+// auth
 import LoginPage from "../features/auth/pages/Login";
 import RegisterPage from "../features/auth/pages/Register";
-import RootRedirect from "../components/common/RootRedirect";
-import ProtectedRoute from "../components/common/ProtectedRoute";
 import ForgotPassword from "../features/auth/pages/ForgotPassword";
+import ResetPassword from "../features/auth/pages/ResetPassword";
+
+// common
+import ProtectedRoute from "../components/common/ProtectedRoute";
 import JobDetails from "../components/common/JobDetails";
 
 // Student
@@ -38,6 +42,7 @@ function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       {/* Admin Routes */}
       <Route
