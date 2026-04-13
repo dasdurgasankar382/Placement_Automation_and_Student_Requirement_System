@@ -2,7 +2,9 @@ package com.college.project.PlacementAutomationandStudentRequirementSystem.role.
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -12,6 +14,8 @@ import java.time.LocalDateTime;
 @Table(name = "roles")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Role {
 
     @Id
@@ -25,9 +29,7 @@ public class Role {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @PrePersist
-    protected void onCreate(){
-        createdAt = LocalDateTime.now();
+    public Role(String roleName) {
+        this.roleName = roleName;
     }
-
 }
