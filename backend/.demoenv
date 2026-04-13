@@ -14,3 +14,10 @@ CONTEXT-PATH=/placement-automation/api
 PGHOST=your_deployed_host
 PGUSER=your_deployed_username
 PGPASSWORD=your_deployed_password
+
+URL=your_deployed_url
+
+EMAIL_USERNAME=your_email_username
+EMAIL_PASSWORD=your_email_password
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
