@@ -1,11 +1,9 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.job.repository;
 
-import com.college.project.PlacementAutomationandStudentRequirementSystem.company.dto.CompanyJobsResponseDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.JobResponseDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.Job;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.util.JobStatus;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.JobsForStudentsDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.student.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -41,5 +39,5 @@ JOIN j.company c
 WHERE j.jobStatus = 'open'
 AND j.deadline >= CURRENT_DATE
 """)
-    List<JobsForStudentsDto> findJobsForStudent(UUID studentId);
+    List<JobsForStudentsDto> findJobsForStudent( UUID studentId);
 }

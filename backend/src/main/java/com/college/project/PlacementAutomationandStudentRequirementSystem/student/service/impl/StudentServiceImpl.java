@@ -170,7 +170,8 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.findByUser(returnUser())
                 .orElseThrow(() -> new ResourceNotFoundException("Student Don't have profile"));
 
-        List<JobsForStudentsDto> jobList = jobRepository.findJobsForStudent(student.getId());
+        List<JobsForStudentsDto> jobList = jobRepository.findJobsForStudent(student.getUser().getId());
+        System.out.println("user"+student.getId() +"student" +student.getUser().getId());
         return new ApiResponse<>("Job fetched successfully", jobList);
     }
 

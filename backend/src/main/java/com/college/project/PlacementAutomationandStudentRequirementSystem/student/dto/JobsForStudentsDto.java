@@ -18,7 +18,7 @@ public class JobsForStudentsDto {
         this.job = job;
         this.companyName = companyName;
         this.companyLocation = companyLocation;
-        this.status = status;
+        this.status = status != null ? status : ApplicationStatus.NOT_APPLIED;
     }
 
 }
