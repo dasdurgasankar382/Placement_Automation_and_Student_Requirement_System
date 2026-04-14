@@ -30,6 +30,7 @@ import RecruiterApplicants from "../features/recruiter/pages/Applicants";
 import AdminLayout from "../features/admin/layouts/AdminLayout";
 import AdminDashboard from "../features/admin/pages/Dashboard";
 import AdminUsers from "../features/admin/pages/Users";
+import AdminUserDetails from "../features/admin/pages/UserDetails";
 import AdminJobs from "../features/admin/pages/Jobs";
 import AdminCompanies from "../features/admin/pages/Companies";
 import Student from "../features/recruiter/pages/Student";
@@ -56,6 +57,7 @@ function AppRoutes() {
         <Route index element={<AdminDashboard />} />
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="users" element={<AdminUsers />} />
+        <Route path="users/:id" element={<AdminUserDetails />} />
         <Route path="jobs" element={<AdminJobs />} />
         <Route path="jobs/:id" element={<JobDetails role="ADMIN" />} />
         <Route path="companies" element={<AdminCompanies />} />

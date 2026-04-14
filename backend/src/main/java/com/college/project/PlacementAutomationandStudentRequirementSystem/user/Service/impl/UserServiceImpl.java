@@ -6,6 +6,7 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.user.d
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.dto.UserResponseDtoById;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.entity.User;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.repository.UserRepository;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -22,30 +23,35 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public List<UserResponseDtoById> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream()
-                .map(user -> modelMapper.map(user, UserResponseDtoById.class)
-                ).toList();
+    public ApiResponse<List<UserResponseDto>> getAllUsers() {
+        List<UserResponseDto> users = userRepository.findAllUser();
+        return new ApiResponse<>("Users get successfully", users);
     }
 
     @Override
-    public UserResponseDto getUserById(UUID id) {
-        User user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User not found " + id));
+    public ApiResponse<UserResponseDtoById> getUserById(UUID id) {
+        UserResponseDtoById user = userRepository.findByUserid(id).orElseThrow(() -> new ResourceNotFoundException("User not found " + id));
 
-        UserResponseDto dto = modelMapper.map(user, UserResponseDto.class);
-        dto.setRole(user.getRole().getRoleName());
-        return dto;
+        return new ApiResponse<>("User get successfully", user);
     }
 
     @Override
-    public String disableUser(UUID id) {
-        User user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User not found"));
-        System.out.println(user.isActive());
-        if(!user.isActive()){
+    public ApiResponse<?> disableUser(UUID id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (!user.isActive()) {
             user.setActive(false);
         }
         userRepository.save(user);
-        return "Success";
+        return new ApiResponse<>("User disabled successfully", null);
+    }
+
+    @Override
+    public ApiResponse<?> enableUser(UUID id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (!user.isActive()) {
+            user.setActive(true);
+        }
+        userRepository.save(user);
+        return new ApiResponse<>("User disabled successfully", null);
     }
 }

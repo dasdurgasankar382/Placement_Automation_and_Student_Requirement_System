@@ -15,7 +15,7 @@ public class AdminController {
 
 private final AdminServiceImpl adminService;
 
-    @GetMapping("/profile")
+    @GetMapping("/dashboard")
     public ResponseEntity<ApiResponse<?>> getProfile() {
         return ResponseEntity.ok(adminService.getProfile());
     }

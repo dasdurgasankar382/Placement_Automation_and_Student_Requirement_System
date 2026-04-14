@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
  * Universal Data Table
  * Handles generic table rendering with an optional card header.
  */
-const DataTable = ({ title, actionLabel, onAction, columns, data, navlink, emptyMessage = "No records found." }) => {
+const DataTable = ({ title, actionLabel, onAction, columns, data, navlink, onRowClick, emptyMessage = "No records found." }) => {
   const navigate = useNavigate();
   return (
     <div className="bg-bg-light-component dark:bg-bg-dark-component rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
@@ -37,7 +37,11 @@ const DataTable = ({ title, actionLabel, onAction, columns, data, navlink, empty
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
             {data.map((row, rowIndex) => (
-              <tr key={row.id || rowIndex} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group">
+              <tr
+                key={row.id || rowIndex}
+                onClick={() => onRowClick?.(row)}
+                className={`hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group ${onRowClick ? 'cursor-pointer' : ''}`}
+              >
                 {columns.map((col, colIndex) => (
                   <td key={colIndex} className={`px-6 lg:px-8 py-5 whitespace-nowrap ${col.cellClassName || ""}`}>
                     {col.render ? col.render(row) : row[col.accessor]}

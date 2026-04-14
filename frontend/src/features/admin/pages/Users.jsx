@@ -1,10 +1,98 @@
 import React, { useEffect, useState } from "react";
-import { Trash2, Ban } from "lucide-react";
+import { Ban, Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getAllUsers, deleteUser, disableUser } from "../services/adminService";
+import { getAllUsers, disableUser } from "../services/adminService";
 import DataTable from "../../../components/ui/DataTable";
 
+const STATUS_STYLES = {
+  ACTIVE: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400",
+  DISABLED: "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400",
+  INACTIVE: "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400",
+  PENDING: "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400",
+  SUSPENDED: "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400",
+};
+
+const ROLE_STYLES = {
+  STUDENT: "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400",
+  RECRUITER: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400",
+  DEFAULT: "bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400",
+};
+
+const getTrimmedId = (id) => {
+  const idString = String(id || "");
+  return idString.length > 8 ? `${idString.slice(0, 8)}...` : idString;
+};
+
+const getRoleLabel = (role) => {
+  if (!role) return "Unknown";
+  if (typeof role === "string") return role;
+  return role.roleName || role.name || String(role.id || "Unknown");
+};
+
+const getStatusBadge = (status) => {
+  return STATUS_STYLES[String(status || "ACTIVE").toUpperCase()] || "bg-slate-100 text-slate-700 dark:bg-slate-700/30 dark:text-slate-300";
+};
+
+const createColumns = (navigate, onDisable) => [
+  {
+    header: "ID",
+    render: (row) => <span className="font-mono">{getTrimmedId(row.id)}</span>,
+  },
+  {
+    header: "Email",
+    accessor: "email",
+    cellClassName: "font-medium text-slate-900 dark:text-slate-100",
+  },
+  {
+    header: "Role",
+    render: (row) => {
+      const roleLabel = getRoleLabel(row.role);
+      return (
+        <span className={`px-2 py-1 text-xs rounded-full font-medium ${ROLE_STYLES[roleLabel] || ROLE_STYLES.DEFAULT}`}>
+          {roleLabel}
+        </span>
+      );
+    },
+  },
+  {
+    header: "Status",
+    render: (row) => {
+      const statusLabel = String(row.status || "ACTIVE").toUpperCase();
+      return (
+        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusBadge(statusLabel)}`}>
+          {statusLabel}
+        </span>
+      );
+    },
+  },
+  {
+    header: "Actions",
+    headerClassName: "text-right",
+    cellClassName: "text-right space-x-3",
+    render: (row) => (
+      <>
+        <button
+          onClick={() => navigate(`/admin/users/${row.id}`)}
+          className="text-slate-400 hover:text-blue-600 transition-colors"
+          title="View User"
+        >
+          <Eye className="h-5 w-5" />
+        </button>
+        <button
+          onClick={() => onDisable(row.id)}
+          className="text-slate-400 hover:text-amber-500 transition-colors"
+          title="Disable User"
+        >
+          <Ban className="h-5 w-5" />
+        </button>
+      </>
+    ),
+  },
+];
+
 const Users = () => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -12,14 +100,16 @@ const Users = () => {
     fetchUsers();
   }, []);
 
+  const normalizeUser = (user) => ({
+    ...user,
+    role: getRoleLabel(user.role),
+  });
+
   const fetchUsers = async () => {
     try {
       const { data } = await getAllUsers();
-      if (data?.data) {
-        setUsers(data.data);
-      } else if (Array.isArray(data)) {
-        setUsers(data);
-      }
+      const usersData = data?.data || data;
+      setUsers(Array.isArray(usersData) ? usersData.map(normalizeUser) : []);
     } catch (err) {
       toast.error(err?.response?.data?.message || "Failed to fetch users.");
       setUsers([]);
@@ -28,75 +118,15 @@ const Users = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
-    try {
-      await deleteUser(id);
-      toast.success("User deleted successfully.");
-      setUsers(users.filter(u => u.id !== id));
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Failed to delete user.");
-    }
-  };
-
   const handleDisable = async (id) => {
     try {
       await disableUser(id);
-      toast.success("User status changed successfully.");
-      // Optionally re-fetch users or locally map status update
+      toast.success("User disabled successfully.");
       fetchUsers();
     } catch (err) {
       toast.error(err?.response?.data?.message || "Failed to disable user.");
     }
   };
-
-  const columns = [
-    { header: "ID", accessor: "id" },
-    { 
-      header: "Email", 
-      accessor: "email",
-      cellClassName: "font-medium text-slate-900 dark:text-white"
-    },
-    { 
-      header: "Role", 
-      render: (row) => (
-        <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-          row.role === 'STUDENT' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
-          row.role === 'RECRUITER' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-          'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400'
-        }`}>
-          {row.role}
-        </span>
-      )
-    },
-    { 
-      header: "Status", 
-      render: (row) => row.status || "ACTIVE"
-    },
-    { 
-      header: "Actions", 
-      headerClassName: "text-right",
-      cellClassName: "text-right space-x-3",
-      render: (row) => (
-        <>
-          <button 
-            onClick={() => handleDisable(row.id)}
-            className="text-slate-400 hover:text-amber-500 transition-colors"
-            title="Disable User"
-          >
-            <Ban className="h-5 w-5" />
-          </button>
-          <button 
-            onClick={() => handleDelete(row.id)}
-            className="text-slate-400 hover:text-red-500 transition-colors"
-            title="Delete User"
-          >
-            <Trash2 className="h-5 w-5" />
-          </button>
-        </>
-      )
-    }
-  ];
 
   if (loading) {
     return (
@@ -115,11 +145,7 @@ const Users = () => {
         </div>
       </div>
 
-      <DataTable 
-        columns={columns} 
-        data={users} 
-        emptyMessage="No users found." 
-      />
+      <DataTable columns={createColumns(navigate, handleDisable)} data={users} emptyMessage="No users found." />
     </div>
   );
 };

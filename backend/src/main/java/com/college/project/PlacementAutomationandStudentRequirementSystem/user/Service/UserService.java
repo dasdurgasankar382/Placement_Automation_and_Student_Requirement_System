@@ -2,14 +2,17 @@ package com.college.project.PlacementAutomationandStudentRequirementSystem.user.
 
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.dto.UserResponseDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.dto.UserResponseDtoById;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
-    List<UserResponseDtoById> getAllUsers();
+    ApiResponse<List<UserResponseDto>> getAllUsers();
 
-    UserResponseDto getUserById(UUID id);
+    ApiResponse<UserResponseDtoById> getUserById(UUID id);
 
-    String disableUser(UUID id);
+    ApiResponse<?> disableUser(UUID id);
+
+    ApiResponse<?> enableUser(UUID id);
 }

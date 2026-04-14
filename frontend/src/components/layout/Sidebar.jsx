@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LogOut, LayoutGrid, MessageSquare } from "lucide-react";
+import { logoutUser } from "../../features/auth/services/authService";
+import { toast } from "react-toastify";
+import SuccessPage from "../../features/auth/components/SuccessPage";
 
 /**
  * Modern Dashboard Sidebar
@@ -12,10 +15,20 @@ import { LogOut, LayoutGrid, MessageSquare } from "lucide-react";
 const Sidebar = ({ title, navigation, sidebarOpen, setSidebarOpen }) => {
   const location = useLocation();
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/login";
+  const handleLogout = async () => {
+    try {
+      await logoutUser(); // Call API to invalidate session/token
+      toast.info("Logged out, see you soon 👋");
+      localStorage.removeItem("token");
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 2000);
+    } catch (error) {
+      console.error("Error occurred while logging out:", error);
+      toast.error("Failed to log out.");
+    }
   };
+
 
   return (
     <>

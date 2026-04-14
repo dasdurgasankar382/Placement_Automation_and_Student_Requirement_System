@@ -15,3 +15,7 @@ export const forgotPassword = (data) => {
 export const resetPassword = (data) => {
   return api.post("/auth/reset-password",data);
 }
+
+export const logoutUser = () => {
+  return api.delete("/auth/logout");
+}

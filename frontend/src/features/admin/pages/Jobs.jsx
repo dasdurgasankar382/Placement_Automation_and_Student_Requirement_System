@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Trash2, Eye } from "lucide-react";
+import { Eye } from "lucide-react";
 import { toast } from "react-toastify";
-import { getAllJobsForAdmin, deleteJobForAdmin } from "../services/adminService";
+import { getAllJobsForAdmin } from "../services/adminService";
 import DataTable from "../../../components/ui/DataTable";
 import { useNavigate } from "react-router-dom";
 
@@ -14,14 +14,29 @@ const Jobs = () => {
     fetchJobs();
   }, []);
 
+  const normalizeJob = (job = {}) => {
+    const nestedJob = job.job || {};
+    return {
+      ...job,
+      ...nestedJob,
+      id: job.id || nestedJob.id,
+      title: nestedJob.role || nestedJob.title || job.title || job.role || "Untitled Role",
+      companyName: job.companyName || nestedJob.companyName || job.company || "Unknown Company",
+      location: job.location || nestedJob.location || "Unknown Location",
+      salary: job.salary || nestedJob.salary || nestedJob.package || nestedJob.stipend || "Not Disclosed",
+      deadline: job.deadline || nestedJob.deadline || "",
+      status: (job.status || nestedJob.status || "").toString().toUpperCase(),
+      skills: nestedJob.skills || job.skills || nestedJob.tags || job.tags || [],
+      description: job.description || nestedJob.description || "No description provided.",
+    };
+  };
+
   const fetchJobs = async () => {
     try {
       const { data } = await getAllJobsForAdmin();
-      if (data?.data) {
-        setJobs(data.data);
-      } else if (Array.isArray(data)) {
-        setJobs(data);
-      }
+      const jobsData = data?.data || data;
+      const jobsArray = Array.isArray(jobsData) ? jobsData : [];
+      setJobs(jobsArray.map(normalizeJob));
     } catch (err) {
       toast.error(err?.response?.data?.message || "Failed to fetch jobs.");
       setJobs([]);
@@ -30,61 +45,50 @@ const Jobs = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this job posting?")) return;
-    try {
-      await deleteJobForAdmin(id);
-      toast.success("Job deleted successfully.");
-      setJobs(jobs.filter(j => j.id !== id));
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Failed to delete job.");
-    }
-  };
-
   const columns = [
-    { 
-      header: "Job ID", 
+    {
+      header: "Job ID",
       render: (row) => <span className="font-mono text-xs">{String(row.id).substring(0, 8)}...</span>
     },
-    { 
-      header: "Title", 
+    {
+      header: "Job Role",
       accessor: "title",
       cellClassName: "font-medium text-slate-900 dark:text-white"
     },
-    { header: "Company", accessor: "company" },
+    { header: "Company", accessor: "companyName" },
     { header: "Location", accessor: "location" },
-    { 
-      header: "Status", 
+    {
+      header: "Salary",
+      accessor: "salary"
+    },
+    {
+      header: "Deadline",
+      accessor: "deadline",
+      render: (row) => row.deadline || "Open Until Filled"
+    },
+    {
+      header: "Status",
       render: (row) => (
         <span className={`px-2 py-1 text-xs rounded-full font-medium ${
           row.status === 'OPEN' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
           'bg-slate-100 text-slate-700 dark:bg-slate-500/20 dark:text-slate-400'
         }`}>
-          {row.status}
+          {row.status || "UNKNOWN"}
         </span>
       )
     },
-    { 
-      header: "Actions", 
+    {
+      header: "Actions",
       headerClassName: "text-right",
-      cellClassName: "text-right space-x-3",
+      cellClassName: "text-right",
       render: (row) => (
-        <>
-          <button 
-            onClick={() => navigate(`/admin/jobs/${row.id}`)}
-            className="text-slate-400 hover:text-blue-500 transition-colors"
-            title="View Details"
-          >
-            <Eye className="h-5 w-5" />
-          </button>
-          <button 
-            onClick={() => handleDelete(row.id)}
-            className="text-slate-400 hover:text-red-500 transition-colors"
-            title="Delete Job"
-          >
-            <Trash2 className="h-5 w-5" />
-          </button>
-        </>
+        <button
+          onClick={() => navigate(`/admin/jobs/${row.id}`)}
+          className="text-slate-400 hover:text-blue-500 transition-colors"
+          title="View Details"
+        >
+          <Eye className="h-5 w-5" />
+        </button>
       )
     }
   ];
@@ -107,6 +111,7 @@ const Jobs = () => {
       <DataTable 
         columns={columns} 
         data={jobs} 
+        onRowClick={(row) => navigate(`/admin/jobs/${row.id}`)}
         emptyMessage="No jobs found." 
       />
     </div>

@@ -29,7 +29,7 @@ api.interceptors.response.use(
     const isAuthRoute =
       url.includes("/auth/login") || url.includes("/auth/register");
 
-    if (error.response?.status === 401 && !isAuthRoute) {
+    if (!isAuthRoute) {
       setTimeout(() => {
         window.location.href = "/login";
       }, 1500);

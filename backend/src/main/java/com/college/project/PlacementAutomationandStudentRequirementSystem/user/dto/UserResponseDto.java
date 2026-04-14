@@ -1,22 +1,28 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.user.dto;
 
+import com.college.project.PlacementAutomationandStudentRequirementSystem.role.entity.Role;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
-@Getter
+
 public class UserResponseDto {
 
-    private Long id;
+    private UUID id;
 
     private String email;
 
-    private String role;
+    private Role role;
 
-    private String createdAt;
+    private LocalDateTime createdAt;
+
+    public UserResponseDto(UUID id, String email, Role role, LocalDateTime createdAt) {
+        this.id = id;
+        this.email = email;
+        this.role = role;
+        this.createdAt = createdAt;
+    }
 
 }

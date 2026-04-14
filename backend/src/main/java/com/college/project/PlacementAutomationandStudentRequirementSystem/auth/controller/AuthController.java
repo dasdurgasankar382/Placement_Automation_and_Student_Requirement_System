@@ -51,6 +51,7 @@ public ResponseEntity<String> health() {
                 body(authServiceimpl.resetPassword(resetPasswordRequestDto));
     }
 
+    @DeleteMapping("/logout")
     public ResponseEntity<ApiResponse<?>> logoutUser(){
         return ResponseEntity.status(HttpStatus.OK).body(authServiceimpl.logoutUser());
     }
