@@ -32,12 +32,12 @@ SELECT DISTINCT new com.college.project.PlacementAutomationandStudentRequirement
         j.id, j.role, j.salary, j.skills, j.description, j.deadline, j.jobStatus
     ),
     c.name,
-    COALESCE(a.status, 'NOT_APPLIED')
+    c.location,
+    (SELECT a.status FROM Application a\s
+     WHERE a.job.id = j.id AND a.student.id = :studentId)
 )
 FROM Job j
 JOIN j.company c
-LEFT JOIN Application a
-    ON a.job.id = j.id AND a.student.id = :studentId
 WHERE j.jobStatus = 'open'
 AND j.deadline >= CURRENT_DATE
 """)

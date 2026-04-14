@@ -153,6 +153,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public ApiResponse<StudentProfileAdminResponseDto> getProfileById(UUID id) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not exists"));

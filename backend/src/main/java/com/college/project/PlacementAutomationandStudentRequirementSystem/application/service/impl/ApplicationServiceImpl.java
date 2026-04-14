@@ -131,6 +131,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    @Transactional
     public ApiResponse<List<ApplicantDTO>> getAllApplicantsForJob(UUID jobId) {
         UUID recruiterId = authUtil.getCurrentUserId();
         
@@ -161,6 +162,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    @Transactional
     public ApiResponse<?> getApplicantResume(UUID studentId) {
 
         Student student = studentRepository.findById(studentId).orElseThrow(()->

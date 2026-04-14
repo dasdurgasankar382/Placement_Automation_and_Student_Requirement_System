@@ -51,11 +51,11 @@ const Profile = () => {
   const handleDownloadResume = async () => {
     try {
       const response = await downloadResume();
-      const base64Data = response.data.base64Data;
-      const fileType = response.data.fileType;
-      const fileName = response.data.fileName;
 
-      // Convert base64 to blob and download
+      // Extract data from response
+      const { fileName, fileType, base64Data } = response.data.data;
+
+      // Decode base64 to blob
       const byteCharacters = atob(base64Data);
       const byteNumbers = new Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {
@@ -64,15 +64,20 @@ const Profile = () => {
       const byteArray = new Uint8Array(byteNumbers);
       const blob = new Blob([byteArray], { type: fileType });
 
+      // Create download link
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
-      link.download = fileName;
+      link.download = fileName || 'resume.pdf';
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
       window.URL.revokeObjectURL(link.href);
+
+      toast.success("Resume downloaded successfully");
 
     } catch (error) {
       console.error("Failed to download resume:", error);
-      toast.error("Failed to download resume");
+      toast.error("Failed to download resume. Please try again.");
     }
   };
 

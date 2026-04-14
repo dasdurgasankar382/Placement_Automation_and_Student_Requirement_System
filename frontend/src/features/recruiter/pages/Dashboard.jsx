@@ -36,7 +36,7 @@ const Dashboard = () => {
 
   const getStatValue = (id) => {
     if (id === "total_postings") return jobs.length;
-    if (id === "active_postings") return jobs.filter(j => (j.jobStatus || j.status) === 'OPEN').length;
+    if (id === "active_postings") return jobs.filter(j => (j.jobStatus || j.status) === 'open').length;
     return 0;
   };
 
@@ -59,8 +59,8 @@ const Dashboard = () => {
       
       {/* 1. Hero Banner */}
       <HeroBanner 
-        title={`Hello ${companyInfo?.name || "Recruiter"}!`}
-        subtitle={`Welcome back! You have ${getStatValue("active_postings")} active job postings.`}
+        title={`Welcome to ${companyInfo?.name || "Recruiter"}!`}
+        subtitle={`Welcome to! You have ${getStatValue("active_postings")} active job postings.`}
         buttonText="View Postings"
         buttonLink="/recruiter/jobs"
         illustration={
@@ -97,6 +97,7 @@ const Dashboard = () => {
             title="Recent Job Postings" 
             actionLabel="See all" 
             columns={recentJobsTableColumns} 
+            navlink={"/recruiter/jobs"}
             data={jobs.slice(0, 5)} 
           />
         </div>

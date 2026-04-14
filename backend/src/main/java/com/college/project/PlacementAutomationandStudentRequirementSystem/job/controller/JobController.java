@@ -40,7 +40,7 @@ public class JobController {
                 .body(jobService.changeJobStatus(id));
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()") // admin
     @GetMapping
     public ResponseEntity<List<JobResponseDto>> getAllJobs() {
         return ResponseEntity.status(HttpStatus.OK)

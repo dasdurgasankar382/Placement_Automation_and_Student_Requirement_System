@@ -59,7 +59,7 @@ const Jobs = () => {
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
         </div>
       ) : (
-        <JobList jobs={filteredJobs} onApply={(job) => navigate(`/student/jobs/${job.id}`)} />
+        <JobList jobs={filteredJobs} onApply={(job) => navigate(`/student/jobs/${job.id}`, { state: { job } })} />
       )}
     </div>
   );

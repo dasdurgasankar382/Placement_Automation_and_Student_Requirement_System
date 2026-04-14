@@ -1,10 +1,11 @@
-import React from "react";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Universal Data Table
  * Handles generic table rendering with an optional card header.
  */
-const DataTable = ({ title, actionLabel, onAction, columns, data, emptyMessage = "No records found." }) => {
+const DataTable = ({ title, actionLabel, onAction, columns, data, navlink, emptyMessage = "No records found." }) => {
+  const navigate = useNavigate();
   return (
     <div className="bg-bg-light-component dark:bg-bg-dark-component rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
       
@@ -14,8 +15,8 @@ const DataTable = ({ title, actionLabel, onAction, columns, data, emptyMessage =
           {title && <h3 className="text-xl font-bold text-slate-900 dark:text-white">{title}</h3>}
           {actionLabel && (
             <button 
-              onClick={onAction} 
-              className="bg-brand-purple hover:bg-brand-purple-hover text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-md shadow-brand-purple/20 transition-all"
+              onClick={onAction ? onAction : () => navigate(navlink)} 
+              className="bg-brand-purple hover:bg-brand-purple-hover hover:cursor-pointer text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-md shadow-brand-purple/20 transition-all"
             >
               {actionLabel}
             </button>

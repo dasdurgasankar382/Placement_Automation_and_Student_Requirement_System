@@ -22,5 +22,4 @@ public class JobResponseDto {
     private String description;
     private LocalDate deadline;
     private JobStatus jobStatus;
-
 }
