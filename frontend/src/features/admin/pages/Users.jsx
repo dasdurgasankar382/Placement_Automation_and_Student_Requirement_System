@@ -1,115 +1,42 @@
 import React, { useEffect, useState } from "react";
-import { Ban, Eye } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getAllUsers, disableUser } from "../services/adminService";
-import DataTable from "../../../components/ui/DataTable";
-
-const STATUS_STYLES = {
-  ACTIVE: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400",
-  DISABLED: "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400",
-  INACTIVE: "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400",
-  PENDING: "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400",
-  SUSPENDED: "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400",
-};
-
-const ROLE_STYLES = {
-  STUDENT: "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400",
-  RECRUITER: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400",
-  DEFAULT: "bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400",
-};
-
-const getTrimmedId = (id) => {
-  const idString = String(id || "");
-  return idString.length > 8 ? `${idString.slice(0, 8)}...` : idString;
-};
-
-const getRoleLabel = (role) => {
-  if (!role) return "Unknown";
-  if (typeof role === "string") return role;
-  return role.roleName || role.name || String(role.id || "Unknown");
-};
-
-const getStatusBadge = (status) => {
-  return STATUS_STYLES[String(status || "ACTIVE").toUpperCase()] || "bg-slate-100 text-slate-700 dark:bg-slate-700/30 dark:text-slate-300";
-};
-
-const createColumns = (navigate, onDisable) => [
-  {
-    header: "ID",
-    render: (row) => <span className="font-mono">{getTrimmedId(row.id)}</span>,
-  },
-  {
-    header: "Email",
-    accessor: "email",
-    cellClassName: "font-medium text-slate-900 dark:text-slate-100",
-  },
-  {
-    header: "Role",
-    render: (row) => {
-      const roleLabel = getRoleLabel(row.role);
-      return (
-        <span className={`px-2 py-1 text-xs rounded-full font-medium ${ROLE_STYLES[roleLabel] || ROLE_STYLES.DEFAULT}`}>
-          {roleLabel}
-        </span>
-      );
-    },
-  },
-  {
-    header: "Status",
-    render: (row) => {
-      const statusLabel = String(row.status || "ACTIVE").toUpperCase();
-      return (
-        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusBadge(statusLabel)}`}>
-          {statusLabel}
-        </span>
-      );
-    },
-  },
-  {
-    header: "Actions",
-    headerClassName: "text-right",
-    cellClassName: "text-right space-x-3",
-    render: (row) => (
-      <>
-        <button
-          onClick={() => navigate(`/admin/users/${row.id}`)}
-          className="text-slate-400 hover:text-blue-600 transition-colors"
-          title="View User"
-        >
-          <Eye className="h-5 w-5" />
-        </button>
-        <button
-          onClick={() => onDisable(row.id)}
-          className="text-slate-400 hover:text-amber-500 transition-colors"
-          title="Disable User"
-        >
-          <Ban className="h-5 w-5" />
-        </button>
-      </>
-    ),
-  },
-];
+import UserCard from "../../../components/ui/UserCard";
+import { Search } from "lucide-react";
+import { getRoleLabel } from "../../../utils/formatters";
 
 const Users = () => {
-  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchUsers();
   }, []);
 
+  useEffect(() => {
+    const term = searchTerm.toLowerCase();
+    const filtered = users.filter(u => 
+      u.name?.toLowerCase().includes(term) ||
+      u.email?.toLowerCase().includes(term) ||
+      u.roleLabel?.toLowerCase().includes(term)
+    );
+    setFilteredUsers(filtered);
+  }, [searchTerm, users]);
+
   const normalizeUser = (user) => ({
     ...user,
-    role: getRoleLabel(user.role),
+    roleLabel: getRoleLabel(user.role),
   });
 
   const fetchUsers = async () => {
     try {
       const { data } = await getAllUsers();
       const usersData = data?.data || data;
-      setUsers(Array.isArray(usersData) ? usersData.map(normalizeUser) : []);
+      const normalized = Array.isArray(usersData) ? usersData.map(normalizeUser) : [];
+      setUsers(normalized);
+      setFilteredUsers(normalized);
     } catch (err) {
       toast.error(err?.response?.data?.message || "Failed to fetch users.");
       setUsers([]);
@@ -119,6 +46,7 @@ const Users = () => {
   };
 
   const handleDisable = async (id) => {
+    if (!window.confirm("Are you sure you want to disable this user?")) return;
     try {
       await disableUser(id);
       toast.success("User disabled successfully.");
@@ -137,15 +65,42 @@ const Users = () => {
   }
 
   return (
-    <div>
-      <div className="mb-8 flex justify-between items-center">
+    <div className="space-y-8 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Manage Users</h1>
           <p className="text-slate-600 dark:text-slate-400 mt-2">View and manage all system users.</p>
         </div>
+
+        <div className="relative w-full md:w-80 group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-purple-500 transition-colors" />
+          <input
+            type="text"
+            placeholder="Search users by name, email..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 outline-none transition-all shadow-sm"
+          />
+        </div>
       </div>
 
-      <DataTable columns={createColumns(navigate, handleDisable)} data={users} emptyMessage="No users found." />
+      {filteredUsers.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredUsers.map((user) => (
+            <UserCard 
+              key={user.id} 
+              user={user} 
+              onDisable={handleDisable}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-24 bg-white/50 dark:bg-slate-800/30 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700">
+          <User className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+          <p className="text-slate-500 dark:text-slate-400 text-lg font-medium">No users found.</p>
+          <p className="text-slate-400 dark:text-slate-500 mt-1">Try adjusting your search criteria.</p>
+        </div>
+      )}
     </div>
   );
 };

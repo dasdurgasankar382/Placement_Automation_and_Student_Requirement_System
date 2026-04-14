@@ -5,6 +5,7 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.user.d
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,8 +31,17 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query(""" 
             SELECT new com.college.project.PlacementAutomationandStudentRequirementSystem.user.dto.UserResponseDtoById
                         (u.id, u.email,  u.isActive, u.role, u.createdAt, u.updatedAt)
-                    FROM User u
+                    FROM User u WHERE u.id = :id
             """
     )
-    Optional<UserResponseDtoById> findByUserid(UUID id);
+    Optional<UserResponseDtoById> findByUserid(@Param("id") UUID id);
+
+    @Query(
+            """
+            SELECT COUNT(u)
+            FROM User u
+            WHERE u.isActive = true
+            """
+    )
+    Long countByIsActive();
 }

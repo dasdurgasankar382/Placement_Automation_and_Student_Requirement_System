@@ -29,7 +29,7 @@ const DataTable = ({ title, actionLabel, onAction, columns, data, navlink, onRow
           <thead>
             <tr>
               {columns.map((col, index) => (
-                <th key={index} className={`px-6 lg:px-8 py-4 font-semibold text-slate-500 dark:text-slate-400 ${col.headerClassName || ""}`}>
+                <th key={index} className={`px-4 lg:px-6 xl:px-8 py-3 lg:py-4 font-semibold text-slate-500 dark:text-slate-400 text-xs lg:text-sm ${col.headerClassName || ""} ${col.hideOnMobile ? 'hidden md:table-cell' : ''}`}>
                   {col.header}
                 </th>
               ))}
@@ -43,7 +43,7 @@ const DataTable = ({ title, actionLabel, onAction, columns, data, navlink, onRow
                 className={`hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group ${onRowClick ? 'cursor-pointer' : ''}`}
               >
                 {columns.map((col, colIndex) => (
-                  <td key={colIndex} className={`px-6 lg:px-8 py-5 whitespace-nowrap ${col.cellClassName || ""}`}>
+                  <td key={colIndex} className={`px-4 lg:px-6 xl:px-8 py-3 lg:py-5 text-xs lg:text-sm ${col.cellClassName || ""} ${col.hideOnMobile ? 'hidden md:table-cell' : ''}`}>
                     {col.render ? col.render(row) : row[col.accessor]}
                   </td>
                 ))}
@@ -51,7 +51,7 @@ const DataTable = ({ title, actionLabel, onAction, columns, data, navlink, onRow
             ))}
             {data.length === 0 && (
               <tr>
-                <td colSpan={columns.length} className="px-6 py-8 text-center text-slate-500">
+                <td colSpan={columns.length} className="px-4 py-6 lg:px-6 lg:py-8 text-center text-slate-500 text-sm">
                   {emptyMessage}
                 </td>
               </tr>

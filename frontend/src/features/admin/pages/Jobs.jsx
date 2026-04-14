@@ -1,42 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { Eye } from "lucide-react";
 import { toast } from "react-toastify";
 import { getAllJobsForAdmin } from "../services/adminService";
-import DataTable from "../../../components/ui/DataTable";
+import JobCard from "../../../components/ui/JobCard";
 import { useNavigate } from "react-router-dom";
+import { normalizeJob } from "../../../utils/jobNormalizer";
+import { Search, Briefcase } from "lucide-react";
 
 const Jobs = () => {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
+  const [filteredJobs, setFilteredJobs] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchJobs();
   }, []);
 
-  const normalizeJob = (job = {}) => {
-    const nestedJob = job.job || {};
-    return {
-      ...job,
-      ...nestedJob,
-      id: job.id || nestedJob.id,
-      title: nestedJob.role || nestedJob.title || job.title || job.role || "Untitled Role",
-      companyName: job.companyName || nestedJob.companyName || job.company || "Unknown Company",
-      location: job.location || nestedJob.location || "Unknown Location",
-      salary: job.salary || nestedJob.salary || nestedJob.package || nestedJob.stipend || "Not Disclosed",
-      deadline: job.deadline || nestedJob.deadline || "",
-      status: (job.status || nestedJob.status || "").toString().toUpperCase(),
-      skills: nestedJob.skills || job.skills || nestedJob.tags || job.tags || [],
-      description: job.description || nestedJob.description || "No description provided.",
-    };
-  };
+  useEffect(() => {
+    const term = searchTerm.toLowerCase();
+    const filtered = jobs.filter(j => 
+      j.title?.toLowerCase().includes(term) ||
+      j.company?.toLowerCase().includes(term) ||
+      j.location?.toLowerCase().includes(term)
+    );
+    setFilteredJobs(filtered);
+  }, [searchTerm, jobs]);
 
   const fetchJobs = async () => {
     try {
       const { data } = await getAllJobsForAdmin();
       const jobsData = data?.data || data;
       const jobsArray = Array.isArray(jobsData) ? jobsData : [];
-      setJobs(jobsArray.map(normalizeJob));
+      const normalized = jobsArray.map(normalizeJob);
+      setJobs(normalized);
+      setFilteredJobs(normalized);
     } catch (err) {
       toast.error(err?.response?.data?.message || "Failed to fetch jobs.");
       setJobs([]);
@@ -44,54 +42,6 @@ const Jobs = () => {
       setLoading(false);
     }
   };
-
-  const columns = [
-    {
-      header: "Job ID",
-      render: (row) => <span className="font-mono text-xs">{String(row.id).substring(0, 8)}...</span>
-    },
-    {
-      header: "Job Role",
-      accessor: "title",
-      cellClassName: "font-medium text-slate-900 dark:text-white"
-    },
-    { header: "Company", accessor: "companyName" },
-    { header: "Location", accessor: "location" },
-    {
-      header: "Salary",
-      accessor: "salary"
-    },
-    {
-      header: "Deadline",
-      accessor: "deadline",
-      render: (row) => row.deadline || "Open Until Filled"
-    },
-    {
-      header: "Status",
-      render: (row) => (
-        <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-          row.status === 'OPEN' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-          'bg-slate-100 text-slate-700 dark:bg-slate-500/20 dark:text-slate-400'
-        }`}>
-          {row.status || "UNKNOWN"}
-        </span>
-      )
-    },
-    {
-      header: "Actions",
-      headerClassName: "text-right",
-      cellClassName: "text-right",
-      render: (row) => (
-        <button
-          onClick={() => navigate(`/admin/jobs/${row.id}`)}
-          className="text-slate-400 hover:text-blue-500 transition-colors"
-          title="View Details"
-        >
-          <Eye className="h-5 w-5" />
-        </button>
-      )
-    }
-  ];
 
   if (loading) {
     return (
@@ -102,18 +52,43 @@ const Jobs = () => {
   }
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Manage Jobs</h1>
-        <p className="text-slate-600 dark:text-slate-400 mt-2">Monitor and manage all job postings.</p>
+    <div className="space-y-8 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Manage Jobs</h1>
+          <p className="text-slate-600 dark:text-slate-400 mt-2">Monitor and manage all job postings.</p>
+        </div>
+
+        <div className="relative w-full md:w-80 group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-purple-500 transition-colors" />
+          <input
+            type="text"
+            placeholder="Search jobs by title, company..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 outline-none transition-all shadow-sm"
+          />
+        </div>
       </div>
 
-      <DataTable 
-        columns={columns} 
-        data={jobs} 
-        onRowClick={(row) => navigate(`/admin/jobs/${row.id}`)}
-        emptyMessage="No jobs found." 
-      />
+      {filteredJobs.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {filteredJobs.map((job) => (
+            <JobCard 
+              key={job.id} 
+              job={job} 
+              onAction={() => navigate(`/admin/jobs/${job.id}`)}
+              actionText="View Details"
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-24 bg-white/50 dark:bg-slate-800/30 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700">
+          <Briefcase className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+          <p className="text-slate-500 dark:text-slate-400 text-lg font-medium">No jobs found.</p>
+          <p className="text-slate-400 dark:text-slate-500 mt-1">Try adjusting your search criteria.</p>
+        </div>
+      )}
     </div>
   );
 };
