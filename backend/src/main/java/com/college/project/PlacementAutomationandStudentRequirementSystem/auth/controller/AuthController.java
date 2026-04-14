@@ -40,23 +40,20 @@ public ResponseEntity<String> health() {
                 .body(authServiceimpl.loginUser(loginRequestDto));
     }
 
-    @GetMapping("/roles")
-    public ResponseEntity<List<?>> getRoles(){
-        return ResponseEntity.status(HttpStatus.OK).body(authServiceimpl.getRoles());
-    }
-
     @PostMapping("/forgot-password")
     public ResponseEntity<ApiResponse<?>> forgotPassword(@RequestBody @Valid ForgotPasswordRequestDto forgotPasswordRequestDto){
         return ResponseEntity.status(HttpStatus.OK).body(authServiceimpl.forgotPassword(forgotPasswordRequestDto));
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<ApiResponse<?>> resetPassword(@RequestBody @Valid ResetPasswordRequestDto
-                                                        resetPasswordRequestDto){
+    public ResponseEntity<ApiResponse<?>> resetPassword(@RequestBody @Valid ResetPasswordRequestDto resetPasswordRequestDto){
         return ResponseEntity.status(HttpStatus.OK).
                 body(authServiceimpl.resetPassword(resetPasswordRequestDto));
     }
 
+    public ResponseEntity<ApiResponse<?>> logoutUser(){
+        return ResponseEntity.status(HttpStatus.OK).body(authServiceimpl.logoutUser());
+    }
 
 //    @PostMapping("/set-role")
 //    public ResponseEntity<String> setRole(@RequestBody RoleRepodto roleRepodto){

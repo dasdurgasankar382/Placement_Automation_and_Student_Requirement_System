@@ -3,6 +3,13 @@ import { Briefcase, Building2, MapPin, DollarSign, Clock } from "lucide-react";
 import { Button } from "../../components/ui/Button"; // Assuming reusable button exists
 
 const JobCard = ({ job, onApply, actionText, onAction, onEdit, isClosed ,onClose}) => {
+  const status = job?.status?.toString().trim().toUpperCase();
+  const isJobApplied = Boolean(
+    job?.applied ||
+    job?.isApplied ||
+    (status && status !== "NOT_APPLIED")
+  );
+
   return (
     <div className="group bg-white dark:bg-slate-800/80 backdrop-blur-xl border border-slate-200 dark:border-slate-700 p-6 rounded-2xl hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-1 transition-all duration-300 w-full">
       <div className="flex justify-between items-start gap-4">
@@ -91,15 +98,15 @@ const JobCard = ({ job, onApply, actionText, onAction, onEdit, isClosed ,onClose
           )}
           {onApply && (
             <button 
-              onClick={(job?.applied || job?.isApplied || job?.status === "APPLIED") ? undefined : onApply}
-              disabled={job?.applied || job?.isApplied || job?.status === "APPLIED"}
+              onClick={isJobApplied ? undefined : onApply}
+              disabled={isJobApplied}
               className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${
-                job?.applied || job?.isApplied || job?.status === "APPLIED"
+                isJobApplied
                   ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed border border-slate-200 dark:border-slate-700 shadow-none"
                   : "bg-slate-900 dark:bg-blue-600 text-white dark:text-white hover:bg-slate-800 dark:hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/20 active:scale-95"
               }`}
             >
-              {job?.applied || job?.isApplied || job?.status === "APPLIED" ? "Applied" : "Apply Now"}
+              {isJobApplied ? "Applied" : "Apply Now"}
             </button>
           )}
         </div>)}

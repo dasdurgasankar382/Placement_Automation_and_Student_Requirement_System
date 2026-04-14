@@ -14,7 +14,6 @@ const JobDetails = ({ role }) => {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
-  const [isApplied, setIsApplied] = useState(false);
 
   useEffect(() => {
     fetchJobDetails();
@@ -40,9 +39,6 @@ const JobDetails = ({ role }) => {
 
       // Handle nested job structure: { companyName: "TCS", job: { description: "...", deadline: "..." } }
       const normalizedJob = jobData.job ? { ...jobData, ...jobData.job } : jobData;
-      if (normalizedJob.status === "APPLIED" || normalizedJob.appliedAt) {
-        setIsApplied(true);
-      }
 
       setJob(normalizedJob);
     } catch (err) {
@@ -110,9 +106,8 @@ const JobDetails = ({ role }) => {
           </div>
 
           {role === "STUDENT" && (
-            <Button variant="primary" onClick={handleApply} disabled={applying || isApplied} className="w-full md:w-auto px-8 py-3 text-lg font-semibold shadow-lg shadow-blue-500/30">
-              {/* if job already applied then show ad applied */}
-              {isApplied ? "Already Applied" : (applying ? "Applying..." : "Apply For Job")}
+            <Button variant="primary" onClick={handleApply} disabled={applying} className="w-full md:w-auto px-8 py-3 text-lg font-semibold shadow-lg shadow-blue-500/30">
+{applying ? "Applying..." : "Apply For Job"}
             </Button>
           )}
         </div>

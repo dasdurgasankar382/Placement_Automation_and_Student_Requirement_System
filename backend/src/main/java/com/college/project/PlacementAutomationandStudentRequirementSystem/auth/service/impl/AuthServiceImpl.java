@@ -158,4 +158,9 @@ public class AuthServiceImpl implements AuthService {
         return new ApiResponse<>("Password reset successfully", null);
     }
 
+    @Override
+    public ApiResponse<?> logoutUser() {
+        authUtil.clearToken();
+        return new ApiResponse<>("Logout successfully", null);
+    }
 }

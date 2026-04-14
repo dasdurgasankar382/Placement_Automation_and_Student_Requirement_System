@@ -6,27 +6,46 @@ export const getDashboardOverview = () => {
 
 // Users Management
 export const getAllUsers = () => {
-  return api.get("/admin/users");
+  return api.get("/users");
 };
 
 export const deleteUser = (id) => {
-  return api.delete(`/admin/user/${id}`);
+  return api.delete(`/users/${id}`);
 };
 
 export const disableUser = (id) => {
   return api.put(`/users/${id}/disable`);
 };
 
-// Jobs Management
-export const getAllJobsForAdmin = () => {
-  return api.get("/admin/jobs");
+// Students Management
+export const getAllStudentsForAdmin = () => {
+  return api.get("/students");
 };
 
-export const deleteJobForAdmin = (id) => {
-  return api.delete(`/admin/job/${id}`);
+export const getStudentProfileForAdmin = (studentId) => {
+  return api.get(`/students/${studentId}`);
+}
+
+// Jobs Management
+export const getAllJobsForAdmin = () => {
+  return api.get("/jobs");
+};
+
+export const getJobById = (jobId) => {
+  return api.get(`/jobs/${jobId}`);
 };
 
 // Companies Management
 export const getAllCompaniesForAdmin = () => {
-  return api.get("/admin/companies");
+  return api.get("/companies");
 };
+
+export const getCompanyJobsForAdmin = (companyId) => {
+  return api.get(`/companies/${companyId}/jobs`);
+};
+
+// Applications Management  
+export const getAllApplicationsForAdmin = () => {
+  return api.get("/applications");
+}
+

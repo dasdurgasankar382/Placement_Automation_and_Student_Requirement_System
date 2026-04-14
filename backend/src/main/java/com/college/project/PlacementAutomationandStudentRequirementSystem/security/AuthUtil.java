@@ -115,4 +115,8 @@ public class AuthUtil {
     public String generateToken() {
         return UUID.randomUUID().toString();
     }
+
+    public void clearToken() {
+        SecurityContextHolder.clearContext();
+    }
 }

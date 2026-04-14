@@ -55,7 +55,7 @@ public class JobController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") // All
     public ResponseEntity<JobResponseDto> getJobById(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(jobService.getJobById(id));

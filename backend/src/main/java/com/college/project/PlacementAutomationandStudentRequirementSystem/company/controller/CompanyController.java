@@ -36,7 +36,7 @@ private final CompanyServiceImpl companyService;
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/company-profile") //ALL
+    @GetMapping("/company-profile") //RECRUITER
     public ResponseEntity<CompanyResponseDto> getCompany(){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(companyService.getCompanyById());

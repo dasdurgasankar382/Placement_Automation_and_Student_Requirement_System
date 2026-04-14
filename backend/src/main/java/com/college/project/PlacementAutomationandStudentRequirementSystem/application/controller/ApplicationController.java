@@ -50,7 +50,7 @@ public class ApplicationController {
 
 @PreAuthorize("hasRole('ADMIN')")
     @GetMapping     //ADMIN
-    public ResponseEntity<ApiResponse<List<ApplicationSummaryDto>>> getAllApplications() {
+        public ResponseEntity<ApiResponse<List<ApplicationSummaryDto>>> getAllApplications() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(applicationService.getAllApplications());
     }

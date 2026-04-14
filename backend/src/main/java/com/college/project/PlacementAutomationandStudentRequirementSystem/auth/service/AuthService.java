@@ -18,4 +18,6 @@ public interface AuthService {
     ApiResponse<?> forgotPassword(@Valid ForgotPasswordRequestDto forgotPasswordRequestDto);
 
     ApiResponse<?> resetPassword(@Valid ResetPasswordRequestDto resetPasswordRequestDto);
+
+    ApiResponse<?> logoutUser();
 }

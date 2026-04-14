@@ -24,6 +24,7 @@ const Jobs = () => {
             const title = job.role || job.jobTitle || job.title || item.jobTitle || "Untitled Role";
             const company = job.comapnyName || job.companyName || item.companyName || job.company || item.company || "Unknown Company";
             const rawSalary = job.salary || job.package || job.stipend || item.salary;
+            const status = (item.status || job.status || "").toString().trim().toUpperCase();
 
             return {
               ...item,
@@ -32,7 +33,7 @@ const Jobs = () => {
               company,
               salary: rawSalary ? `₹${rawSalary.toLocaleString()}` : "Not Disclosed",
               tags: job.skills || job.tags || item.skills || [],
-              isApplied: item.status === "APPLIED" || !!item.appliedAt || job.isApplied,
+              isApplied: status ? status !== "NOT_APPLIED" : !!item.appliedAt || job.isApplied,
             };
           }),
         );

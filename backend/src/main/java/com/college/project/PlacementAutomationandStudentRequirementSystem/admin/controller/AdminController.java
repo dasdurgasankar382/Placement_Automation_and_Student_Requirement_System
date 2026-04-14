@@ -6,10 +6,7 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.util.A
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin")
@@ -18,8 +15,8 @@ public class AdminController {
 
 private final AdminServiceImpl adminService;
 
-    @PostMapping("/create-role")
-    public ResponseEntity<ApiResponse<?>> createRole(@Valid @RequestBody RoleRequestDto roleRequestDto){
-        return ResponseEntity.ok(adminService.createRole(roleRequestDto));
+    @GetMapping("/profile")
+    public ResponseEntity<ApiResponse<?>> getProfile() {
+        return ResponseEntity.ok(adminService.getProfile());
     }
 }

@@ -70,6 +70,11 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public CompanyJobsResponseDto getCompanyUnderJobs(UUID companyId) {
+        UUID userId = authUtil.getCurrentUserId();
+        userRepository.findById(userId).orElseThrow(
+                ()->new ResourceNotFoundException("User not exists")
+        );
+        // can add if recruiter and student have profile or not
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(()->new ResourceNotFoundException("Company not found"));
         List<JobResponseDto> jobs =
