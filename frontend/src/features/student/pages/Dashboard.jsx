@@ -5,6 +5,7 @@ import { dashboardStatsConfig, mockApplications } from "../../../config/student/
 import StatCard from "../components/dashboard/StatCard";
 import RecentApplications from "../components/dashboard/RecentApplications";
 import { getStudentDashboardStats } from "../services/studentService";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
   const [totalApplications, setTotalApplications] = useState(0);
@@ -23,6 +24,10 @@ const Dashboard = () => {
         }
       } catch (err) {
         console.error("Error fetching dashboard stats:", err);
+        // Only show error for non-404 cases (404 means no data yet)
+        if (err.response?.status !== 404) {
+          toast.error("Failed to load dashboard statistics.");
+        }
       }
     };
     fetchStats();

@@ -4,6 +4,7 @@ import CircularStatCard from "../../../components/ui/CircularStatCard";
 import DataTable from "../../../components/ui/DataTable";
 import { getRecruiterJobs, fetchCompanyProfileData } from "../services/recruiterService";
 import { dashboardStatsConfig, recentJobsTableColumns } from "../../../config/recruiter/recruiterConfig";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
   const [jobs, setJobs] = useState([]);
@@ -14,19 +15,31 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [jobsRes, companyRes] = await Promise.all([
-          getRecruiterJobs(),
-          fetchCompanyProfileData()
+        
+        // Wrap calls to handle 404s gracefully
+        const safeFetch = async (fetchFn, defaultValue = []) => {
+          try {
+            const res = await fetchFn();
+            return res.data?.data || res.data || res;
+          } catch (err) {
+            if (err.response?.status === 404) return defaultValue;
+            throw err;
+          }
+        };
+
+        const [jobsData, companyData] = await Promise.all([
+          safeFetch(getRecruiterJobs, []),
+          safeFetch(fetchCompanyProfileData, null)
         ]);
         
-        // Handle varying response structures safely
-        const jobsArray = jobsRes.data?.data || jobsRes.data || [];
-        setJobs(Array.isArray(jobsArray) ? jobsArray : []);
-        
-        const companyData = companyRes.data?.data || companyRes.data || companyRes;
+        setJobs(Array.isArray(jobsData) ? jobsData : []);
         setCompanyInfo(companyData);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
+        // Only show error toast for non-404 errors
+        if (error.response?.status !== 404) {
+          toast.error("Failed to load dashboard metrics.");
+        }
       } finally {
         setLoading(false);
       }

@@ -29,10 +29,12 @@ api.interceptors.response.use(
     const isAuthRoute =
       url.includes("/auth/login") || url.includes("/auth/register");
 
-    if (!isAuthRoute) {
+    if (!isAuthRoute && error.response?.status === 401) {
+      localStorage.removeItem("token"); // Clear invalid token
       setTimeout(() => {
         window.location.href = "/login";
       }, 1500);
+      toast.error("Session expired. Please login again.");
     }
     return Promise.reject(error);
   },

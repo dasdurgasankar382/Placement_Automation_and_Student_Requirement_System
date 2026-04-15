@@ -29,7 +29,9 @@ const Dashboard = () => {
       });
     } catch (err) {
       console.error("Dashboard fetch error:", err);
-      toast.error(err?.response?.data?.message || "Failed to fetch dashboard metrics.");
+      if (err.response?.status !== 404) {
+        toast.error(err?.response?.data?.message || "Failed to fetch dashboard metrics.");
+      }
       setStats({ users: 0, jobs: 0, companies: 0 });
     } finally {
       setLoading(false);
