@@ -1,5 +1,6 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.job.controller;
 
+import com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.AdminJobResponseDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.JobRequestDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.JobResponseDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.service.impl.JobServiceImpl;
@@ -42,7 +43,7 @@ public class JobController {
 
     @PreAuthorize("isAuthenticated()") // admin
     @GetMapping
-    public ResponseEntity<List<JobResponseDto>> getAllJobs() {
+    public ResponseEntity<List<AdminJobResponseDto>> getAllJobs() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(jobService.getAllJobs());
     }

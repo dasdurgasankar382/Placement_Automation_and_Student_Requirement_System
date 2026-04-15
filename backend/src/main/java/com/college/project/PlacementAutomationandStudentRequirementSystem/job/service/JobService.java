@@ -1,5 +1,6 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.job.service;
 
+import com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.AdminJobResponseDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.JobRequestDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.JobResponseDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.util.ApiResponse;
@@ -15,7 +16,7 @@ public interface JobService {
 
     ApiResponse<?> changeJobStatus(UUID id);
 
-    List<JobResponseDto> getAllJobs();
+    List<AdminJobResponseDto> getAllJobs();
 
     JobResponseDto getJobById(UUID id);
 

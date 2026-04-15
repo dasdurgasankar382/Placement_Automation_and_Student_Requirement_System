@@ -4,6 +4,7 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.compan
 import com.college.project.PlacementAutomationandStudentRequirementSystem.company.repository.CompanyRepository;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ResourceAlreadyExistsException;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ResourceNotFoundException;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.AdminJobResponseDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.JobRequestDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.JobResponseDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.Job;
@@ -94,10 +95,10 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<JobResponseDto> getAllJobs() {
+    public List<AdminJobResponseDto> getAllJobs() {
         List<Job> jobs = jobRepository.findAllByJobStatus(JobStatus.OPEN);
         return jobs.stream().map(job-> {
-            JobResponseDto dto = modelMapper.map(job, JobResponseDto.class);
+            AdminJobResponseDto dto = modelMapper.map(job, AdminJobResponseDto.class);
             dto.setCompanyName(job.getCompany().getName());
             dto.setLocation(job.getCompany().getLocation());
             return dto;

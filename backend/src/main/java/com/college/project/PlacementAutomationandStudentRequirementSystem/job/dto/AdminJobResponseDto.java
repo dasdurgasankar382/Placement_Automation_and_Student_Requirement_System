@@ -1,7 +1,5 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto;
 
-import com.college.project.PlacementAutomationandStudentRequirementSystem.company.dto.CompanyResponseDto;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.company.entity.Company;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.util.JobStatus;
 import lombok.*;
 
@@ -14,7 +12,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class JobResponseDto {
+public class AdminJobResponseDto {
     private UUID id;
     private String role;
     private Double salary;
@@ -22,4 +20,6 @@ public class JobResponseDto {
     private String description;
     private LocalDate deadline;
     private JobStatus jobStatus;
+    private String companyName;
+    private String location;
 }
