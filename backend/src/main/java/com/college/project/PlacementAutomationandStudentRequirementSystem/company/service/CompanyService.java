@@ -9,7 +9,8 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.util.A
 import java.util.List;
 import java.util.UUID;
 
-public interface CompanyService {;
+public interface CompanyService {
+    ;
 
     List<CompanyResponseDto> getAllCompanies();
 
@@ -17,5 +18,11 @@ public interface CompanyService {;
 
     CompanyResponseDto getCompanyById();
 
-    CompanyJobsResponseDto getCompanyUnderJobs(UUID companyId);
+    ApiResponse<List<CompanyJobsResponseDto>> getCompanyUnderJobs(UUID companyId);
+
+/*
+    ApiResponse<?> validateCompany(UUID id);
+    ApiResponse<?> inValidateCompany(UUID id);
+    {For later implement}
+ */
 }

@@ -3,12 +3,15 @@ import { toast } from "react-toastify";
 import { getAllCompaniesForAdmin, verifyCompany } from "../services/adminService";
 import CompanyCard from "../../../components/ui/CompanyCard";
 import { Search, Building2 } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Companies = () => {
   const [companies, setCompanies] = useState([]);
   const [filteredCompanies, setFilteredCompanies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     fetchCompanies();
@@ -16,7 +19,7 @@ const Companies = () => {
 
   useEffect(() => {
     const term = searchTerm.toLowerCase();
-    const filtered = companies.filter(c => 
+    const filtered = companies.filter(c =>
       c.name?.toLowerCase().includes(term) ||
       c.location?.toLowerCase().includes(term)
     );
@@ -62,7 +65,7 @@ const Companies = () => {
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Manage Companies</h1>
           <p className="text-slate-600 dark:text-slate-400 mt-2">View and verify registered companies.</p>
         </div>
-        
+
         <div className="relative w-full md:w-80 group">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-purple-500 transition-colors" />
           <input
@@ -76,11 +79,11 @@ const Companies = () => {
       </div>
 
       {filteredCompanies.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-rows-1 sm:grid-rows-2 lg:grid-rows-3 gap-6">
           {filteredCompanies.map((company) => (
-            <CompanyCard 
-              key={company.id} 
-              company={company} 
+            <CompanyCard
+              key={company.id}
+              company={company}
               onVerify={handleVerify}
             />
           ))}

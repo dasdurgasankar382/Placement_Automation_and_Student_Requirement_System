@@ -15,7 +15,7 @@ import java.util.UUID;
 public interface JobRepository extends JpaRepository<Job, UUID> {
     boolean existsByRoleAndDeadline(String role, LocalDate deadline);
 
-    List<JobResponseDto> findByCompanyIdAndJobStatus(UUID companyId, JobStatus jobStatus);
+    List<Job> findByCompanyIdAndJobStatus(UUID companyId, JobStatus jobStatus);
 
     List<Job> findAllByJobStatus(JobStatus jobStatus);
 

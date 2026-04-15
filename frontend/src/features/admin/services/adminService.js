@@ -13,10 +13,18 @@ export const getUserById = (id) => {
   return api.get(`/users/${id}`);
 };
 
+/**
+ * Disables a user account prevent them from logging in
+ * @param {string} id - User ID
+ */
 export const disableUser = (id) => {
   return api.put(`/users/${id}/disable`);
 };
 
+/**
+ * Re-enables a disabled user account
+ * @param {string} id - User ID
+ */
 export const enableUser = (id) => {
   return api.put(`/users/${id}/enable`);
 };

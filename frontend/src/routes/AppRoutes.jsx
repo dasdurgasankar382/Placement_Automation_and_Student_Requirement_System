@@ -11,6 +11,7 @@ import Unauthorized from "../components/common/Unauthorized";
 // common
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import JobDetails from "../components/common/JobDetails";
+import CompanyDetails from "../components/common/CompanyDetails";
 
 // Student
 import StudentLayout from "../features/student/layouts/StudentLayout";
@@ -63,6 +64,7 @@ function AppRoutes() {
         <Route path="jobs" element={<AdminJobs />} />
         <Route path="jobs/:id" element={<JobDetails role="ADMIN" />} />
         <Route path="companies" element={<AdminCompanies />} />
+        <Route path="companies/:id" element={<CompanyDetails role="ADMIN" />} />
       </Route>
 
       {/* Student Routes */}

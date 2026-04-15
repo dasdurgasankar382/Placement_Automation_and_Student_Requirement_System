@@ -8,7 +8,8 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.compan
 import com.college.project.PlacementAutomationandStudentRequirementSystem.company.service.CompanyService;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ResourceAlreadyExistsException;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ResourceNotFoundException;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.JobResponseDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.JobDto;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.Job;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.util.JobStatus;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.repository.JobRepository;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.security.AuthUtil;
@@ -35,25 +36,25 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public ApiResponse<?> addCompany(CompanyRequestDto companyRequestDto) {
 
-        if (companyRepository.existsByNameAndWebsite(companyRequestDto.getName(),companyRequestDto.getWebsite())){
+        if (companyRepository.existsByNameAndWebsite(companyRequestDto.getName(), companyRequestDto.getWebsite())) {
             throw new ResourceAlreadyExistsException("already company registered");
         }
 //        get current userId from token
         UUID userId = authUtil.getCurrentUserId();
         User user = userRepository.findById(userId).orElseThrow(
-                ()->new ResourceNotFoundException("User not exists")
+                () -> new ResourceNotFoundException("User not exists")
         );
         Company company = modelMapper.map(companyRequestDto, Company.class);
         company.setUser(user);
         companyRepository.save(company);
-        return new ApiResponse<>("Company created successfully",null);
+        return new ApiResponse<>("Company created successfully", null);
     }
 
     @Override
     public List<CompanyResponseDto> getAllCompanies() {
         List<Company> companies = companyRepository.findAll();
         return companies.stream()
-                .map(company->modelMapper.map(company, CompanyResponseDto.class))
+                .map(company -> modelMapper.map(company, CompanyResponseDto.class))
                 .toList();
     }
 
@@ -61,28 +62,27 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyResponseDto getCompanyById() {
         UUID recruiterId = authUtil.getCurrentUserId();
         User user = userRepository.findById(recruiterId).orElseThrow(
-                ()->new ResourceNotFoundException("User not exists")
+                () -> new ResourceNotFoundException("User not exists")
         );
         Company company = companyRepository.findByUser(user)
-                .orElseThrow(()->new ResourceNotFoundException("Company not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Company not found"));
         return modelMapper.map(company, CompanyResponseDto.class);
     }
 
     @Override
-    public CompanyJobsResponseDto getCompanyUnderJobs(UUID companyId) {
+    public ApiResponse<List<CompanyJobsResponseDto>> getCompanyUnderJobs(UUID companyId) {
         UUID userId = authUtil.getCurrentUserId();
         userRepository.findById(userId).orElseThrow(
-                ()->new ResourceNotFoundException("User not exists")
+                () -> new ResourceNotFoundException("User not exists")
         );
         // can add if recruiter and student have profile or not
         Company company = companyRepository.findById(companyId)
-                .orElseThrow(()->new ResourceNotFoundException("Company not found"));
-        List<JobResponseDto> jobs =
+                .orElseThrow(() -> new ResourceNotFoundException("Company not found"));
+        List<Job> jobs =
                 jobRepository.findByCompanyIdAndJobStatus(companyId, JobStatus.OPEN);
-        CompanyJobsResponseDto dto = new CompanyJobsResponseDto();
-        dto.setCompanyId(companyId);
-        dto.setCompanyName(company.getName());
-        dto.setJobs(jobs);
-        return dto;
+        List<CompanyJobsResponseDto> dto = jobs.stream().map((job) ->
+            modelMapper.map(job, CompanyJobsResponseDto.class)
+        ).toList();
+        return new ApiResponse<>("Job fetch successfully",dto);
     }
 }

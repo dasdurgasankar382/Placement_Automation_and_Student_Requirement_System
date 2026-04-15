@@ -38,7 +38,6 @@ const Register = () => {
     if (loading) return; // prevent multiple clicks
     setLoading(true);
     try {
-      console.log("Registering user with data:", form);
       const res = await registerUser(form);
       toast.success("Registration successful! Please log in.");
 

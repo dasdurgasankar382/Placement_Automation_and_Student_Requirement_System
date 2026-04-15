@@ -44,7 +44,7 @@ private final CompanyServiceImpl companyService;
 
 @PreAuthorize("isAuthenticated()")
     @GetMapping("/{companyId}/jobs") //ALL
-    public ResponseEntity<CompanyJobsResponseDto> getCompanyJobs(@PathVariable UUID companyId){
+    public ResponseEntity<ApiResponse<List<CompanyJobsResponseDto>>> getCompanyJobs(@PathVariable UUID companyId){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(companyService.getCompanyUnderJobs(companyId));
     }

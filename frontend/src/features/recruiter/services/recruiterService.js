@@ -9,10 +9,6 @@ export const getCompanyProfile = () => {
   return api.get("/companies/company-profile");
 };
 
-export const getCompanyJobs = (companyId) => {
-  return api.get(`/companies/${companyId}/jobs`);
-};
-
 export const mapCompanyProfileData = (profileData = {}) => {
   const company = profileData?.data ?? profileData;
 

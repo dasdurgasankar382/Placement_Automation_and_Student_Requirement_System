@@ -19,7 +19,6 @@ const Dashboard = () => {
   const fetchMetrics = async () => {
     try {
       const { data } = await getDashboardOverview();
-      console.log(data);
       const metrics = data?.data || data || { users: 0, jobs: 0, companies: 0 };
       setStats({
         users: metrics?.totalUsers || 0,

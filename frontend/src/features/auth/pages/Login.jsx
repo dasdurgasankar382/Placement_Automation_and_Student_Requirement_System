@@ -39,17 +39,14 @@ export default function LoginPage() {
     if (loading) return; //  prevent multiple clicks
     setLoading(true); // disable button
 
-    console.log("login clicked");
     try {
       const res = await loginUser(form);
       const token = res.data.data?.token || res.data.token;
-      console.log(res);
       localStorage.setItem("token", token);
       toast.success("Login successful");
 
       // Extract role from jwt
       const userPayload = getUserFromToken(token);
-      console.log(userPayload);
 
       // 🔥 ROLE BASED REDIRECT
       if (userPayload?.role) {
@@ -60,7 +57,6 @@ export default function LoginPage() {
 
     } catch (err) {
       setLoading(false);
-      console.log(err);
       if (!err.response) {
         // 🔥 Backend not reachable
         toast.error("Server not reachable or CROS blocked");

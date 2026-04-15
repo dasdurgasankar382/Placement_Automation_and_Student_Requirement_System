@@ -61,3 +61,46 @@ export const getTrimmedId = (id, length = 8) => {
   const idString = String(id || "");
   return idString.length > length ? `${idString.slice(0, length)}...` : idString;
 };
+
+export const formatStatusLabel = (status = "") => {
+  if (!status) return "Applied";
+  return status
+    .toLowerCase()
+    .split("_")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+};
+
+export const formatDateTime = (value) => {
+  if (!value) return "N/A";
+  const date = new Date(value);
+  if (isNaN(date.getTime())) return "N/A";
+
+  return date.toLocaleString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+export const normalizeJob = (job = {}) => {
+  const nestedJob = job.job || {};
+  return {
+    ...job,
+    ...nestedJob,
+    id: job.id || nestedJob.id,
+    title: nestedJob.role || job.role || nestedJob.title || job.title || "Untitled Role",
+    companyName: job.companyName || nestedJob.companyName || job.company || "Unknown Company",
+    location: job.location || job.companyLocation || nestedJob.location || "Unknown Location",
+    salary: (() => {
+      const raw = job.salary || nestedJob.salary || nestedJob.package || nestedJob.stipend;
+      return raw ? `₹${raw.toLocaleString()}` : "Not Disclosed";
+    })(),
+    deadline: job.deadline || nestedJob.deadline || "",
+    status: (job.jobStatus || job.status || nestedJob.status || "").toString().toUpperCase(),
+    skills: job.skills || nestedJob.skills || job.tags || nestedJob.tags || [],
+    description: job.description || nestedJob.description || "No description provided.",
+  };
+};

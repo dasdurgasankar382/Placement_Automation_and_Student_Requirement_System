@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { getAllUsers, disableUser } from "../services/adminService";
+import { getAllUsers } from "../services/adminService";
 import UserCard from "../../../components/ui/UserCard";
 import { Search } from "lucide-react";
 import { getRoleLabel } from "../../../utils/formatters";

@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { getAllJobsForAdmin } from "../services/adminService";
 import JobCard from "../../../components/ui/JobCard";
 import { useNavigate } from "react-router-dom";
-import { normalizeJob } from "../../../utils/jobNormalizer";
+import { normalizeJob } from "../../../utils/formatters";
 import { Search, Briefcase } from "lucide-react";
 
 const Jobs = () => {
@@ -19,7 +19,6 @@ const Jobs = () => {
 
   useEffect(() => {
     const term = searchTerm.toLowerCase();
-    console.log("Filtering jobs with term:", jobs);
     const filtered = jobs.filter(j => 
       j.title?.toLowerCase().includes(term) ||
       j.data?.location?.toLowerCase().includes(term)
@@ -30,7 +29,6 @@ const Jobs = () => {
   const fetchJobs = async () => {
     try {
       const { data } = await getAllJobsForAdmin();
-      console.log(data);
       const jobsData = data?.data || data;
       const jobsArray = Array.isArray(jobsData) ? jobsData : [];
       const normalized = jobsArray.map(normalizeJob);

@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import JobCard from "../../../components/ui/JobCard";
 import { getRecruiterJobs, closeJob } from "../services/recruiterService";
 import { toast } from "react-toastify";
+import { normalizeJob } from "../../../utils/formatters";
 
 const JobsList = () => {
   const navigate = useNavigate();
@@ -20,21 +21,12 @@ const JobsList = () => {
       
       const jobsArray = data?.data || [];
       
-      // Map backend payload to frontend expected fields
-      const mappedJobs = jobsArray.map(job => ({
-        id: job.id,
-        title: job.role,
-        salary: `₹${job.salary?.toLocaleString()}`,
-        deadline: job.deadline,
-        tags: job.skills || [],
-        status: job.jobStatus || job.status || "OPEN",
-        applicantsCount: 0 // Waiting for backend support for applicant counting
-      }));
+      // Use standard normalizeJob for consistency
+      const mappedJobs = jobsArray.map(normalizeJob);
       
       setJobs(mappedJobs);
     } catch (err) {
-      console.error(err.response.data?.message || "Failed to fetch company jobs:");
-      toast.error(err.response.data?.message || "Failed to fetch company jobs:");
+      toast.error(err?.response?.data?.message || "Failed to fetch company jobs");
       navigate("/recruiter/company");
     } finally {
       setLoading(false);
@@ -83,7 +75,6 @@ const JobsList = () => {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {jobs.map(job => (
-            console.log(job),
             <JobCard 
               key={job.id} 
               job={job} 

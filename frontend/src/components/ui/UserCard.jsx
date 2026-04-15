@@ -15,18 +15,18 @@ const UserCard = ({ user, onDisable }) => {
       <div className="flex justify-between items-start gap-4">
         <div className="flex items-center gap-4">
           <div className="h-14 w-14 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:scale-105 transition-transform duration-300 overflow-hidden border-2 border-slate-100 dark:border-slate-700">
-             {user?.profilePicture ? (
-               <img src={user.profilePicture} alt={user.name} className="h-full w-full object-cover" />
-             ) : (
-               <User className="h-7 w-7" />
-             )}
+            {user?.profilePicture ? (
+              <img src={user.profilePicture} alt={user.name} className="h-full w-full object-cover" />
+            ) : (
+              <User className="h-7 w-7" />
+            )}
           </div>
           <div>
             <h3 className="text-xl font-semibold text-slate-900 dark:text-white line-clamp-1">
-              {user?.name || "Anonymous User"}
+              {user?.name || user?.email?.split('@')[0] || "Anonymous User"}
             </h3>
             <div className="flex items-center gap-2 mt-1">
-               <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase ${roleStyles}`}>
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase ${roleStyles}`}>
                 {roleLabel}
               </span>
               <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border ${statusStyles}`}>
@@ -56,7 +56,7 @@ const UserCard = ({ user, onDisable }) => {
         >
           <Eye className="h-4 w-4" /> View Profile
         </button>
-        
+
         {status !== "DISABLED" && onDisable && (
           <button
             onClick={() => onDisable(user.id)}
