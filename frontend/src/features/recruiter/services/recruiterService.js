@@ -9,14 +9,6 @@ export const getCompanyProfile = () => {
   return api.get("/companies/company-profile");
 };
 
-export const getAllCompanies = () => {
-  return api.get("/companies");
-};
-
-export const getCompanyById = (id) => {
-  return api.get(`/companies/${id}`);
-};
-
 export const getCompanyJobs = (companyId) => {
   return api.get(`/companies/${companyId}/jobs`);
 };

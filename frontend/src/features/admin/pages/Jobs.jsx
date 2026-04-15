@@ -78,7 +78,7 @@ const Jobs = () => {
             <JobCard 
               key={job.id} 
               job={job} 
-              onAction={() => navigate(`/admin/jobs/${job.id}`)}
+              onAction={() => navigate(`/admin/jobs/${job.id}`, { state: { job } })}
               actionText="View Details"
             />
           ))}

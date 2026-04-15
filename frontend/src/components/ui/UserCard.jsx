@@ -51,7 +51,7 @@ const UserCard = ({ user, onDisable }) => {
 
       <div className="mt-8 flex items-center justify-between gap-3">
         <button
-          onClick={() => navigate(`/admin/users/${user.id}`)}
+          onClick={() => navigate(`/admin/users/${user.id}`, { state: { user } })}
           className="flex-1 px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-semibold text-sm hover:bg-slate-200 dark:hover:bg-slate-600 transition-all active:scale-95 flex items-center justify-center gap-2"
         >
           <Eye className="h-4 w-4" /> View Profile

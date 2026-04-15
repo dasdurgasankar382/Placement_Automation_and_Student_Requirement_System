@@ -40,7 +40,7 @@ const JobCard = ({ job, onApply, actionText, onAction, onEdit, isClosed ,onClose
         {job?.location && (
           <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4 text-slate-400" />
-            <span className="truncate">{job.location}</span>
+            <span className="truncate">{job?.location || "Unknown Location"}</span>
           </div>
         )}
         {job?.salary && (

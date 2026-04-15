@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { ArrowLeft, User, Mail, ShieldCheck, Calendar, Clock, Fingerprint } from "lucide-react";
 import { toast } from "react-toastify";
 import { getUserById } from "../services/adminService";
@@ -8,6 +8,7 @@ import { getRoleLabel, getStatusStyles, formatDate } from "../../../utils/format
 const UserDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -16,7 +17,15 @@ const UserDetails = () => {
   }, [id]);
 
   const fetchUser = async () => {
+    // Check if user data was passed via navigation state (optimization)
+    if (location.state?.user) {
+      setUser(location.state.user);
+      setLoading(false);
+      return;
+    }
+
     try {
+      setLoading(true);
       const { data } = await getUserById(id);
       const userData = data?.data || data;
       setUser(userData || null);

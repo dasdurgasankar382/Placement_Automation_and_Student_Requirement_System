@@ -153,7 +153,7 @@ const Applicants = () => {
                   <div>
                     <h3
                       className="font-semibold text-slate-900 dark:text-white text-base hover:underline cursor-pointer"
-                      onClick={() => navigate(`/recruiter/student/${applicant.studentId}`)}
+                      onClick={() => navigate(`/recruiter/student/${applicant.studentId}`, { state: { student: applicant } })}
                     >
                       {applicant.studentName}
                     </h3>

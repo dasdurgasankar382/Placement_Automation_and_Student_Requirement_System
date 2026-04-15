@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   ArrowLeft,
   User,
@@ -15,11 +15,25 @@ import { Input } from "../../../components/ui/Input";
 
 const Student = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const location = useLocation();
   const [student, setStudent] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Check if student data was passed via navigation state (optimization)
+    if (location.state?.student) {
+      // Applicant data in list might have different fields, 
+      // but we use what we have for instant display
+      const stateStudent = location.state.student;
+      setStudent({
+        ...stateStudent,
+        name: stateStudent.studentName || stateStudent.name,
+        // map other potential field differences
+      });
+      setLoading(false);
+      return;
+    }
+
     getStudentById(id)
       .then((res) => setStudent(res.data?.data || res.data))
       .catch((err) =>
