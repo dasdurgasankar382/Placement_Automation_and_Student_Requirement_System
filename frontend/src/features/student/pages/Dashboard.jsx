@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { dashboardStatsConfig, mockApplications } from "../../../config/student/studentConfig";
 import StatCard from "../components/dashboard/StatCard";
 import RecentApplications from "../components/dashboard/RecentApplications";
-import ProfileStrength from "../components/dashboard/ProfileStrength";
 import { getStudentDashboardStats } from "../services/studentService";
 
 const Dashboard = () => {
@@ -61,9 +60,8 @@ const Dashboard = () => {
       </div>
 
       {/* Modular Body Components */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
         <RecentApplications applications={mockApplications} />
-        <ProfileStrength percentage={75} />
       </div>
 
     </div>

@@ -64,7 +64,7 @@ public class JobServiceImpl implements JobService {
         }
 
         Job job = modelMapper.map(jobRequestDto, Job.class);
-        job.setJobStatus(JobStatus.open); // mark as job open user can apply
+        job.setJobStatus(JobStatus.OPEN); // mark as job OPEN user can apply
         job.setCompany(company);
         jobRepository.save(job);
         return new ApiResponse<>("Job created successfully",null);
@@ -85,18 +85,23 @@ public class JobServiceImpl implements JobService {
     @Override
     public ApiResponse<?> changeJobStatus(UUID id) {
         Job job = getJob(id);
-        if(job.getJobStatus()==JobStatus.closed){
-            throw new ResourceAlreadyExistsException("Already job closed for this id" + id);
+        if(job.getJobStatus()==JobStatus.CLOSED){
+            throw new ResourceAlreadyExistsException("Already job CLOSED for this id" + id);
         }
-        job.setJobStatus(JobStatus.closed);
+        job.setJobStatus(JobStatus.CLOSED);
         jobRepository.save(job);
-        return new ApiResponse<>("Job closed successfully",null);
+        return new ApiResponse<>("Job CLOSED successfully",null);
     }
 
     @Override
     public List<JobResponseDto> getAllJobs() {
-        List<Job> jobs = jobRepository.findAllByJobStatus(JobStatus.open);
-        return jobs.stream().map(job->modelMapper.map(job, JobResponseDto.class)).toList();
+        List<Job> jobs = jobRepository.findAllByJobStatus(JobStatus.OPEN);
+        return jobs.stream().map(job-> {
+            JobResponseDto dto = modelMapper.map(job, JobResponseDto.class);
+            dto.setCompanyName(job.getCompany().getName());
+            dto.setLocation(job.getCompany().getLocation());
+            return dto;
+        }).toList();
     }
 
     @Override
@@ -118,8 +123,8 @@ public class JobServiceImpl implements JobService {
     public JobResponseDto getJobById(UUID id) {
         Job job = jobRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Job not found"));
-        if(job.getJobStatus()==JobStatus.closed){
-            throw new ResourceAlreadyExistsException("Already job closed for this id " + id);
+        if(job.getJobStatus()==JobStatus.CLOSED){
+            throw new ResourceAlreadyExistsException("Already job CLOSED for this id " + id);
         }
         return modelMapper.map(job, JobResponseDto.class);
     }

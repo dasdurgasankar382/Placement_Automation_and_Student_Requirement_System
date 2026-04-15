@@ -6,6 +6,7 @@ import LoginPage from "../features/auth/pages/Login";
 import RegisterPage from "../features/auth/pages/Register";
 import ForgotPassword from "../features/auth/pages/ForgotPassword";
 import ResetPassword from "../features/auth/pages/ResetPassword";
+import Unauthorized from "../components/common/Unauthorized";
 
 // common
 import ProtectedRoute from "../components/common/ProtectedRoute";
@@ -44,6 +45,7 @@ function AppRoutes() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/unauthorized" element={<Unauthorized />} />
 
       {/* Admin Routes */}
       <Route

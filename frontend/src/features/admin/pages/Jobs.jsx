@@ -19,10 +19,10 @@ const Jobs = () => {
 
   useEffect(() => {
     const term = searchTerm.toLowerCase();
+    console.log("Filtering jobs with term:", jobs);
     const filtered = jobs.filter(j => 
       j.title?.toLowerCase().includes(term) ||
-      j.company?.toLowerCase().includes(term) ||
-      j.location?.toLowerCase().includes(term)
+      j.data?.location?.toLowerCase().includes(term)
     );
     setFilteredJobs(filtered);
   }, [searchTerm, jobs]);
@@ -30,6 +30,7 @@ const Jobs = () => {
   const fetchJobs = async () => {
     try {
       const { data } = await getAllJobsForAdmin();
+      console.log(data);
       const jobsData = data?.data || data;
       const jobsArray = Array.isArray(jobsData) ? jobsData : [];
       const normalized = jobsArray.map(normalizeJob);

@@ -36,7 +36,7 @@ const Dashboard = () => {
 
   const getStatValue = (id) => {
     if (id === "total_postings") return jobs.length;
-    if (id === "active_postings") return jobs.filter(j => (j.jobStatus || j.status) === 'open').length;
+    if (id === "active_postings") return jobs.filter(j => (j.jobStatus || j.status) === 'OPEN').length;
     return 0;
   };
 

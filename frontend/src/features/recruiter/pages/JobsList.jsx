@@ -91,7 +91,7 @@ const JobsList = () => {
               onClose={() => handleCloseJob(job.id)}
               actionText={`View Applicants `}
               onAction={() => navigate(`/recruiter/jobs/${job.id}/applicants`)} 
-              isClosed = {job.status !== "open"}
+              isClosed={job.status?.toString().trim().toUpperCase() !== "OPEN"}
             />
           ))}
         </div>

@@ -28,16 +28,15 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public ApiResponse<?> getProfile() {
+        // before that need to check if found 0 values then return 0
         // get total user
         Long totalUsers = userRepository.count();
-        // active user count by is active = true
+
         Long totalActiveUsers = userRepository.countByIsActive();
-        
-        // get total registered companies
+
         Long totalRegisteredCompany = companyRepository.countByRoleName();
-        
-        // get active jobs count using existing method
-        Long activeJobs = (long) jobRepository.findAllByJobStatus(JobStatus.open).size();
+
+        Long activeJobs = jobRepository.countByJobStatus(JobStatus.OPEN);
         
         // Create admin response DTO
         AdminResponseDto adminResponse = new AdminResponseDto(

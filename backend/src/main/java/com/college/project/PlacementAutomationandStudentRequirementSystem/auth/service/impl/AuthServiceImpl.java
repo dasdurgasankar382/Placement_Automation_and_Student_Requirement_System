@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,8 +54,6 @@ public class AuthServiceImpl implements AuthService {
             throw new ResourceAlreadyExistsException("Admin registration is not allowed");
         }
 
-//        String userRole = authUtil.getCurrentUserRole();
-//        System.out.println(userRole);
         Role role = roleRepository.findByRoleName(registerRequestDto.getRole())
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
 
@@ -74,22 +73,20 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ApiResponse<LoginResponseDto> loginUser(LoginRequestDto loginRequestDto) {
-
-       if( !userRepository.existsByEmail(loginRequestDto.getEmail())){
-           throw new ResourceNotFoundException("email not registered");
-       }
-
+        // no need extra check already checked by Authentication Manager
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(), loginRequestDto.getPassword())
             );
         } catch (BadCredentialsException e) {
-            throw new InvalidCredentialsException("Incorrect password");
+            throw new InvalidCredentialsException("Invalid email or password");
+        } catch (DisabledException e){
+            throw new InvalidCredentialsException("Your account is deactivated. Contact admin.");
         }
 
-        CostumeUserDetails userDetails = (CostumeUserDetails) authentication.getPrincipal();
-        if (userDetails == null) {
+        Object principal = authentication.getPrincipal();
+        if (!(principal instanceof CostumeUserDetails userDetails)){
             throw new InvalidCredentialsException("Authentication failed");
         }
         String token = authUtil.generateAccessToken(userDetails);

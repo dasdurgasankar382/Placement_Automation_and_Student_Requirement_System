@@ -1,6 +1,5 @@
 package com.college.project.PlacementAutomationandStudentRequirementSystem.security;
 
-import com.college.project.PlacementAutomationandStudentRequirementSystem.role.entity.Role;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -36,7 +35,12 @@ public class CostumeUserDetails implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public boolean isEnabled() {
+        return user.isActive();
+    }
+
+    @Override
+    public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
         
         return List.of(
                 new SimpleGrantedAuthority("ROLE_"+getRole())

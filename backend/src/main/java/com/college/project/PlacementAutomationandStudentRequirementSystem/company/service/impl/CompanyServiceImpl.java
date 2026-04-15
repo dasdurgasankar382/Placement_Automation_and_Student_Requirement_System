@@ -78,7 +78,7 @@ public class CompanyServiceImpl implements CompanyService {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(()->new ResourceNotFoundException("Company not found"));
         List<JobResponseDto> jobs =
-                jobRepository.findByCompanyIdAndJobStatus(companyId, JobStatus.open);
+                jobRepository.findByCompanyIdAndJobStatus(companyId, JobStatus.OPEN);
         CompanyJobsResponseDto dto = new CompanyJobsResponseDto();
         dto.setCompanyId(companyId);
         dto.setCompanyName(company.getName());

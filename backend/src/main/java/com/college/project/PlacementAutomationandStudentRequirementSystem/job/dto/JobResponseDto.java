@@ -22,4 +22,6 @@ public class JobResponseDto {
     private String description;
     private LocalDate deadline;
     private JobStatus jobStatus;
+    private String companyName;
+    private String location;
 }

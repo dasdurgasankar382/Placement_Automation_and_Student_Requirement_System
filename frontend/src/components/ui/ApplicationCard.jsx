@@ -1,17 +1,28 @@
 import React from "react";
-import { Building2, Calendar, CheckCircle2, Clock, XCircle, FileText } from "lucide-react";
+import { Building2, Calendar, CheckCircle2, Clock, XCircle, FileText, Eye, Star, LogOut } from "lucide-react";
 
 const ApplicationCard = ({ application }) => {
-  // Status styling logic
+  // Status styling logic - mapped to backend uppercase values
   const statusConfig = {
-    Pending: { icon: Clock, color: "text-amber-500", bg: "bg-amber-100 dark:bg-amber-500/10" },
-    Interview: { icon: Calendar, color: "text-blue-500", bg: "bg-blue-100 dark:bg-blue-500/10" },
-    Selected: { icon: CheckCircle2, color: "text-green-500", bg: "bg-green-100 dark:bg-green-500/10" },
-    Rejected: { icon: XCircle, color: "text-red-500", bg: "bg-red-100 dark:bg-red-500/10" }
+    APPLIED: { icon: Clock, color: "text-blue-600", bg: "bg-blue-100 dark:bg-blue-500/20" },
+    REVIEWED: { icon: Eye, color: "text-indigo-600", bg: "bg-indigo-100 dark:bg-indigo-500/20" },
+    SHORTLISTED: { icon: Star, color: "text-amber-600", bg: "bg-amber-100 dark:bg-amber-500/20" },
+    SELECTED: { icon: CheckCircle2, color: "text-green-600", bg: "bg-green-100 dark:bg-green-500/20" },
+    WITHDRAWN: { icon: LogOut, color: "text-slate-600", bg: "bg-slate-100 dark:bg-slate-500/20" },
+    REJECTED: { icon: XCircle, color: "text-red-600", bg: "bg-red-100 dark:bg-red-500/20" },
   };
 
-  const status = application?.status || "Pending";
-  const { icon: StatusIcon, color, bg } = statusConfig[status] || statusConfig.Pending;
+  const status = application?.status || "APPLIED";
+  const { icon: StatusIcon, color, bg } = statusConfig[status] || statusConfig.APPLIED;
+
+  const formatStatusLabel = (s) => {
+    if (!s) return "Applied";
+    return s
+      .toLowerCase()
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
 
   return (
     <div className="bg-white dark:bg-slate-800/80 backdrop-blur-xl border border-slate-200 dark:border-slate-700 p-5 rounded-2xl flex flex-col sm:flex-row gap-5 items-start sm:items-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
@@ -45,7 +56,7 @@ const ApplicationCard = ({ application }) => {
       {/* Status Badge */}
       <div className={`px-4 py-2 rounded-xl flex items-center gap-2 font-semibold text-sm ${bg} ${color}`}>
         <StatusIcon className="h-4 w-4" />
-        {status}
+        {formatStatusLabel(status)}
       </div>
       
     </div>

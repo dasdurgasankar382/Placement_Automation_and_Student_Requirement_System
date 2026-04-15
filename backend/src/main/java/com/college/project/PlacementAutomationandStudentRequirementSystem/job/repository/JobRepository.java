@@ -36,8 +36,10 @@ SELECT DISTINCT new com.college.project.PlacementAutomationandStudentRequirement
 )
 FROM Job j
 JOIN j.company c
-WHERE j.jobStatus = 'open'
+WHERE j.jobStatus = "OPEN"
 AND j.deadline >= CURRENT_DATE
 """)
     List<JobsForStudentsDto> findJobsForStudent( UUID studentId);
+
+    Long countByJobStatus(JobStatus jobStatus);
 }
