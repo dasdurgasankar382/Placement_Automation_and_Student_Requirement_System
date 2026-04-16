@@ -31,9 +31,11 @@ input:-webkit-autofill {
   html {
     scroll-behavior: smooth;
   }
+
   body {
     @apply bg-bg-light text-bg-light-primary-text transition-colors duration-300;
   }
+
   .dark body {
     @apply bg-bg-dark text-bg-dark-primary-text;
   }

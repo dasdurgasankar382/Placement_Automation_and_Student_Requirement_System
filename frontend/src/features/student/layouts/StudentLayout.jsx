@@ -39,7 +39,7 @@ const StudentLayout = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-bg-light dark:bg-bg-dark text-slate-800 dark:text-slate-100 flex transition-colors duration-300">
+    <div className="h-screen overflow-hidden bg-bg-light dark:bg-bg-dark text-slate-800 dark:text-slate-100 flex transition-colors duration-300">
       {/* <StudentSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} /> */}
       <Sidebar
         title="Student Portal"
@@ -61,8 +61,8 @@ const StudentLayout = () => {
         />
 
         {/* Page Content */}
-        <div className="flex-1 overflow-auto p-6 lg:p-10">
-          <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8">
+          <div className="w-full max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
             <Outlet />
           </div>
         </div>

@@ -31,4 +31,8 @@ public class ApplicantDTO {
 
     private String applicationStatus;
     private LocalDateTime appliedAt;
+
+    // for automation
+    private Long matchScore;
+    private boolean eligible;
 }

@@ -13,6 +13,7 @@ import java.util.List;
 public class JobRequestDto {
     private String role;
     private Double salary;
+    private Float cgpa;
     private List<String> skills;
     private String description;
     private LocalDate deadline;

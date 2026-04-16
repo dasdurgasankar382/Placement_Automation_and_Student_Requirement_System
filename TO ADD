@@ -1,0 +1,6 @@
+CLICK ON APPLY -----> SUCCESS/FAIL
+    |
+    |
+    |
+IF SUCCESS THEN CALL "GET /api/student/jobs/{jobId}/analysis" RETURN 
+MAKE status.SHORTLISTED

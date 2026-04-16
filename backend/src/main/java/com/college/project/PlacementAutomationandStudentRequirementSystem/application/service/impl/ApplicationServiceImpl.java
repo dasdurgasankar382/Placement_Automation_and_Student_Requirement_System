@@ -9,6 +9,7 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.except
 import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ResourceNotFoundException;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.Job;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.repository.JobRepository;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.job.service.impl.MatchingServiceImpl;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.security.AuthUtil;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.ResumeResponseDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.entity.Student;
@@ -38,6 +39,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ModelMapper modelMapper;
     private final JobRepository jobRepository;
     private final AuthUtil authUtil;
+    private final MatchingServiceImpl matchingService;
 
     //copy from gpt
     private static final Map<ApplicationStatus, List<ApplicationStatus>> allowedTransitions = Map.of(
@@ -120,8 +122,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         List<ApplicationSummaryDto> dtoList = applications.stream()
                 .map(application -> {
                     ApplicationSummaryDto dto = modelMapper.map(application, ApplicationSummaryDto.class);
-                    dto.setAppliedAt(application.getCreatedAt());
-                    dto.setStudentName(application.getStudent().getStudent().getName());
+                    dto.setCreatedAt(application.getCreatedAt());
+                    dto.setStudentName(application.getStudent().getStudent() != null ?
+                            application.getStudent().getStudent().getName() : "Unknown");
                     dto.setJobTitle(application.getJob().getRole());
                     return dto;
                 })
@@ -134,15 +137,14 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional
     public ApiResponse<List<ApplicantDTO>> getAllApplicantsForJob(UUID jobId) {
         UUID recruiterId = authUtil.getCurrentUserId();
-        
+
         // Get the recruiter's company
         User recruiter = userRepository.findById(recruiterId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recruiter not found"));
-        
+
         // Get all applications for the specific job
         List<Application> applications = applicationRepository.findAllByJobId(jobId);
         List<ApplicantDTO> dtos = applications.stream().map(a -> {
-            System.out.println(a.getJob().getRole());
             ApplicantDTO dto = new ApplicantDTO();
             dto.setApplicationId(a.getId());
             dto.setStudentId(a.getStudent().getStudent().getId());
@@ -155,6 +157,16 @@ public class ApplicationServiceImpl implements ApplicationService {
             dto.setSkills(a.getStudent().getStudent() != null ? a.getStudent().getStudent().getSkills() : null);
             dto.setApplicationStatus(a.getStatus().name());
             dto.setAppliedAt(a.getCreatedAt());
+
+            // 🔥 AUTOMATION STARTS HERE
+            Student student = a.getStudent().getStudent();
+            Job job = a.getJob();
+            Long score = matchingService.calculateScore(student, job);
+            boolean eligible = matchingService.isEligible(student, job);
+
+            dto.setMatchScore(score);
+            dto.setEligible(eligible);
+
             return dto;
         }).toList();
 
@@ -165,8 +177,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional
     public ApiResponse<?> getApplicantResume(UUID studentId) {
 
-        Student student = studentRepository.findById(studentId).orElseThrow(()->
-            new ResourceNotFoundException("Resume exist "));
+        Student student = studentRepository.findById(studentId).orElseThrow(() ->
+                new ResourceNotFoundException("Resume exist "));
         PdfDocument pdf = student.getResume();
         String base64 = Base64.getEncoder().encodeToString(pdf.getData());
         ResumeResponseDto resumeResponseDto = new ResumeResponseDto(

@@ -91,20 +91,7 @@ const Sidebar = ({ title, navigation, sidebarOpen, setSidebarOpen }) => {
         </nav>
 
         {/* Bottom Support Banner & Logout */}
-        <div className="px-6 pb-6">
-          <div className="bg-slate-50 dark:bg-slate-800 rounded-3xl p-6 text-center mb-4 relative overflow-hidden">
-            <div className="w-full flex justify-center mb-3">
-               <div className="bg-white dark:bg-slate-700 p-3 rounded-full shadow-sm">
-                 <MessageSquare className="h-6 w-6 text-brand-purple dark:text-indigo-400" />
-               </div>
-            </div>
-            <h4 className="font-bold text-slate-800 dark:text-slate-100 text-sm">Support 24/7</h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Contact us anytime</p>
-            <button className="w-full py-2.5 bg-brand-purple hover:bg-brand-purple-hover text-white rounded-xl text-xs font-semibold shadow-md shadow-brand-purple/20 transition-colors">
-              Start chat
-            </button>
-          </div>
-
+        <div className="px-6 pb-6 mt-auto">
           <button 
             onClick={handleLogout}
             className="flex items-center justify-center gap-2 w-full py-3 text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors group font-medium text-sm"

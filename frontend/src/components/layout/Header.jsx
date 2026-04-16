@@ -12,7 +12,7 @@ const Header = ({ titleText, setSidebarOpen, profileName }) => {
   const initial = profileName ? profileName.charAt(0).toUpperCase() : "U";
   return (
     <header className="h-24 bg-transparent flex items-center justify-between px-6 lg:px-10 sticky top-0 z-30">
-      
+
       {/* Left section: Mobile Menu & Title */}
       <div className="flex items-center gap-4">
         <button
@@ -25,10 +25,10 @@ const Header = ({ titleText, setSidebarOpen, profileName }) => {
           {titleText || "Dashboard"}
         </h2>
       </div>
-      
+
       {/* Right section: Icons & Profile */}
       <div className="flex items-center gap-3 sm:gap-6">
-        
+
         {/* Quick Actions (Search, Messages, Notifications, Theme) */}
         <div className="flex items-center gap-2 sm:gap-4 text-slate-600 dark:text-slate-400">
           {/* <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors hidden sm:block">
@@ -37,12 +37,12 @@ const Header = ({ titleText, setSidebarOpen, profileName }) => {
           
           <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors hidden sm:block">
             <Mail className="h-5 w-5" />
-          </button>
+          </button>*/}
 
           <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors relative">
             <Bell className="h-5 w-5" />
             <span className="absolute top-1.5 right-2 h-2 w-2 bg-red-500 rounded-full ring-2 ring-bg-light dark:ring-bg-dark"></span>
-          </button> */}
+          </button> 
 
           <button
             onClick={toggleTheme}
@@ -63,7 +63,6 @@ const Header = ({ titleText, setSidebarOpen, profileName }) => {
             {/* Fallback avatar visual */}
             <span className="text-brand-purple font-bold text-sm">{initial}</span>
           </div>
-          <ChevronDown className="h-4 w-4 text-slate-500 hidden sm:block" />
         </button>
       </div>
     </header>

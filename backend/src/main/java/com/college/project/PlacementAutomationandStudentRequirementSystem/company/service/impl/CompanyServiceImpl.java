@@ -8,7 +8,6 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.compan
 import com.college.project.PlacementAutomationandStudentRequirementSystem.company.service.CompanyService;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ResourceAlreadyExistsException;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.exception.ResourceNotFoundException;
-import com.college.project.PlacementAutomationandStudentRequirementSystem.job.dto.JobDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.Job;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.util.JobStatus;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.repository.JobRepository;

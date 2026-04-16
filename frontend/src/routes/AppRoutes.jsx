@@ -12,17 +12,16 @@ import Unauthorized from "../components/common/Unauthorized";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import JobDetails from "../components/common/JobDetails";
 import CompanyDetails from "../components/common/CompanyDetails";
+import UnifiedDashboard from "../components/dashboard/UnifiedDashboard";
 
 // Student
 import StudentLayout from "../features/student/layouts/StudentLayout";
-import StudentDashboard from "../features/student/pages/Dashboard";
 import StudentProfile from "../features/student/pages/Profile";
 import StudentJobs from "../features/student/pages/Jobs";
 import StudentApplications from "../features/student/pages/Applications";
 
 // Recruiter
 import RecruiterLayout from "../features/recruiter/layouts/RecruiterLayout";
-import RecruiterDashboard from "../features/recruiter/pages/Dashboard";
 import RecruiterCompanyProfile from "../features/recruiter/pages/CompanyProfile";
 import RecruiterJobsList from "../features/recruiter/pages/JobsList";
 import RecruiterCreateJob from "../features/recruiter/pages/CreateJob";
@@ -30,7 +29,6 @@ import RecruiterEditJob from "../features/recruiter/pages/EditJob";
 import RecruiterApplicants from "../features/recruiter/pages/Applicants";
 // Admin
 import AdminLayout from "../features/admin/layouts/AdminLayout";
-import AdminDashboard from "../features/admin/pages/Dashboard";
 import AdminUsers from "../features/admin/pages/Users";
 import AdminUserDetails from "../features/admin/pages/UserDetails";
 import AdminJobs from "../features/admin/pages/Jobs";
@@ -57,8 +55,8 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<AdminDashboard />} />
-        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route index element={<UnifiedDashboard role="ADMIN" />} />
+        <Route path="dashboard" element={<UnifiedDashboard role="ADMIN" />} />
         <Route path="users" element={<AdminUsers />} />
         <Route path="users/:id" element={<AdminUserDetails />} />
         <Route path="jobs" element={<AdminJobs />} />
@@ -76,8 +74,8 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<StudentDashboard />} />
-        <Route path="dashboard" element={<StudentDashboard />} />
+        <Route index element={<UnifiedDashboard role="STUDENT" />} />
+        <Route path="dashboard" element={<UnifiedDashboard role="STUDENT" />} />
         <Route path="profile" element={<StudentProfile />} />
         <Route path="jobs" element={<StudentJobs />} />
         <Route path="jobs/:id" element={<JobDetails role="STUDENT" />} />
@@ -93,8 +91,8 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<RecruiterDashboard />} />
-        <Route path="dashboard" element={<RecruiterDashboard />} />
+        <Route index element={<UnifiedDashboard role="RECRUITER" />} />
+        <Route path="dashboard" element={<UnifiedDashboard role="RECRUITER" />} />
         <Route path="company" element={<RecruiterCompanyProfile />} />
         <Route path="jobs" element={<RecruiterJobsList />} />
         <Route path="jobs/create" element={<RecruiterCreateJob />} />

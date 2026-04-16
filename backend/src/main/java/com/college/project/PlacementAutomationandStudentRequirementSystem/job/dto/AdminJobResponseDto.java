@@ -4,6 +4,7 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.job.en
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,4 +23,5 @@ public class AdminJobResponseDto {
     private JobStatus jobStatus;
     private String companyName;
     private String location;
+    private LocalDateTime createdAt;
 }

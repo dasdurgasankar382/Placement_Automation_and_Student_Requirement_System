@@ -40,6 +40,9 @@ public class Job {
     private JobStatus jobStatus;
 
     @Column(nullable = false)
+    private Float cgpa;  // need for automation
+
+    @Column(nullable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
