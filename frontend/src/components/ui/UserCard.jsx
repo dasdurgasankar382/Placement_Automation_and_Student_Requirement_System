@@ -57,7 +57,7 @@ const UserCard = ({ user, onDisable }) => {
           <Eye className="h-4 w-4" /> View Profile
         </button>
 
-        {status !== "DISABLED" && onDisable && (
+        {status !== "DISABLED" && onDisable && roleLabel !== "ADMIN" && (
           <button
             onClick={() => onDisable(user.id)}
             className="p-2.5 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-100 transition-all active:scale-95 transition-colors"
