@@ -66,6 +66,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             UUID userId = authUtil.extractUserId(token);
             String role = authUtil.extractRole(token);
 
+           // ✅ Avoid double ROLE_ prefix
+           if (role != null && !role.startsWith("ROLE_")) {
+           role = "ROLE_" + role;
+           }
+
             // ✅ Set authentication only if not already set
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
