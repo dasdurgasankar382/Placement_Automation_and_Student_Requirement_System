@@ -76,7 +76,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
                 // ✅ Create authorities from role
                 List<GrantedAuthority> authorities =
-                        List.of(new SimpleGrantedAuthority("ROLE_" + role));
+                        List.of(new SimpleGrantedAuthority(role));
 
                 // ✅ Store userId as principal (JWT-based)
                 UsernamePasswordAuthenticationToken auth =
