@@ -10,6 +10,10 @@ import com.college.project.PlacementAutomationandStudentRequirementSystem.except
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.entity.Job;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.repository.JobRepository;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.job.service.impl.MatchingServiceImpl;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.notification.entity.Notification;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.notification.entity.utill.NotificationType;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.notification.repository.NotificationRepository;
+import com.college.project.PlacementAutomationandStudentRequirementSystem.role.entity.Role;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.security.AuthUtil;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.dto.ResumeResponseDto;
 import com.college.project.PlacementAutomationandStudentRequirementSystem.student.entity.Student;
@@ -24,6 +28,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +45,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final JobRepository jobRepository;
     private final AuthUtil authUtil;
     private final MatchingServiceImpl matchingService;
+    private final NotificationRepository notificationRepository;
 
     //copy from gpt
     private static final Map<ApplicationStatus, List<ApplicationStatus>> allowedTransitions = Map.of(
@@ -70,10 +76,20 @@ public class ApplicationServiceImpl implements ApplicationService {
         application.setJob(job);
         application.setStatus(ApplicationStatus.APPLIED);
         applicationRepository.save(application);
+
+        Notification n = new Notification();
+        User user = application.getJob().getCompany().getUser();
+        n.setMessage(student.getStudent().getName() + " applied for " + job.getRole());
+        n.setType(NotificationType.NEW_APPLICATION);
+        n.setReferenceId(job.getId());
+        n.setTargetRole(application.getJob().getCompany().getUser().getRole().getRoleName());
+        n.setExpiresAt(LocalDateTime.now().plusDays(30));
+        notificationRepository.save(n);
         return new ApiResponse<>("success", null);
     }
 
     @Override
+    @Transactional
     public ApiResponse<?> updateApplicationStatus(UUID id, UpdateStatusRequestDto updateStatusRequestDto) {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Application not exists"));
@@ -83,9 +99,35 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         applicationRepository.save(application);
 
+        Notification n = new Notification();
+
+        User recruiter = application.getJob().getCompany().getUser();
+        Student student = application.getStudent().getStudent();
+        Job job = application.getJob();
+        ApplicationStatus status = updateStatusRequestDto.getApplicationStatus();
+
+        String message = switch (status) {
+            case SHORTLISTED -> "Your application for " + job.getRole() + " has been shortlisted";
+            case SELECTED -> "You are selected for " + job.getRole();
+            case REJECTED -> "Your application for " + job.getRole() + " has been rejected";
+            default -> null;
+        };
+
+        if (message != null) {
+            n.setUserId(student.getUser().getId());
+            n.setMessage(message);
+            n.setType(NotificationType.APPLICATION_STATUS_UPDATE);
+            n.setReferenceId(application.getId());
+            n.setExpiresAt(LocalDateTime.now().plusDays(30));
+
+            notificationRepository.save(n);
+
+            notificationRepository.save(n);
+        }
         return new ApiResponse<>("Updated successfully", Map.of("status", application.getStatus(),
                 "allowedStatus", getAllowedStatus(application.getStatus())));
     }
+
 
     @Override
     public ApiResponse<?> widhdrawApplication(UUID id) {

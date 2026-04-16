@@ -32,6 +32,7 @@ const AdminLayout = () => {
           titleText="Welcome back, Administrator"
           setSidebarOpen={setSidebarOpen} 
           theme={adminTheme}
+          userRole="ADMIN"
         />
 
         {/* Page Content */}

@@ -172,12 +172,12 @@ const UnifiedDashboard = ({ role = "STUDENT" }) => {
             .sort((a, b) => new Date(b.appliedAt || 0) - new Date(a.appliedAt || 0))
             .slice(0, 5)
             .map((app) => ({
-               id: app.id || app.applicationId,
-               name: app.studentName || "Unknown Student",
-               email: app.jobTitle || "Untitled Job",
-               status: app.applicationStatus || "PENDING",
-               avatarRole: "STUDENT", 
-               createdAt: app.appliedAt || "N/A"
+              id: app.id || app.applicationId,
+              name: app.studentName || "Unknown Student",
+              email: app.jobTitle || "Untitled Job",
+              status: app.applicationStatus || "PENDING",
+              avatarRole: "STUDENT",
+              createdAt: app.appliedAt || "N/A"
             }))
         );
 
@@ -200,8 +200,8 @@ const UnifiedDashboard = ({ role = "STUDENT" }) => {
 
         setMetrics({
           totalApps: stats.totalApplications || stats.totalApps || appsList.length,
-          interviews: stats.interviewsScheduled || stats.interviews || appsList.filter(a => a.status === 'INTERVIEW').length,
-          offers: stats.offersReceived || stats.offers || appsList.filter(a => a.status === 'OFFER' || a.status === 'ACCEPTED').length,
+          interviews: stats.totalInterviewsScheduled || stats.interviews || appsList.filter(a => a.status === 'INTERVIEW').length,
+          offers: stats.totalOffersReceived || stats.offers || appsList.filter(a => a.status === 'OFFER' || a.status === 'ACCEPTED').length,
         });
 
         // Activity: Recent Apps
@@ -319,7 +319,7 @@ const UnifiedDashboard = ({ role = "STUDENT" }) => {
                     </ResponsiveContainer>
                   ) : (
                     <div className="h-[300px] w-full flex items-center justify-center">
-                       <div className="animate-pulse text-slate-500 text-sm">Preparing chart...</div>
+                      <div className="animate-pulse text-slate-500 text-sm">Preparing chart...</div>
                     </div>
                   )}
                 </div>
@@ -352,7 +352,7 @@ const UnifiedDashboard = ({ role = "STUDENT" }) => {
                     </ResponsiveContainer>
                   ) : (
                     <div className="h-[300px] w-full flex items-center justify-center">
-                       <div className="animate-pulse text-slate-500 text-sm">Preparing chart...</div>
+                      <div className="animate-pulse text-slate-500 text-sm">Preparing chart...</div>
                     </div>
                   )}
                 </div>

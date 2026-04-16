@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-@Component
+//@Component
 public class TestDataGenerator implements CommandLineRunner {
 
     @Autowired

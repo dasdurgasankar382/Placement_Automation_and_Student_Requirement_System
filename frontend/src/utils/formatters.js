@@ -104,3 +104,22 @@ export const normalizeJob = (job = {}) => {
     description: job.description || nestedJob.description || "No description provided.",
   };
 };
+
+export const formatTimeAgo = (date) => {
+  if (!date) return "N/A";
+  const now = new Date();
+  const past = new Date(date);
+  const diffInMs = now - past;
+  const diffInSecs = Math.floor(diffInMs / 1000);
+  const diffInMins = Math.floor(diffInSecs / 60);
+  const diffInHours = Math.floor(diffInMins / 60);
+  const diffInDays = Math.floor(diffInHours / 24);
+
+  if (diffInSecs < 60) return "Just now";
+  if (diffInMins < 60) return `${diffInMins}m ago`;
+  if (diffInHours < 24) return `${diffInHours}h ago`;
+  if (diffInDays < 7) return `${diffInDays}d ago`;
+  
+  return formatDate(date);
+};
+

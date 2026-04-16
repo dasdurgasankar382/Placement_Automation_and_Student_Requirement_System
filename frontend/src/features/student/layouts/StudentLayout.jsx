@@ -58,6 +58,7 @@ const StudentLayout = () => {
           profileName={studentName}
           setSidebarOpen={setSidebarOpen}
           theme={studentTheme}
+          userRole="STUDENT"
         />
 
         {/* Page Content */}

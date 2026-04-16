@@ -32,6 +32,7 @@ const RecruiterLayout = () => {
           titleText="Welcome back, Recruiter 👋"
           setSidebarOpen={setSidebarOpen}
           theme={recruiterTheme}
+          userRole="RECRUITER"
         />
 
         {/* Page Content */}

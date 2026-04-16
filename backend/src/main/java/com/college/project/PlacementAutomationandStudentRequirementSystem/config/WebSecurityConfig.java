@@ -34,10 +34,11 @@ public class WebSecurityConfig {
                 // Configure endpoint authorization
                 .authorizeHttpRequests(auth -> auth
                         // Public auth endpoints (login, register)
-                        .requestMatchers("/auth/**","/admin/**").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/student/**").hasAllRoles("STUDENT")
+                        .requestMatchers("/notifications/**").hasAnyRole("STUDENT", "RECRUITER")
                         .requestMatchers("/company/**").hasAllRoles("RECRUITER", "STUDENT", "ADMIN")
-                        .requestMatchers("/users/**").hasAllRoles("ADMIN")
+                        .requestMatchers("/users/**","/admin/**").hasAllRoles("ADMIN")
                         .anyRequest().authenticated()
                 )
                 // add jwt filter before UsernamePasswordAuthenticationFilter so that jwt token is checked before user authentication
