@@ -18,7 +18,7 @@ import java.util.UUID;
         indexes = {
                 @Index(columnList = "userId"),
                 @Index(columnList = "createdAt"),
-                @Index(columnList = "expiryAt")
+                @Index(columnList = "expiresAt")
         }
 )
 public class Notification {

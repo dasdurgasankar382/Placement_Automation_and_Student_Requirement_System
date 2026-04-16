@@ -8,6 +8,7 @@
 ## 🎯 Main Objective
 - The core purpose of the project is to digitize and automate traditional, manual campus placement processes.
 - It exists to significantly reduce the administrative burden on placement cells, provide students with a modern and accessible interface to build profiles, and offer recruiters a structured, reliable channel to screen applicants effectively.
+- **Active Automation Pivot**: The system has recently evolved from simple record-keeping to an \"Active\" system that proactively manages the recruitment lifecycle through real-time communication and data aggregation.
 
 ## 🛠 Tech Stack
 - **Frontend:** React 19, Vite, Tailwind CSS 4.2
@@ -20,6 +21,8 @@
 - **Recruiter Dashboard:** Dedicated interface for managing company profiles, creating detailed job postings with deadline configurations, and dynamically reviewing the application pipeline.
 - **Admin Oversight:** Global data visibility, overarching user management capabilities, and full access to monitor application workflows across all companies and students.
 - **Automated Workflows:** Strict status transition flow (APPLIED → SHORTLISTED → SELECTED/REJECTED) with structured progress tracking and withdrawal options.
+- **Unified SaaS Dashboard**: A centralized mission-control hub that automatically processes raw data into actionable visual metrics and recent activity feeds.
+- **Role-Based Notification Engine**: An automated communication layer that pushes real-time updates to students and recruiters, reducing manual status-checking lag.
 
 ## 🏗 Architecture Overview
 The application is built as a **Decoupled Client-Server Application**, featuring a standalone React Single Page Application (SPA) communicating continuously with a Monolithic Spring Boot REST backend.
@@ -97,6 +100,13 @@ The application is built as a **Decoupled Client-Server Application**, featuring
 | GET | `/api/applications/student-dashboard` | Yields high-level dashboard metrics (Approved/Pending/Applied) |
 | GET | `/api/applications/my-applications` | Yields the chronological application history of a student |
 
+#### 🔔 Notification APIs (`/api/notifications`)
+| METHOD | ENDPOINT | DESCRIPTION |
+|---|---|---|
+| GET | `/api/notifications` | Fetches role-specific notifications and unread count |
+| PUT | `/api/notifications/{id}/read` | Marks a specific notification as read |
+
+
 #### 🛡 User & Admin APIs (`/api/users`, `/api/admin`)
 | METHOD | ENDPOINT | DESCRIPTION |
 |---|---|---|
@@ -119,6 +129,7 @@ The application is built as a **Decoupled Client-Server Application**, featuring
 - **Responsive Layouts:** Mobile-first, adaptable grid and flexible box model layouts ensuring visual parity across desktops, tablets, and smartphones.
 - **Optimized Experience:** Snappy routing and component rendering guarantees a friction-free navigation experience.
 - **Robust Validation:** Rigorous, real-time client-side form validation augmented with contextual toast notifications for precise error handling and success feedback.
+- **Professional SaaS Aesthetic**: High-contrast dark mode (`#09090b`) with a pinned sidebar/header layout for an enterprise-ready, premium user experience.
 
 ## 🗄 Database Schema Overview
 - **Users:** The central authentication entity mapped with secure hashed credentials and strict role enumerations.
@@ -132,6 +143,11 @@ The application is built as a **Decoupled Client-Server Application**, featuring
 - **Role-Based Access Control (RBAC):** Distinct Controller-level security guards rigorously restricting endpoints to authorized personnel only.
 - **Password Encryption:** Industry-grade, highly secure cryptographic hashing eliminating potential vulnerabilities from data breaches.
 - **API Protection:** Standardized global exception handling shielding against arbitrary data leakage, reinforced with strict Cross-Origin configurations.
+
+## 📈 Recent Project Impact
+- **Recruiter Efficiency**: The automated \"Recent Applicants\" feed saves recruiters significant time by surfacing the latest talent across all job postings in a single view.
+- **Engagement Loop**: Real-time notifications have reduced student response times to interview invites by automating the alert lifecycle.
+- **UI Stability**: Implementation of deferred chart rendering ensures 100% layout stability and prevents volatile Recharts rendering errors.
 
 ## ⚡ Installation & Setup Guide
 

@@ -79,6 +79,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         Notification n = new Notification();
         User user = application.getJob().getCompany().getUser();
+        n.setUserId(user.getId());
         n.setMessage(student.getStudent().getName() + " applied for " + job.getRole());
         n.setType(NotificationType.NEW_APPLICATION);
         n.setReferenceId(job.getId());
@@ -119,8 +120,6 @@ public class ApplicationServiceImpl implements ApplicationService {
             n.setType(NotificationType.APPLICATION_STATUS_UPDATE);
             n.setReferenceId(application.getId());
             n.setExpiresAt(LocalDateTime.now().plusDays(30));
-
-            notificationRepository.save(n);
 
             notificationRepository.save(n);
         }
