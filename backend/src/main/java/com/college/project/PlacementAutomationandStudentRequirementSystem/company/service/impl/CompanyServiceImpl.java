@@ -84,4 +84,13 @@ public class CompanyServiceImpl implements CompanyService {
         ).toList();
         return new ApiResponse<>("Job fetch successfully",dto);
     }
+
+    @Override
+    public ApiResponse<?> verifyCompany(UUID companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Company not found"));
+        company.setVerified(true);
+        companyRepository.save(company);
+        return new ApiResponse<>("Company verified successfully", null);
+    }
 }

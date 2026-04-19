@@ -3,14 +3,15 @@ import { Building2, Globe, MapPin, ExternalLink, ShieldCheck } from "lucide-reac
 import { useNavigate } from "react-router-dom";
 import { getStatusStyles } from "../../utils/formatters";
 
-const CompanyCard = ({ company, onVerify }) => {
+const CompanyCard = ({ company, onVerify, isVerifying = false }) => {
   const navigate = useNavigate();
   const getAbsoluteUrl = (url) => {
     if (!url) return "";
     return url.startsWith("http://") || url.startsWith("https://") ? url : `https://${url}`;
   };
 
-  const status = company?.verified ? "VERIFIED" : "PENDING";
+  const isVerified = company?.verified || company?.isVerified || false;
+  const status = isVerified ? "VERIFIED" : "PENDING";
   const statusStyles = getStatusStyles(status);
 
   return (
@@ -71,10 +72,19 @@ const CompanyCard = ({ company, onVerify }) => {
         {status !== "VERIFIED" && onVerify && (
           <button
             onClick={() => onVerify(company.id)}
-            className="p-2.5 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl hover:bg-emerald-100 transition-all active:scale-95"
-            title="Verify Company"
+            disabled={isVerifying}
+            className={`p-2.5 rounded-xl transition-all active:scale-95 ${
+              isVerifying 
+                ? "bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed" 
+                : "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100"
+            }`}
+            title={isVerifying ? "Verifying..." : "Verify Company"}
           >
-            <ShieldCheck className="h-5 w-5" />
+            {isVerifying ? (
+              <div className="h-5 w-5 border-2 border-slate-400 border-t-transparent animate-spin rounded-full" />
+            ) : (
+              <ShieldCheck className="h-5 w-5" />
+            )}
           </button>
         )}
       </div>

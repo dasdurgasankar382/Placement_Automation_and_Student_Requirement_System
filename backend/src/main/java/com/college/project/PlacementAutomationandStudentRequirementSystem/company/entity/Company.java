@@ -40,6 +40,9 @@ public class Company {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private boolean isVerified = false;
+
     @OneToOne
     @JoinColumn(name = "user_id",nullable = false)
     private User user;

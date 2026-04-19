@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { getAllUsers } from "../services/adminService";
+import { getAllUsers, disableUser, enableUser } from "../services/adminService";
 import UserCard from "../../../components/ui/UserCard";
 import { Search } from "lucide-react";
 import { getRoleLabel } from "../../../utils/formatters";
@@ -56,6 +56,16 @@ const Users = () => {
     }
   };
 
+  const handleEnable = async (id) => {
+    try {
+      await enableUser(id);
+      toast.success("User enabled successfully.");
+      fetchUsers();
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to enable user.");
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -91,6 +101,7 @@ const Users = () => {
               key={user.id} 
               user={user} 
               onDisable={handleDisable}
+              onEnable={handleEnable}
             />
           ))}
         </div>

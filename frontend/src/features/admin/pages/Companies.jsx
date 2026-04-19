@@ -10,6 +10,7 @@ const Companies = () => {
   const [filteredCompanies, setFilteredCompanies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [verifyingId, setVerifyingId] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -41,12 +42,15 @@ const Companies = () => {
   };
 
   const handleVerify = async (id) => {
+    setVerifyingId(id);
     try {
       await verifyCompany(id);
       toast.success("Company verified successfully!");
-      fetchCompanies(); // Refresh list
+      await fetchCompanies(); // Refresh list
     } catch (err) {
       toast.error(err?.response?.data?.message || "Failed to verify company.");
+    } finally {
+      setVerifyingId(null);
     }
   };
 
@@ -85,6 +89,7 @@ const Companies = () => {
               key={company.id}
               company={company}
               onVerify={handleVerify}
+              isVerifying={verifyingId === company.id}
             />
           ))}
         </div>

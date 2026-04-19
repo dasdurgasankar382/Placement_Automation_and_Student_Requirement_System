@@ -19,6 +19,8 @@ public interface CompanyService {
     CompanyResponseDto getCompanyById();
 
     ApiResponse<List<CompanyJobsResponseDto>> getCompanyUnderJobs(UUID companyId);
+    
+    ApiResponse<?> verifyCompany(UUID companyId);
 
 /*
     ApiResponse<?> validateCompany(UUID id);

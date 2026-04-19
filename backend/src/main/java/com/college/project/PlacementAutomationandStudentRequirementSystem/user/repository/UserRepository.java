@@ -22,7 +22,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query(""" 
             SELECT new com.college.project.PlacementAutomationandStudentRequirementSystem.user.dto.UserResponseDto(
-                        u.id, u.email, u.role, u.createdAt)
+                        u.id, u.email, u.isActive, u.role, u.createdAt)
                     FROM User u
             """
     )

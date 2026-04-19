@@ -16,4 +16,5 @@ public class CompanyResponseDto {
     private String location;
     private String website;
     private String description;
+    private boolean isVerified;
 }

@@ -1,11 +1,19 @@
-import React from "react";
+import { Link } from "react-router-dom";
 import Avatar from "../Avatar";
 
-const UserTable = ({ title, data = [], columns = [], role = "DEFAULT" }) => {
+const UserTable = ({ title, data = [], columns = [], role = "DEFAULT", seeAllLink = null }) => {
   return (
     <div className="bg-bg-dark-component/80 backdrop-blur-md rounded-2xl border border-slate-700/50 flex flex-col shadow-lg h-full overflow-hidden">
-      <div className="px-6 py-5 border-b border-slate-700/50 flex-none">
+      <div className="px-6 py-5 border-b border-slate-700/50 flex flex-row items-center justify-between flex-none">
         <h3 className="text-lg font-semibold text-slate-100">{title}</h3>
+        {seeAllLink && (
+          <Link 
+            to={seeAllLink} 
+            className="text-xs font-bold uppercase tracking-wider text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1"
+          >
+            View All
+          </Link>
+        )}
       </div>
 
       <div className="flex-1 overflow-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-slate-700 [&::-webkit-scrollbar-thumb]:rounded-full">

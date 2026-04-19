@@ -14,8 +14,9 @@ const CreateJob = () => {
     role: "",
     salary: "",
     tags: "", // skills
+    cgpa: "",
     deadline: "",
-    description: ""
+    description: "",
   });
 
   const handleChange = (e) => {
@@ -30,6 +31,7 @@ const CreateJob = () => {
       role: formData.role,
       salary: parseFloat(formData.salary) || 0,
       skills: formData.tags.split(",").map(tag => tag.trim()).filter(t => t),
+      cgpa: parseFloat(formData.cgpa) || 0,
       description: formData.description,
       deadline: formData.deadline
     };
@@ -78,6 +80,10 @@ const CreateJob = () => {
 
             <div className="md:col-span-2">
               <Input variant="box" icon={List} label="Key Skills (comma separated)" required type="text" name="tags" placeholder="Java, Spring Boot, MySQL" value={formData.tags} onChange={handleChange} />
+            </div>
+
+            <div className="md:col-span-2">
+              <Input variant="box" icon={List} label="CGPA (minimum)" required type="number" name="cgpa" placeholder="e.g. 7.0" value={formData.cgpa} onChange={handleChange} />
             </div>
           </div>
           

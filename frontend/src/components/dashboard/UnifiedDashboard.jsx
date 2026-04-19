@@ -110,7 +110,7 @@ const UnifiedDashboard = ({ role = "STUDENT" }) => {
         setRecentActivity(
           usersList
             .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
-            .slice(0, 5)
+            .slice(0, 10)
             .map((u) => ({
               id: u.id,
               name: u.name,
@@ -140,7 +140,7 @@ const UnifiedDashboard = ({ role = "STUDENT" }) => {
         }, {});
         setChartData((prev) => ({
           ...prev,
-          bar: Object.entries(companyJobs).slice(0, 5).map(([k, v]) => ({ name: k, jobs: v })),
+          bar: Object.entries(companyJobs).slice(0, 10).map(([k, v]) => ({ name: k, jobs: v })),
         }));
 
       } else if (role === "RECRUITER") {
@@ -170,7 +170,7 @@ const UnifiedDashboard = ({ role = "STUDENT" }) => {
         setRecentActivity(
           allApplicants
             .sort((a, b) => new Date(b.appliedAt || 0) - new Date(a.appliedAt || 0))
-            .slice(0, 5)
+            .slice(0, 10)
             .map((app) => ({
               id: app.id || app.applicationId,
               name: app.studentName || "Unknown Student",
@@ -208,7 +208,7 @@ const UnifiedDashboard = ({ role = "STUDENT" }) => {
         setRecentActivity(
           appsList
             .sort((a, b) => new Date(b.createdAt || b.appliedAt || 0) - new Date(a.createdAt || a.appliedAt || 0))
-            .slice(0, 5)
+            .slice(0, 10)
             .map((app) => ({
               id: app.id || app.applicationId,
               name: app.job?.role || app.job?.title || app.jobTitle || app.role || "Untitled Job",
@@ -369,6 +369,15 @@ const UnifiedDashboard = ({ role = "STUDENT" }) => {
             columns={tableColumns}
             data={recentActivity}
             role={role}
+            seeAllLink={
+              role === "ADMIN" 
+                ? "/admin/users" 
+                : role === "RECRUITER" 
+                  ? "/recruiter/applicants" 
+                  : role === "STUDENT" 
+                    ? "/student/applications" 
+                    : null
+            }
           />
         </div>
       </div>

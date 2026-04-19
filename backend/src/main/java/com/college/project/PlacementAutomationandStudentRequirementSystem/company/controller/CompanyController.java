@@ -48,4 +48,11 @@ private final CompanyServiceImpl companyService;
         return ResponseEntity.status(HttpStatus.OK)
                 .body(companyService.getCompanyUnderJobs(companyId));
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{companyId}/verify")
+    public ResponseEntity<ApiResponse<?>> verifyCompany(@PathVariable UUID companyId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(companyService.verifyCompany(companyId));
+    }
 }

@@ -3,9 +3,10 @@ import { User, Mail, Shield, ShieldAlert, Eye, Ban, CheckCircle2 } from "lucide-
 import { useNavigate } from "react-router-dom";
 import { getRoleLabel, getRoleStyles, getStatusStyles, getTrimmedId } from "../../utils/formatters";
 
-const UserCard = ({ user, onDisable }) => {
+const UserCard = ({ user, onDisable, onEnable }) => {
   const navigate = useNavigate();
-  const status = String(user?.status || "ACTIVE").toUpperCase();
+  const isActive = user?.active || user?.isActive || false;
+  const status = isActive ? "ACTIVE" : "DISABLED";
   const roleLabel = getRoleLabel(user?.role);
   const roleStyles = getRoleStyles(user?.role);
   const statusStyles = getStatusStyles(status);
@@ -57,13 +58,23 @@ const UserCard = ({ user, onDisable }) => {
           <Eye className="h-4 w-4" /> View Profile
         </button>
 
-        {status !== "DISABLED" && onDisable && roleLabel !== "ADMIN" && (
+        {isActive && onDisable && roleLabel !== "ADMIN" && (
           <button
             onClick={() => onDisable(user.id)}
             className="p-2.5 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-100 transition-all active:scale-95 transition-colors"
             title="Disable User"
           >
             <Ban className="h-5 w-5" />
+          </button>
+        )}
+
+        {!isActive && onEnable && (
+          <button
+            onClick={() => onEnable(user.id)}
+            className="p-2.5 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl hover:bg-emerald-100 transition-all active:scale-95 transition-colors"
+            title="Enable User"
+          >
+            <CheckCircle2 className="h-5 w-5" />
           </button>
         )}
       </div>

@@ -38,9 +38,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse<?> disableUser(UUID id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (!user.isActive()) {
-            user.setActive(false);
-        }
+        user.setActive(false);
         userRepository.save(user);
         return new ApiResponse<>("User disabled successfully", null);
     }
@@ -48,10 +46,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse<?> enableUser(UUID id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        if (!user.isActive()) {
-            user.setActive(true);
-        }
+        user.setActive(true);
         userRepository.save(user);
-        return new ApiResponse<>("User disabled successfully", null);
+        return new ApiResponse<>("User enabled successfully", null);
     }
 }
